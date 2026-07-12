@@ -139,7 +139,6 @@
   .icon.green{background:var(--green-tint);color:var(--green-deep);}
   .icon.amber{background:var(--amber-tint);color:var(--amber);}
   .icon.blue{background:var(--blue-tint);color:var(--blue);}
-  .icon.teal{background:#E3F4F1;color:#0d9488;}
   .icon.dashed{background:transparent;border:1.5px dashed var(--line);color:var(--faint);}
   .status-dot{
     font-family:var(--mono);
@@ -259,24 +258,6 @@
       icon: "⬒",
       color: "amber",
       status: "Ready"
-    },
-    {
-      name: "Shift Register & Closing",
-      description: "Cash reconciliation, credit ledger, and daily/period closing reports.",
-      href: "https://closing.duapharma.com",
-      icon: "💊",
-      color: "teal",
-      status: "Ready",
-      external: true
-    },
-    {
-      name: "Pharma POS",
-      description: "Billing terminal — invoicing, inventory, and staff sales reports.",
-      href: "https://pos.duapharma.com",
-      icon: "🧾",
-      color: "blue",
-      status: "Ready",
-      external: true
     }
     // Example of how to add the next one:
     // {
@@ -295,14 +276,10 @@
     const a = document.createElement('a');
     a.href = m.href;
     a.className = 'card';
-    if (m.external) {
-      a.target = '_blank';
-      a.rel = 'noopener';
-    }
     a.innerHTML = `
       <div class="card-top">
         <div class="icon ${m.color}">${m.icon}</div>
-        <div class="status-dot">${m.external ? 'Hosted ↗' : m.status}</div>
+        <div class="status-dot">${m.status}</div>
       </div>
       <h2>${m.name}</h2>
       <p>${m.description}</p>
