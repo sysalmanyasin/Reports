@@ -1,8 +1,8 @@
 {
-  "name": "Excess Stock Control",
-  "short_name": "Excess Stock",
-  "description": "Multi-branch excess inventory tracking with automatic Head Office rollup — offline, single-file, no backend required.",
-  "start_url": "./excess-stock-control.html",
+  "name": "Branch Operations Hub",
+  "short_name": "Branch Hub",
+  "description": "Fazal Din's Pharma Plus — Manga Mandi branch tools: daily checklist, excess stock control, and more.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
