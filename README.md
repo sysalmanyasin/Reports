@@ -32,7 +32,7 @@ Everything is self-contained, single-file HTML — no server, database, or build
   description: "One line describing what it does.",
   href: "./your-file-name.html",
   icon: "₨",       // any short emoji or symbol
-  color: "blue",    // "green", "amber", or "blue"
+  color: "blue",    // "green", "amber", "blue", or "teal"
   status: "Ready"
 }
 ```
@@ -40,6 +40,24 @@ Everything is self-contained, single-file HTML — no server, database, or build
 4. Save and re-upload `index.html` (and the new tool file) to GitHub.
 
 No other changes needed — the dashboard builds its cards from this list automatically.
+
+### Linking to a tool hosted elsewhere
+
+Some tools — like Shift Register & Closing — are full multi-file apps deployed to their own domain instead of living in this folder. For those, use a full URL as `href` and add `external: true`:
+
+```js
+{
+  name: "Shift Register & Closing",
+  description: "Cash reconciliation, credit ledger, and daily/period closing reports.",
+  href: "https://closing.duapharma.com",
+  icon: "💊",
+  color: "teal",
+  status: "Ready",
+  external: true
+}
+```
+
+`external: true` opens the card in a new tab and shows a "Hosted ↗" tag instead of "Ready", so it's clear the tool lives outside this repo.
 
 ## Updating an existing tool
 
