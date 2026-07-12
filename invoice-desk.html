@@ -153,18 +153,8 @@
   table.items td{ padding:6px 6px; border-bottom:1px solid var(--line); }
   table.items td.num, table.items th.num{ text-align:right; }
   .totals{ font-size:13px; }
-  .totals div{ display:flex; justify-content:space-between; padding:3px 0; align-items:center; }
+  .totals div{ display:flex; justify-content:space-between; padding:3px 0; }
   .totals .grand{ font-weight:800; font-size:15px; border-top:2px solid var(--ink); margin-top:5px; padding-top:7px;}
-
-  /* Detail edit mode */
-  .detail-edit-hdr{ display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
-  .detail-edit-hdr h2{ margin:0; font-size:14px; }
-  .kv input.kv-edit{ border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:13px; width:100%; min-width:0; }
-  table.items input.item-edit{ border:1px solid var(--line); border-radius:5px; padding:4px 5px; font-size:11.5px; width:100%; min-width:0; }
-  table.items input.item-edit.num{ text-align:right; }
-  table.items td.rm-cell{ padding:2px 2px 2px 4px; width:22px; }
-  table.items .rm-item-btn{ border:none; background:var(--red); color:#fff; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; padding:4px 7px; line-height:1; }
-  .totals input.totals-edit{ border:1px solid var(--line); border-radius:6px; padding:4px 8px; font-size:13px; text-align:right; width:130px; }
 
   .str-box{ display:flex; gap:8px; margin-top:10px; }
   .str-box input{ flex:1; border:1px solid var(--line); border-radius:8px; padding:9px 10px; font-size:13px; }
@@ -187,17 +177,6 @@
   .manual-item-row .mi-grid{ display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr auto; gap:5px; }
   .manual-item-row .mi-grid input{ border:1px solid var(--line); border-radius:6px; padding:6px 4px; font-size:11.5px; width:100%; text-align:right; min-width:0;}
   .manual-item-row .mi-remove{ border:none; background:var(--red); color:#fff; border-radius:6px; font-size:14px; font-weight:700; cursor:pointer; padding:0 8px;}
-
-  /* AI extraction review screen — confidence badges + low-confidence field highlighting */
-  .confbadge{ display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; margin-left:6px; vertical-align:middle; letter-spacing:.2px; }
-  .confbadge.high{ background:var(--brand-dim); color:var(--brand); }
-  .confbadge.medium{ background:#fff3d6; color:var(--amber); }
-  .confbadge.low{ background:#fbe3e0; color:var(--red); }
-  input.low-confidence, select.low-confidence{ border-color:var(--red) !important; background:#fff7f6; }
-  .manual-item-row.low-confidence{ border-color:var(--red); background:#fff7f6; }
-  .review-item-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
-  .review-item-head .confbadge{ margin-left:0; }
-  .banner.error{ background:#fbe3e0; border-color:#e3b3ac; color:#8a2c1f; }
   select.field-select{ width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13.5px; background:#fff; font-family:inherit; }
   .link-btn{ background:none; border:none; color:var(--brand); font-weight:600; font-size:12.5px; padding:8px 0 0; cursor:pointer; text-decoration:underline; }
 
@@ -313,51 +292,6 @@
 
       <button class="primary" id="saveManualBtn" style="margin-top:14px;">Save invoice</button>
       <button class="secondary" id="cancelManualBtn">Cancel</button>
-    </div>
-
-    <div class="card" id="reviewCard" style="display:none;">
-      <h2>Review AI-extracted invoice</h2>
-      <div class="banner" id="reviewBanner" style="display:none;"></div>
-      <p class="hint">Check anything marked <span class="confbadge low">low</span> or <span class="confbadge medium">med</span> confidence against the photo. Edit any field, add or remove line items, then confirm to save — nothing is stored until you confirm.</p>
-
-      <label class="field">Vendor <span class="confbadge" id="conf_vendor_name"></span></label>
-      <input type="text" id="rv_vendor">
-      <label class="field">Branch / Customer</label>
-      <input type="text" id="rv_customer">
-      <label class="field">Invoice # <span class="confbadge" id="conf_invoice_number"></span></label>
-      <input type="text" id="rv_invoice_number">
-      <label class="field">Order #</label>
-      <input type="text" id="rv_order_number">
-      <div style="display:flex; gap:8px;">
-        <div style="flex:1;"><label class="field">Order date</label><input type="date" id="rv_order_date"></div>
-        <div style="flex:1;"><label class="field">Delivery date <span class="confbadge" id="conf_date"></span></label><input type="date" id="rv_delivery_date"></div>
-      </div>
-      <label class="field">Category</label>
-      <select class="field-select" id="rv_category">
-        <option value="Ice Cream">Ice Cream</option>
-        <option value="Chips/Snacks">Chips/Snacks</option>
-        <option value="Other" selected>Other</option>
-      </select>
-
-      <label class="field">Items</label>
-      <div id="reviewItems"></div>
-      <button class="secondary" id="addReviewItemBtn" type="button">+ Add item row</button>
-
-      <div style="display:flex; gap:8px; margin-top:6px;">
-        <div style="flex:1;"><label class="field">Gross amount</label><input type="text" id="rv_gross" inputmode="decimal"></div>
-        <div style="flex:1;"><label class="field">Total GST <span class="confbadge" id="conf_gst"></span></label><input type="text" id="rv_gst" inputmode="decimal"></div>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <div style="flex:1;"><label class="field">Total discount</label><input type="text" id="rv_discount" inputmode="decimal"></div>
-        <div style="flex:1;"><label class="field">Advance tax</label><input type="text" id="rv_advtax" inputmode="decimal"></div>
-      </div>
-      <label class="field">Total bill amount <span class="confbadge" id="conf_totals"></span></label>
-      <input type="text" id="rv_total" inputmode="decimal">
-      <label class="field">Notes</label>
-      <input type="text" id="rv_notes" placeholder="Handwritten notes, stamps, signatures">
-
-      <button class="primary" id="confirmReviewBtn" style="margin-top:14px;">Confirm & save invoice</button>
-      <button class="secondary" id="cancelReviewBtn">Back to photo</button>
     </div>
   </section>
 
@@ -485,7 +419,6 @@ let rawImageDataUrl = null;      // untouched photo straight from camera/file
 let croppedImageDataUrl = null;  // perspective-corrected + sharpened version
 let usingCropped = true;
 let lastCropApplied = false;
-let currentScanFilterMode = 'color'; // 'color' | 'bw' — picked up implicitly by enhanceToScan()
 
 /* ----- entry points ----- */
 captureChoiceBtn.addEventListener('click', ()=> startLiveCapture());
@@ -498,254 +431,6 @@ fileInput.addEventListener('change', (e)=>{
   reader.onload = (ev)=> processCapturedImage(ev.target.result, null);
   reader.readAsDataURL(file);
 });
-
-/* ----- Scanner engine: OpenCV.js-backed detection + Web Worker enhancement pipeline ----- */
-
-// OpenCV.js is loaded lazily in the background. Every detection/warp call below has a
-// pure-JS fallback, so the scanner keeps working even if the CDN is unreachable (offline
-// branch, flaky connection, etc.) — OpenCV only makes it more accurate when available.
-let cvEngineReady = false;
-let cvReadyPromise = null;
-function ensureOpenCV(){
-  if(cvReadyPromise) return cvReadyPromise;
-  cvReadyPromise = new Promise((resolve)=>{
-    if(window.cv && window.cv.Mat){ resolve(window.cv); return; }
-    try{
-      const script = document.createElement('script');
-      script.src = 'https://docs.opencv.org/4.9.0/opencv.js';
-      script.async = true;
-      script.onload = ()=>{
-        const cvObj = window.cv;
-        if(!cvObj){ resolve(null); return; }
-        if(cvObj.Mat){ resolve(cvObj); return; }
-        cvObj['onRuntimeInitialized'] = ()=> resolve(cvObj);
-      };
-      script.onerror = (e)=>{ console.warn('OpenCV.js failed to load — using fallback scanner engine.', e); resolve(null); };
-      document.head.appendChild(script);
-      setTimeout(()=> resolve(window.cv && window.cv.Mat ? window.cv : null), 8000);
-    }catch(e){ resolve(null); }
-  });
-  return cvReadyPromise;
-}
-ensureOpenCV().then(cvObj=>{ cvEngineReady = !!cvObj; if(cvEngineReady) console.info('Scanner engine: OpenCV.js contour detection active.'); });
-
-/* ----- shared geometry helpers (used by both the OpenCV and fallback detectors) ----- */
-function polygonArea(pts){
-  let a=0;
-  for(let i=0;i<pts.length;i++){
-    const [x1,y1]=pts[i], [x2,y2]=pts[(i+1)%pts.length];
-    a += x1*y2 - x2*y1;
-  }
-  return Math.abs(a/2);
-}
-function orderQuadCorners(pts){
-  let tl=null,tr=null,br=null,bl=null;
-  let tlScore=Infinity, brScore=-Infinity, trScore=-Infinity, blScore=Infinity;
-  pts.forEach(([x,y])=>{
-    const s1=x+y, s2=x-y;
-    if(s1<tlScore){ tlScore=s1; tl=[x,y]; }
-    if(s1>brScore){ brScore=s1; br=[x,y]; }
-    if(s2>trScore){ trScore=s2; tr=[x,y]; }
-    if(s2<blScore){ blScore=s2; bl=[x,y]; }
-  });
-  return [tl,tr,br,bl];
-}
-// Rejects quads that are too small/large relative to the frame, or whose corner angles
-// are too far from a plausible (perspective-skewed) rectangle — filters out false positives
-// like tables, counters, or shadows that happen to form a bright blob.
-function quadIsPlausible(pts, workW, workH){
-  const area = polygonArea(pts);
-  const frameArea = workW*workH;
-  if(area < frameArea*0.1 || area > frameArea*0.98) return false;
-  for(let i=0;i<4;i++){
-    const p0 = pts[(i+3)%4], p1 = pts[i], p2 = pts[(i+1)%4];
-    const v1 = [p0[0]-p1[0], p0[1]-p1[1]];
-    const v2 = [p2[0]-p1[0], p2[1]-p1[1]];
-    const mag = Math.hypot(v1[0],v1[1])*Math.hypot(v2[0],v2[1]);
-    if(mag < 1e-6) return false;
-    const dot = v1[0]*v2[0]+v1[1]*v2[1];
-    const angle = Math.acos(Math.max(-1,Math.min(1,dot/mag))) * 180/Math.PI;
-    if(angle < 45 || angle > 140) return false;
-  }
-  return true;
-}
-function medianOfGrayMat(mat){
-  const hist = new Array(256).fill(0);
-  for(let i=0;i<mat.data.length;i++) hist[mat.data[i]]++;
-  const total = mat.data.length;
-  let running=0;
-  for(let v=0;v<256;v++){ running+=hist[v]; if(running>=total/2) return v; }
-  return 128;
-}
-
-// Primary document-edge detector: adaptive Canny + contour search, tuned like the
-// detectors in CamScanner/Lens-style apps — finds the largest plausible convex
-// quadrilateral rather than relying on simple brightness thresholding.
-function detectDocumentCornersCV(canvas){
-  const cv = window.cv;
-  const workW = canvas.width, workH = canvas.height;
-  const src = cv.imread(canvas);
-  const gray = new cv.Mat(), blurred = new cv.Mat(), edges = new cv.Mat(), dilated = new cv.Mat();
-  const kernel = cv.Mat.ones(3,3, cv.CV_8U);
-  const contours = new cv.MatVector();
-  const hierarchy = new cv.Mat();
-  try{
-    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-    cv.GaussianBlur(gray, blurred, new cv.Size(5,5), 0, 0, cv.BORDER_DEFAULT);
-    const med = medianOfGrayMat(blurred);
-    const lower = Math.max(0, med*0.66), upper = Math.min(255, med*1.33);
-    cv.Canny(blurred, edges, lower, upper, 3, false);
-    cv.dilate(edges, dilated, kernel, new cv.Point(-1,-1), 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
-    cv.findContours(dilated, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
-
-    let best = null, bestArea = workW*workH*0.1;
-    for(let i=0;i<contours.size();i++){
-      const cnt = contours.get(i);
-      const area = cv.contourArea(cnt, false);
-      if(area < bestArea){ cnt.delete(); continue; }
-      const peri = cv.arcLength(cnt, true);
-      const approx = new cv.Mat();
-      cv.approxPolyDP(cnt, approx, 0.02*peri, true);
-      if(approx.rows === 4 && cv.isContourConvex(approx)){
-        const pts = [];
-        for(let r=0;r<4;r++) pts.push([approx.data32S[r*2], approx.data32S[r*2+1]]);
-        if(quadIsPlausible(pts, workW, workH)){
-          bestArea = area;
-          best = pts;
-        }
-      }
-      approx.delete();
-      cnt.delete();
-    }
-    return best ? { corners: orderQuadCorners(best) } : null;
-  } finally {
-    src.delete(); gray.delete(); blurred.delete(); edges.delete(); dilated.delete();
-    kernel.delete(); contours.delete(); hierarchy.delete();
-  }
-}
-
-// Otsu's method: picks the grayscale cutoff that best separates two populations
-// (here: the bright page vs. whatever cluttered background/counter it's sitting on).
-function otsuThreshold(gray){
-  const hist = new Array(256).fill(0);
-  for(let i=0;i<gray.length;i++) hist[gray[i]|0]++;
-  const total = gray.length;
-  let sumAll = 0;
-  for(let t=0;t<256;t++) sumAll += t*hist[t];
-  let sumB=0, wB=0, maxVar=-1, threshold=127;
-  for(let t=0;t<256;t++){
-    wB += hist[t];
-    if(wB===0) continue;
-    const wF = total - wB;
-    if(wF===0) break;
-    sumB += t*hist[t];
-    const mB = sumB/wB;
-    const mF = (sumAll-sumB)/wF;
-    const between = wB*wF*(mB-mF)*(mB-mF);
-    if(between > maxVar){ maxVar = between; threshold = t; }
-  }
-  return threshold;
-}
-
-// Fallback detector (brightness-mask extremes) — used only when OpenCV.js hasn't
-// loaded yet or the contour search above found nothing plausible.
-function detectDocumentCornersLegacy(canvas){
-  const workW = canvas.width, workH = canvas.height;
-  const data = canvas.getContext('2d').getImageData(0,0,workW,workH).data;
-  const gray = new Float32Array(workW*workH);
-  for(let i=0;i<workW*workH;i++){
-    gray[i] = 0.299*data[i*4] + 0.587*data[i*4+1] + 0.114*data[i*4+2];
-  }
-  const t = otsuThreshold(gray);
-
-  const rowCount = new Array(workH).fill(0);
-  const colCount = new Array(workW).fill(0);
-  for(let y=0;y<workH;y++){
-    for(let x=0;x<workW;x++){
-      if(gray[y*workW+x] > t){ rowCount[y]++; colCount[x]++; }
-    }
-  }
-  const maxRow = Math.max(...rowCount), maxCol = Math.max(...colCount);
-  if(maxRow < workW*0.15 || maxCol < workH*0.15) return null;
-
-  const rowThresh = maxRow*0.4, colThresh = maxCol*0.4;
-  let top=0, bottom=workH-1, left=0, right=workW-1;
-  while(top<workH-1 && rowCount[top]<rowThresh) top++;
-  while(bottom>0 && rowCount[bottom]<rowThresh) bottom--;
-  while(left<workW-1 && colCount[left]<colThresh) left++;
-  while(right>0 && colCount[right]<colThresh) right--;
-  if(bottom<=top || right<=left || (bottom-top)<workH*0.3 || (right-left)<workW*0.3) return null;
-
-  let tl=null, tr=null, br=null, bl=null;
-  let tlScore=Infinity, brScore=-Infinity, trScore=-Infinity, blScore=Infinity;
-  for(let y=top;y<=bottom;y++){
-    for(let x=left;x<=right;x++){
-      if(gray[y*workW+x] <= t) continue;
-      const s1 = x+y, s2 = x-y;
-      if(s1 < tlScore){ tlScore = s1; tl = [x,y]; }
-      if(s1 > brScore){ brScore = s1; br = [x,y]; }
-      if(s2 > trScore){ trScore = s2; tr = [x,y]; }
-      if(s2 < blScore){ blScore = s2; bl = [x,y]; }
-    }
-  }
-  if(!tl || !tr || !br || !bl) return null;
-  return { corners:[tl,tr,br,bl] };
-}
-
-// Combined multi-metric image-quality check: Laplacian variance (edge sharpness),
-// Sobel gradient strength (edge presence), and a blur-and-compare high-frequency
-// energy test (how much fine detail a blur pass destroys). Any single metric can be
-// fooled by flat, low-texture invoices — combining them is far more reliable.
-function computeQualityScore(source){
-  const w = 320, h = Math.max(1, Math.round(320 * source.height / source.width));
-  const canvas = document.createElement('canvas');
-  canvas.width=w; canvas.height=h;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(source, 0, 0, w, h);
-  const data = ctx.getImageData(0,0,w,h).data;
-  const gray = new Float32Array(w*h);
-  for(let i=0;i<w*h;i++){
-    gray[i] = 0.299*data[i*4] + 0.587*data[i*4+1] + 0.114*data[i*4+2];
-  }
-
-  let lapSum=0, lapSumSq=0, lapCount=0, sobelSum=0, sobelCount=0;
-  for(let y=1;y<h-1;y++){
-    for(let x=1;x<w-1;x++){
-      const idx = y*w+x;
-      const lap = gray[idx-1] + gray[idx+1] + gray[idx-w] + gray[idx+w] - 4*gray[idx];
-      lapSum += lap; lapSumSq += lap*lap; lapCount++;
-      const gx = gray[idx+1]-gray[idx-1], gy = gray[idx+w]-gray[idx-w];
-      sobelSum += Math.sqrt(gx*gx+gy*gy); sobelCount++;
-    }
-  }
-  const lapMean = lapSum/lapCount;
-  const lapVariance = (lapSumSq/lapCount) - (lapMean*lapMean);
-  const sobelMean = sobelSum/sobelCount;
-
-  const smallW = Math.max(1, Math.round(w/8)), smallH = Math.max(1, Math.round(h/8));
-  const smallCanvas = document.createElement('canvas');
-  smallCanvas.width=smallW; smallCanvas.height=smallH;
-  smallCanvas.getContext('2d').drawImage(canvas, 0, 0, smallW, smallH);
-  const blurCanvas = document.createElement('canvas');
-  blurCanvas.width=w; blurCanvas.height=h;
-  const bctx = blurCanvas.getContext('2d');
-  bctx.imageSmoothingEnabled = true;
-  bctx.drawImage(smallCanvas, 0, 0, w, h);
-  const blurredData = bctx.getImageData(0,0,w,h).data;
-  let diffSum=0;
-  for(let i=0;i<w*h;i++){
-    const g1 = 0.299*blurredData[i*4] + 0.587*blurredData[i*4+1] + 0.114*blurredData[i*4+2];
-    diffSum += Math.abs(gray[i]-g1);
-  }
-  const highFreqEnergy = diffSum/(w*h);
-
-  const lapScore = Math.min(1, lapVariance/280);
-  const sobelScore = Math.min(1, sobelMean/22);
-  const hfScore = Math.min(1, highFreqEnergy/14);
-  const composite = lapScore*0.45 + sobelScore*0.3 + hfScore*0.25;
-
-  return { sharp: composite >= 0.42, composite, lapVariance, sobelMean, highFreqEnergy };
-}
 
 /* ----- live camera scan with real-time edge guide ----- */
 let liveStream = null;
@@ -797,13 +482,9 @@ document.getElementById('liveCaptureBtn').addEventListener('click', ()=>{
   captureFromLiveVideo(liveLastQuad ? liveLastQuad.corners : null, liveLastQuad ? liveLastQuad.workW : 0, liveLastQuad ? liveLastQuad.workH : 0);
 });
 
-// Live guidance combines: (1) is a plausible page found at all, (2) has its position been
-// stable across several consecutive frames, (3) does it fill enough of the frame, and only
-// once all of that holds do we also (4) check the current frame isn't motion-blurred before
-// auto-firing the shutter — this is what keeps auto-capture from firing on a shaky hold.
 function detectLiveFrame(){
   if(!liveVideo.videoWidth) return;
-  const workW = 320, workH = Math.max(1, Math.round(320 * liveVideo.videoHeight / liveVideo.videoWidth));
+  const workW = 240, workH = Math.max(1, Math.round(240 * liveVideo.videoHeight / liveVideo.videoWidth));
   const wc = document.createElement('canvas');
   wc.width = workW; wc.height = workH;
   wc.getContext('2d').drawImage(liveVideo, 0, 0, workW, workH);
@@ -828,16 +509,7 @@ function detectLiveFrame(){
 
   const scaleX = overlayW/workW, scaleY = overlayH/workH;
   const pts = quad.corners.map(([x,y])=>[x*scaleX, y*scaleY]);
-
-  const areaFraction = polygonArea(quad.corners) / (workW*workH);
-  const enoughStability = liveStableCount >= 5;
-  const enoughCoverage = areaFraction >= 0.18;
-  let isSteady = enoughStability && enoughCoverage;
-
-  if(isSteady){
-    const quality = computeQualityScore(wc);
-    isSteady = quality.sharp;
-  }
+  const isSteady = liveStableCount >= 5;
 
   octx.strokeStyle = isSteady ? '#3fbf6f' : '#e8b93f';
   octx.lineWidth = 3;
@@ -850,9 +522,7 @@ function detectLiveFrame(){
     octx.beginPath(); octx.arc(x,y,6,0,Math.PI*2); octx.fill();
   });
 
-  liveStatus.textContent = isSteady
-    ? 'Steady — capturing…'
-    : (!enoughCoverage ? 'Move closer — fill the frame…' : 'Hold steady over the page…');
+  liveStatus.textContent = isSteady ? 'Steady — capturing…' : 'Hold steady over the page…';
   liveStatus.className = isSteady ? 'livestatus steady' : 'livestatus';
 
   if(isSteady && liveAutoCaptureArmed){
@@ -899,22 +569,30 @@ async function processCapturedImage(rawDataUrl, knownCorners){
   lastCropApplied = false;
   try{
     const img = await loadImageEl(rawDataUrl);
-    let corners = knownCorners;
-    if(!corners){
-      corners = await detectDocumentCornersFromDataUrl(rawDataUrl);
-    }
+    // Always re-detect on the full-resolution frame — the live-preview corners (if any)
+    // are only a coarse guide for the on-screen box and aren't precise enough to fit an
+    // edge curve from.
+    const detection = await detectDocumentCornersFromDataUrl(rawDataUrl);
+    const corners = (detection && detection.corners) || knownCorners;
     if(corners){
       const dims = quadDimensions(corners);
-      const outCanvas = await warpPerspective(img, corners, dims.w, dims.h);
+      let outCanvas = null;
+      if(detection && detection.edgePoints){
+        const mesh = buildDewarpMesh(detection.edgePoints, detection.bbox);
+        if(mesh) outCanvas = warpMesh(img, mesh, dims.w, dims.h);
+      }
+      if(!outCanvas){
+        // Curve fit didn't have enough clean edge points (or these are live-capture
+        // corners with no point cloud) — fall back to a plain 4-corner perspective crop.
+        outCanvas = warpPerspective(img, corners, dims.w, dims.h);
+      }
       processed = outCanvas.toDataURL('image/jpeg', 0.92);
       lastCropApplied = true;
     }
-    progressText.textContent = 'Enhancing for reading…';
-    // Always color + the gentler "forOcr" profile here — this copy feeds the AI extraction
-    // step, so we protect legibility/color fidelity over aggressive cleanup.
-    processed = await enhanceCapturedImage(await loadImageEl(processed), { mode: 'color', forOcr: true });
+    progressText.textContent = 'Sharpening scan…';
+    processed = await sharpenImage(processed, 0.6);
   }catch(err){
-    console.warn('Perspective correction/enhancement failed, using original photo', err);
+    console.warn('Perspective correction/sharpen failed, using original photo', err);
     processed = rawDataUrl;
     lastCropApplied = false;
   }
@@ -950,17 +628,34 @@ function toggleCropVersion(){
   checkSharpness(currentImageDataUrl);
 }
 
-// Multi-metric sharpness check (Laplacian variance + Sobel gradient + blur/diff high-frequency
-// energy, combined in computeQualityScore) — replaces the old single-metric Laplacian-only test,
-// which was too easily fooled by flat, low-texture invoices. Same external contract as before:
-// sets currentSharp/blurFlag text+class, then calls renderCaptureActions().
+// Simple sharpness heuristic: Laplacian variance on a downsized grayscale copy
 function checkSharpness(dataUrl){
   blurFlag.textContent = 'Checking sharpness…';
   blurFlag.className = 'blurflag';
   const img = new Image();
   img.onload = ()=>{
-    const quality = computeQualityScore(img);
-    currentSharp = quality.sharp;
+    const w = 320, h = Math.round(320 * img.height / img.width);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0,0,w,h).data;
+    const gray = new Float32Array(w*h);
+    for(let i=0;i<w*h;i++){
+      const r=data[i*4], g=data[i*4+1], b=data[i*4+2];
+      gray[i] = 0.299*r + 0.587*g + 0.114*b;
+    }
+    let sum=0, sumSq=0, count=0;
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const idx = y*w+x;
+        const lap = gray[idx-1] + gray[idx+1] + gray[idx-w] + gray[idx+w] - 4*gray[idx];
+        sum += lap; sumSq += lap*lap; count++;
+      }
+    }
+    const mean = sum/count;
+    const variance = (sumSq/count) - (mean*mean);
+    currentSharp = variance > 220; // empirical threshold, tuned against real branch invoice photos
     if(currentSharp){
       blurFlag.textContent = '✓ Looks sharp';
       blurFlag.classList.add('sharpflag');
@@ -1010,20 +705,6 @@ function renderCaptureActions(){
     captureActions.appendChild(toggleCropBtn);
   }
 
-  // Scan filter toggle — output-only setting, picked up by enhanceToScan() when the final
-  // print/display copy is produced later (AI-extraction success path / manual-entry save).
-  const filterColorBtn = document.createElement('button');
-  filterColorBtn.className = 'secondary';
-  filterColorBtn.textContent = (currentScanFilterMode==='color' ? '● ' : '') + 'Color scan';
-  filterColorBtn.onclick = ()=>{ currentScanFilterMode='color'; renderCaptureActions(); };
-  captureActions.appendChild(filterColorBtn);
-
-  const filterBwBtn = document.createElement('button');
-  filterBwBtn.className = 'secondary';
-  filterBwBtn.textContent = (currentScanFilterMode==='bw' ? '● ' : '') + 'Clear Black & White';
-  filterBwBtn.onclick = ()=>{ currentScanFilterMode='bw'; renderCaptureActions(); };
-  captureActions.appendChild(filterBwBtn);
-
   const manualLink = document.createElement('button');
   manualLink.className = 'link-btn';
   manualLink.type = 'button';
@@ -1038,7 +719,6 @@ function resetCapture(){
   croppedImageDataUrl = null;
   usingCropped = true;
   lastCropApplied = false;
-  currentScanFilterMode = 'color';
   previewCard.style.display='none';
   document.getElementById('captureCard').style.display='block';
   fileInput.value='';
@@ -1054,28 +734,126 @@ function loadImageEl(src){
   });
 }
 
-// Dispatcher: prefer the real OpenCV.js contour-based detector (robust to clutter, shadows,
-// and non-rectangular framing); fall back to the brightness/Otsu heuristic (detectDocumentCornersLegacy,
-// defined earlier alongside the OpenCV loader) when OpenCV isn't loaded or finds nothing —
-// keeps the app fully functional offline/without CDN access.
-function detectDocumentCorners(canvas){
-  if(cvEngineReady){
-    const cvResult = detectDocumentCornersCV(canvas);
-    if(cvResult) return cvResult;
+// Otsu's method: picks the grayscale cutoff that best separates two populations
+// (here: the bright page vs. whatever cluttered background/counter it's sitting on).
+function otsuThreshold(gray){
+  const hist = new Array(256).fill(0);
+  for(let i=0;i<gray.length;i++) hist[gray[i]|0]++;
+  const total = gray.length;
+  let sumAll = 0;
+  for(let t=0;t<256;t++) sumAll += t*hist[t];
+  let sumB=0, wB=0, maxVar=-1, threshold=127;
+  for(let t=0;t<256;t++){
+    wB += hist[t];
+    if(wB===0) continue;
+    const wF = total - wB;
+    if(wF===0) break;
+    sumB += t*hist[t];
+    const mB = sumB/wB;
+    const mF = (sumAll-sumB)/wF;
+    const between = wB*wF*(mB-mF)*(mB-mF);
+    if(between > maxVar){ maxVar = between; threshold = t; }
   }
-  return detectDocumentCornersLegacy(canvas);
+  return threshold;
+}
+
+// Finds the page's boundary by thresholding a downscaled grayscale copy, then walking
+// inward. Returns a quick 4-corner estimate (extreme points — used for the live-capture
+// guide box, and as a fallback) plus the raw boundary point clouds along each edge —
+// the latter let the full-resolution pipeline fit the page's *actual* edge shape rather
+// than force it onto 4 straight corners, which is what causes a slightly bowed/curled
+// page to come out warped after a plain perspective crop.
+function detectDocumentCorners(canvas){
+  const workW = canvas.width, workH = canvas.height;
+  const data = canvas.getContext('2d').getImageData(0,0,workW,workH).data;
+  const gray = new Float32Array(workW*workH);
+  for(let i=0;i<workW*workH;i++){
+    gray[i] = 0.299*data[i*4] + 0.587*data[i*4+1] + 0.114*data[i*4+2];
+  }
+  const t = otsuThreshold(gray);
+
+  const rowCount = new Array(workH).fill(0);
+  const colCount = new Array(workW).fill(0);
+  for(let y=0;y<workH;y++){
+    for(let x=0;x<workW;x++){
+      if(gray[y*workW+x] > t){ rowCount[y]++; colCount[x]++; }
+    }
+  }
+  const maxRow = Math.max(...rowCount), maxCol = Math.max(...colCount);
+  if(maxRow < workW*0.15 || maxCol < workH*0.15) return null; // nothing bright/big enough to be a page
+
+  const rowThresh = maxRow*0.4, colThresh = maxCol*0.4;
+  let top=0, bottom=workH-1, left=0, right=workW-1;
+  while(top<workH-1 && rowCount[top]<rowThresh) top++;
+  while(bottom>0 && rowCount[bottom]<rowThresh) bottom--;
+  while(left<workW-1 && colCount[left]<colThresh) left++;
+  while(right>0 && colCount[right]<colThresh) right--;
+  if(bottom<=top || right<=left || (bottom-top)<workH*0.3 || (right-left)<workW*0.3) return null;
+
+  let tl=null, tr=null, br=null, bl=null;
+  let tlScore=Infinity, brScore=-Infinity, trScore=-Infinity, blScore=Infinity;
+  for(let y=top;y<=bottom;y++){
+    for(let x=left;x<=right;x++){
+      if(gray[y*workW+x] <= t) continue;
+      const s1 = x+y, s2 = x-y;
+      if(s1 < tlScore){ tlScore = s1; tl = [x,y]; }
+      if(s1 > brScore){ brScore = s1; br = [x,y]; }
+      if(s2 > trScore){ trScore = s2; tr = [x,y]; }
+      if(s2 < blScore){ blScore = s2; bl = [x,y]; }
+    }
+  }
+  if(!tl || !tr || !br || !bl) return null;
+
+  // boundary point clouds: for each column, the first/last bright row (top/bottom edge);
+  // for each row, the first/last bright column (left/right edge).
+  const topPts=[], bottomPts=[], leftPts=[], rightPts=[];
+  for(let x=left;x<=right;x++){
+    let yFirst=-1, yLast=-1;
+    for(let y=top;y<=bottom;y++){
+      if(gray[y*workW+x] > t){ if(yFirst<0) yFirst=y; yLast=y; }
+    }
+    if(yFirst>=0){ topPts.push([x,yFirst]); bottomPts.push([x,yLast]); }
+  }
+  for(let y=top;y<=bottom;y++){
+    let xFirst=-1, xLast=-1;
+    for(let x=left;x<=right;x++){
+      if(gray[y*workW+x] > t){ if(xFirst<0) xFirst=x; xLast=x; }
+    }
+    if(xFirst>=0){ leftPts.push([xFirst,y]); rightPts.push([xLast,y]); }
+  }
+
+  return {
+    corners:[tl,tr,br,bl], // top-left, top-right, bottom-right, bottom-left
+    edgePoints: { topPts, bottomPts, leftPts, rightPts },
+    bbox: { top, bottom, left, right }
+  };
 }
 
 async function detectDocumentCornersFromDataUrl(dataUrl){
   const img = await loadImageEl(dataUrl);
-  const workW = 500, workH = Math.max(1, Math.round(500 * img.height / img.width));
+  // Higher resolution than the live-preview guide (240px) since this only runs once per
+  // capture and feeds the curve fit — more points here means a more accurate dewarp.
+  const workW = 700, workH = Math.max(1, Math.round(700 * img.height / img.width));
   const wc = document.createElement('canvas');
   wc.width = workW; wc.height = workH;
   wc.getContext('2d').drawImage(img, 0, 0, workW, workH);
   const result = detectDocumentCorners(wc);
   if(!result) return null;
   const scaleX = img.width/workW, scaleY = img.height/workH;
-  return result.corners.map(([x,y])=>[x*scaleX, y*scaleY]);
+  const scalePts = pts => pts.map(([x,y])=>[x*scaleX, y*scaleY]);
+  return {
+    corners: scalePts(result.corners),
+    edgePoints: {
+      topPts: scalePts(result.edgePoints.topPts),
+      bottomPts: scalePts(result.edgePoints.bottomPts),
+      leftPts: scalePts(result.edgePoints.leftPts),
+      rightPts: scalePts(result.edgePoints.rightPts)
+    },
+    bbox: {
+      top: result.bbox.top*scaleY, bottom: result.bbox.bottom*scaleY,
+      left: result.bbox.left*scaleX, right: result.bbox.right*scaleX
+    }
+  };
 }
 
 // Target output size for the straightened page, from the detected corners' own proportions
@@ -1085,7 +863,7 @@ function quadDimensions(corners){
   const dist = (a,b)=> Math.hypot(a[0]-b[0], a[1]-b[1]);
   let w = Math.round(Math.max(dist(tl,tr), dist(bl,br)));
   let h = Math.round(Math.max(dist(tl,bl), dist(tr,br)));
-  const maxDim = 1600;
+  const maxDim = 1800;
   if(w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; }
   if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; }
   return { w: Math.max(w,50), h: Math.max(h,50) };
@@ -1142,31 +920,16 @@ function applyHomography(m, x, y){
 // True perspective correction: maps the detected (possibly skewed) quadrilateral onto a
 // flat rectangle, sampling each output pixel from the source via the inverse homography
 // with bilinear interpolation — this is what actually "un-tilts" an angled photo.
-// Large phone photos (12-48MP) are far more resolution than we need to fill a ~1600px
-// output. Reading/sampling full-res pixel data was the actual freeze point on picking a
-// photo — this scales the source down to a comfortable working size first (native
-// drawImage resize, which is fast) and scales the corners to match.
-function scaledSourceForWarp(img, corners, workMax){
-  const scale = Math.min(1, workMax / Math.max(img.width, img.height));
-  const sw = Math.max(1, Math.round(img.width * scale));
-  const sh = Math.max(1, Math.round(img.height * scale));
-  const canvas = document.createElement('canvas');
-  canvas.width = sw; canvas.height = sh;
-  canvas.getContext('2d').drawImage(img, 0, 0, sw, sh);
-  const scaledCorners = corners.map(([x,y])=>[x*scale, y*scale]);
-  return { canvas, scaledCorners };
-}
-
-function warpPerspectiveJS(img, corners, outW, outH){
-  // Cap the working resolution well above the ~1600px output so quality is unaffected,
-  // but nowhere near full camera resolution (the source of the freeze).
-  const { canvas: srcCanvas, scaledCorners } = scaledSourceForWarp(img, corners, 2000);
-  const sw = srcCanvas.width, sh = srcCanvas.height;
+function warpPerspective(img, corners, outW, outH){
+  const sw = img.width, sh = img.height;
+  const srcCanvas = document.createElement('canvas');
+  srcCanvas.width = sw; srcCanvas.height = sh;
   const sctx = srcCanvas.getContext('2d');
+  sctx.drawImage(img, 0, 0);
   const srcData = sctx.getImageData(0,0,sw,sh).data;
 
   const dst = [[0,0],[outW,0],[outW,outH],[0,outH]];
-  const Hsrc2dst = computeHomography(scaledCorners, dst);
+  const Hsrc2dst = computeHomography(corners, dst);
   const Hdst2src = invert3x3(Hsrc2dst);
   if(!Hdst2src) throw new Error('degenerate perspective transform');
 
@@ -1199,274 +962,267 @@ function warpPerspectiveJS(img, corners, outW, outH){
   return outCanvas;
 }
 
-// OpenCV-accelerated perspective warp — same math (perspective transform + bilinear sampling)
-// but done natively, which is both faster and slightly higher quality than the hand-rolled JS
-// version above. cv.Mat objects are manually .delete()d in finally blocks since OpenCV.js uses
-// Emscripten heap memory that isn't garbage-collected by the JS engine.
-function warpPerspectiveCV(img, corners, outW, outH){
-  const cv = window.cv;
-  const { canvas: srcCanvas, scaledCorners } = scaledSourceForWarp(img, corners, 2000);
-
-  let src=null, dstMat=null, srcTri=null, dstTri=null, M=null;
+/* ----- edge-curve fitting + mesh dewarp: straightens a bowed/curled page, not just a
+   tilted one. A plain 4-corner homography assumes the page is perfectly flat; in practice
+   a hand-held or slightly curled receipt bows a little, which makes straight table rows
+   look wavy after a naive perspective crop. Instead we fit a curve to each edge and warp
+   through a Coons patch (a surface blended from all 4 boundary curves), so the actual
+   edge shape is followed rather than forced onto 4 straight lines. ----- */
+function polyFit(points, degree){
+  // points: [[t, v], ...] — fits v = c0 + c1*t + c2*t^2 + ... via least-squares normal equations
+  const n = degree+1;
+  const A = []; const b = [];
+  for(let i=0;i<n;i++){ A.push(new Array(n).fill(0)); b.push(0); }
+  for(const [t,v] of points){
+    const powers = [1];
+    for(let k=1;k<n;k++) powers.push(powers[k-1]*t);
+    for(let i=0;i<n;i++){
+      for(let j=0;j<n;j++) A[i][j] += powers[i]*powers[j];
+      b[i] += powers[i]*v;
+    }
+  }
   try{
-    src = cv.imread(srcCanvas);
-    const flat = [];
-    scaledCorners.forEach(([x,y])=>{ flat.push(x,y); });
-    srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, flat);
-    dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0,0, outW,0, outW,outH, 0,outH]);
-    M = cv.getPerspectiveTransform(srcTri, dstTri);
-    dstMat = new cv.Mat();
-    cv.warpPerspective(src, dstMat, M, new cv.Size(outW, outH), cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar(255,255,255,255));
-    const outCanvas = document.createElement('canvas');
-    outCanvas.width = outW; outCanvas.height = outH;
-    cv.imshow(outCanvas, dstMat);
-    return outCanvas;
-  } finally {
-    if(src) src.delete();
-    if(dstMat) dstMat.delete();
-    if(srcTri) srcTri.delete();
-    if(dstTri) dstTri.delete();
-    if(M) M.delete();
+    const coef = solveLinearSystem(A, b);
+    if(coef.some(c=>!isFinite(c))) return null;
+    return coef;
+  }catch(e){ return null; }
+}
+function evalPoly(coef, t){
+  let v=0, p=1;
+  for(const c of coef){ v += c*p; p *= t; }
+  return v;
+}
+// Fit, drop the worst ~15% of residuals (a stray noisy edge pixel shouldn't bend the
+// whole curve), refit on what's left.
+function robustCurveFit(points, degree){
+  if(points.length < (degree+1)*4) return null;
+  let coef = polyFit(points, degree);
+  if(!coef) return null;
+  const withRes = points.map(p=>({p, r: Math.abs(p[1]-evalPoly(coef,p[0]))}));
+  withRes.sort((a,b)=>a.r-b.r);
+  const keep = withRes.slice(0, Math.max((degree+1)*4, Math.floor(withRes.length*0.85))).map(o=>o.p);
+  return polyFit(keep, degree) || coef;
+}
+
+function buildDewarpMesh(edgePoints, bbox){
+  const { top, bottom, left, right } = bbox;
+  const fit = (pts)=> robustCurveFit(pts, 2) || robustCurveFit(pts, 1);
+  const topCurve    = fit(edgePoints.topPts);
+  const bottomCurve = fit(edgePoints.bottomPts);
+  const leftCurve   = fit(edgePoints.leftPts.map(([x,y])=>[y,x]));  // x = f(y)
+  const rightCurve  = fit(edgePoints.rightPts.map(([x,y])=>[y,x]));
+  if(!topCurve || !bottomCurve || !leftCurve || !rightCurve) return null;
+
+  const topAt    = x => evalPoly(topCurve, x);
+  const bottomAt = x => evalPoly(bottomCurve, x);
+  const leftAt   = y => evalPoly(leftCurve, y);
+  const rightAt  = y => evalPoly(rightCurve, y);
+
+  // Each corner is estimated twice (once from each meeting curve) — average the two.
+  const avg2 = (a,b)=>[(a[0]+b[0])/2, (a[1]+b[1])/2];
+  const TL = avg2([left, topAt(left)],     [leftAt(top), top]);
+  const TR = avg2([right, topAt(right)],   [rightAt(top), top]);
+  const BL = avg2([left, bottomAt(left)],  [leftAt(bottom), bottom]);
+  const BR = avg2([right, bottomAt(right)],[rightAt(bottom), bottom]);
+  const lerpPt = (a,b,t)=>[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+
+  // Each boundary function = a straight line between the (blended) corners, plus the
+  // curve's own deviation from its own straight baseline — keeps corners consistent
+  // while preserving the measured bow of each edge.
+  function TopU(u){
+    const x = left + u*(right-left);
+    const base = lerpPt(TL, TR, u);
+    const dev = topAt(x) - (topAt(left) + (topAt(right)-topAt(left))*u);
+    return [base[0], base[1]+dev];
   }
-}
-
-// Dispatcher: OpenCV's native warp when available, otherwise the hand-rolled bilinear
-// homography warp (warpPerspectiveJS) — same fallback pattern as detectDocumentCorners.
-async function warpPerspective(img, corners, outW, outH){
-  if(cvEngineReady){
-    try{ return warpPerspectiveCV(img, corners, outW, outH); }
-    catch(err){ console.warn('OpenCV warp failed, falling back to JS warp', err); }
+  function BottomU(u){
+    const x = left + u*(right-left);
+    const base = lerpPt(BL, BR, u);
+    const dev = bottomAt(x) - (bottomAt(left) + (bottomAt(right)-bottomAt(left))*u);
+    return [base[0], base[1]+dev];
   }
-  return warpPerspectiveJS(img, corners, outW, outH);
+  function LeftV(v){
+    const y = top + v*(bottom-top);
+    const base = lerpPt(TL, BL, v);
+    const dev = leftAt(y) - (leftAt(top) + (leftAt(bottom)-leftAt(top))*v);
+    return [base[0]+dev, base[1]];
+  }
+  function RightV(v){
+    const y = top + v*(bottom-top);
+    const base = lerpPt(TR, BR, v);
+    const dev = rightAt(y) - (rightAt(top) + (rightAt(bottom)-rightAt(top))*v);
+    return [base[0]+dev, base[1]];
+  }
+
+  function sourceAt(u, v){
+    const Tu = TopU(u), Bu = BottomU(u), Lv = LeftV(v), Rv = RightV(v);
+    const sx = (1-v)*Tu[0] + v*Bu[0] + (1-u)*Lv[0] + u*Rv[0]
+             - ((1-u)*(1-v)*TL[0] + u*(1-v)*TR[0] + (1-u)*v*BL[0] + u*v*BR[0]);
+    const sy = (1-v)*Tu[1] + v*Bu[1] + (1-u)*Lv[1] + u*Rv[1]
+             - ((1-u)*(1-v)*TL[1] + u*(1-v)*TR[1] + (1-u)*v*BL[1] + u*v*BR[1]);
+    return [sx, sy];
+  }
+  return { sourceAt };
 }
 
-/* ---------------- Pure image-processing pipeline (no DOM/closure deps) -----------------
-   These functions are written closure-free on purpose: their source is serialized via
-   .toString() into a Web Worker so the heavy per-pixel work doesn't freeze the UI thread.
-   The exact same functions are also called directly on the main thread as a fallback when
-   a worker can't be created — that's why they take plain arrays/numbers, never DOM nodes. */
-function clamp255(v){ return v<0?0:(v>255?255:v); }
+// Samples the source image through the dewarp mesh (bilinear) instead of a flat
+// homography — this is what actually straightens a bowed page edge.
+function warpMesh(img, mesh, outW, outH){
+  const sw = img.width, sh = img.height;
+  const srcCanvas = document.createElement('canvas');
+  srcCanvas.width = sw; srcCanvas.height = sh;
+  const sctx = srcCanvas.getContext('2d');
+  sctx.drawImage(img, 0, 0);
+  const srcData = sctx.getImageData(0,0,sw,sh).data;
 
-function clampGain(g){ return g<0.65?0.65:(g>1.7?1.7:g); }
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = outW; outCanvas.height = outH;
+  const octx = outCanvas.getContext('2d');
+  const outImg = octx.createImageData(outW, outH);
 
-// Soft-clip curve above a knee point so blown highlights (glare off glossy paper) compress
-// toward white gracefully instead of just being hard-clamped, avoiding a harsh flat patch.
-function softClipHighlight(v, knee){
-  if(v<=knee) return v;
-  const span = 255-knee;
-  const t = (v-knee)/span;
-  return knee + span*(1-Math.pow(1-t,2));
+  for(let y=0;y<outH;y++){
+    const v = y/Math.max(1,outH-1);
+    for(let x=0;x<outW;x++){
+      const u = x/Math.max(1,outW-1);
+      const [sx, sy] = mesh.sourceAt(u, v);
+      const idx = (y*outW+x)*4;
+      if(!isFinite(sx) || !isFinite(sy) || sx<0 || sy<0 || sx>=sw-1 || sy>=sh-1){
+        outImg.data[idx]=255; outImg.data[idx+1]=255; outImg.data[idx+2]=255; outImg.data[idx+3]=255;
+        continue;
+      }
+      const x0=Math.floor(sx), y0=Math.floor(sy);
+      const fx=sx-x0, fy=sy-y0;
+      const x1=Math.min(x0+1,sw-1), y1=Math.min(y0+1,sh-1);
+      for(let c=0;c<3;c++){
+        const p00=srcData[(y0*sw+x0)*4+c], p10=srcData[(y0*sw+x1)*4+c];
+        const p01=srcData[(y1*sw+x0)*4+c], p11=srcData[(y1*sw+x1)*4+c];
+        const top = p00*(1-fx)+p10*fx, bot = p01*(1-fx)+p11*fx;
+        outImg.data[idx+c] = top*(1-fy)+bot*fy;
+      }
+      outImg.data[idx+3] = 255;
+    }
+  }
+  octx.putImageData(outImg,0,0);
+  return outCanvas;
 }
 
-// Separable box blur on a single-channel plane using a sliding-window sum (O(w*h), not
-// O(w*h*radius)) — this is what stands in for both the "shadow/background estimate" and
-// the "light denoise" step, since it has no canvas/DOM dependency and works in a worker.
-function boxBlurPlane(src, w, h, radius){
-  if(radius<1) return src.slice();
+// Unsharp mask: subtract a soft blur from the original and add the difference back in,
+// which punches up text edges — the thing that most helps both human reading and AI OCR.
+async function sharpenImage(dataUrl, amount=0.6){
+  const img = await loadImageEl(dataUrl);
+  const w = img.width, h = img.height;
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const src = ctx.getImageData(0,0,w,h);
+
+  const smallW = Math.max(1, Math.round(w/10)), smallH = Math.max(1, Math.round(h/10));
+  const smallCanvas = document.createElement('canvas');
+  smallCanvas.width = smallW; smallCanvas.height = smallH;
+  smallCanvas.getContext('2d').drawImage(img, 0, 0, smallW, smallH);
+  const blurCanvas = document.createElement('canvas');
+  blurCanvas.width = w; blurCanvas.height = h;
+  const bctx = blurCanvas.getContext('2d');
+  bctx.imageSmoothingEnabled = true;
+  bctx.drawImage(smallCanvas, 0, 0, w, h);
+  const blurred = bctx.getImageData(0,0,w,h).data;
+
+  const out = ctx.createImageData(w,h);
+  for(let i=0;i<w*h;i++){
+    for(let c=0;c<3;c++){
+      const o = src.data[i*4+c], b = blurred[i*4+c];
+      let v = o + amount*(o-b);
+      out.data[i*4+c] = v>255?255:(v<0?0:v);
+    }
+    out.data[i*4+3] = 255;
+  }
+  ctx.putImageData(out,0,0);
+  return canvas.toDataURL('image/jpeg', 0.92);
+}
+
+/* ---------------- Scan enhancement (flatten lighting, black text / white page) ---------------- */
+// Fast separable box blur via a sliding-window sum — O(w*h) regardless of radius, so it
+// stays cheap even run at full resolution. Used as the background/shadow estimate below;
+// it's much smoother than upscaling a tiny thumbnail, which left visible blocky banding
+// across large flat areas of the page in the old version.
+function boxBlurGray(gray, w, h, radius){
   const tmp = new Float32Array(w*h);
   const out = new Float32Array(w*h);
-  const denom = radius*2+1;
   for(let y=0;y<h;y++){
     const rowOff = y*w;
     let sum=0;
-    for(let x=-radius;x<=radius;x++){
-      const xx = x<0?0:(x>=w?w-1:x);
-      sum += src[rowOff+xx];
-    }
-    tmp[rowOff]=sum/denom;
-    for(let x=1;x<w;x++){
-      const addX = Math.min(w-1, x+radius);
-      const remX = Math.max(0, x-radius-1);
-      sum += src[rowOff+addX] - src[rowOff+remX];
-      tmp[rowOff+x]=sum/denom;
+    for(let x=-radius;x<=radius;x++) sum += gray[rowOff + Math.min(w-1, Math.max(0,x))];
+    for(let x=0;x<w;x++){
+      tmp[rowOff+x] = sum/(radius*2+1);
+      const addX = Math.min(w-1, x+radius+1), remX = Math.max(0, x-radius);
+      sum += gray[rowOff+addX] - gray[rowOff+remX];
     }
   }
   for(let x=0;x<w;x++){
     let sum=0;
-    for(let y=-radius;y<=radius;y++){
-      const yy = y<0?0:(y>=h?h-1:y);
-      sum += tmp[yy*w+x];
-    }
-    out[x]=sum/denom;
-    for(let y=1;y<h;y++){
-      const addY = Math.min(h-1, y+radius);
-      const remY = Math.max(0, y-radius-1);
+    for(let y=-radius;y<=radius;y++) sum += tmp[Math.min(h-1,Math.max(0,y))*w + x];
+    for(let y=0;y<h;y++){
+      out[y*w+x] = sum/(radius*2+1);
+      const addY = Math.min(h-1, y+radius+1), remY = Math.max(0, y-radius);
       sum += tmp[addY*w+x] - tmp[remY*w+x];
-      out[y*w+x]=sum/denom;
     }
   }
   return out;
 }
 
-// The scan pipeline itself: white balance -> shadow/glare flatten -> denoise -> contrast
-// stretch -> unsharp -> optional B&W thresholding. `forOcr` softens denoise/sharpen so the
-// AI-facing copy stays closer to the true pixels (protects OCR accuracy over pure aesthetics).
-function runScanPipelineCore(width, height, data, mode, forOcr){
-  const w = width, h = height, n = w*h;
-  const r = new Float32Array(n), g = new Float32Array(n), b = new Float32Array(n);
-  for(let i=0;i<n;i++){ r[i]=data[i*4]; g[i]=data[i*4+1]; b[i]=data[i*4+2]; }
+function enhanceToScan(dataUrl){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxW = 1800;
+      const scale = Math.min(1, maxW/img.width);
+      const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
 
-  // 1) White balance via gray-world gain estimated from the brightest ~15% of pixels
-  //    (assumed to be the paper itself, not the printed content on it).
-  const lum = new Float32Array(n);
-  for(let i=0;i<n;i++) lum[i] = 0.299*r[i]+0.587*g[i]+0.114*b[i];
-  const lumSorted = Array.from(lum).sort((a,b2)=>a-b2);
-  const brightCut = lumSorted[Math.floor(n*0.85)] || 200;
-  let sr=0, sg=0, sb=0, sc=0;
-  for(let i=0;i<n;i++){
-    if(lum[i] >= brightCut){ sr+=r[i]; sg+=g[i]; sb+=b[i]; sc++; }
-  }
-  if(sc > 20){
-    const ar=sr/sc, ag=sg/sc, ab=sb/sc;
-    const target = (ar+ag+ab)/3;
-    const gr = clampGain(target/Math.max(ar,1)), gg = clampGain(target/Math.max(ag,1)), gb = clampGain(target/Math.max(ab,1));
-    for(let i=0;i<n;i++){ r[i]=clamp255(r[i]*gr); g[i]=clamp255(g[i]*gg); b[i]=clamp255(b[i]*gb); }
-  }
+      const canvas = document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      const src = ctx.getImageData(0,0,w,h);
 
-  // 2) Shadow/uneven-lighting removal: divide each channel by a large-radius blurred estimate
-  //    of itself (the "background"), which flattens gradients from shadows/uneven light.
-  const bgRadius = Math.max(15, Math.min(80, Math.round(Math.min(w,h)/10)));
-  const rBg = boxBlurPlane(r, w, h, bgRadius), gBg = boxBlurPlane(g, w, h, bgRadius), bBg = boxBlurPlane(b, w, h, bgRadius);
-  for(let i=0;i<n;i++){
-    r[i] = clamp255(r[i]/Math.max(rBg[i],1)*228);
-    g[i] = clamp255(g[i]/Math.max(gBg[i],1)*228);
-    b[i] = clamp255(b[i]/Math.max(bBg[i],1)*228);
-  }
+      const gray = new Float32Array(w*h);
+      for(let i=0;i<w*h;i++){
+        gray[i] = 0.299*src.data[i*4] + 0.587*src.data[i*4+1] + 0.114*src.data[i*4+2];
+      }
 
-  // 3) Glare/highlight compression — softens blown-out spots from flash/glossy paper glare.
-  for(let i=0;i<n;i++){
-    r[i]=softClipHighlight(r[i],235); g[i]=softClipHighlight(g[i],235); b[i]=softClipHighlight(b[i],235);
-  }
+      // background/shadow estimate via a large-radius box blur — smooth and free of the
+      // blocky banding a resized thumbnail leaves behind.
+      const radius = Math.max(8, Math.round(Math.min(w,h)/18));
+      const bg = boxBlurGray(gray, w, h, radius);
 
-  // 4) Light denoise: blend in a small-radius blur at a low mix (lower for the OCR-facing pass).
-  const denoiseMix = forOcr ? 0.15 : 0.22;
-  const rBlur = boxBlurPlane(r, w, h, 1), gBlur = boxBlurPlane(g, w, h, 1), bBlur = boxBlurPlane(b, w, h, 1);
-  for(let i=0;i<n;i++){
-    r[i] = r[i]*(1-denoiseMix) + rBlur[i]*denoiseMix;
-    g[i] = g[i]*(1-denoiseMix) + gBlur[i]*denoiseMix;
-    b[i] = b[i]*(1-denoiseMix) + bBlur[i]*denoiseMix;
-  }
+      // flatten uneven lighting/shadows against the estimated background
+      const flattened = new Float32Array(w*h);
+      for(let i=0;i<w*h;i++){
+        let b = bg[i]; if(b<1) b=1;
+        let v = gray[i]/b*230;
+        flattened[i] = v>255?255:(v<0?0:v);
+      }
 
-  // 5) Contrast stretch, sampled from luminance so background -> white, ink -> black,
-  //    then the same lo/hi/range mapping is applied uniformly to all three channels
-  //    (keeps color, unlike naively stretching each channel independently).
-  const lum2 = new Float32Array(n);
-  for(let i=0;i<n;i++) lum2[i] = 0.299*r[i]+0.587*g[i]+0.114*b[i];
-  const sample = [];
-  for(let i=0;i<n;i+=7) sample.push(lum2[i]);
-  sample.sort((a,b2)=>a-b2);
-  const lo = sample[Math.floor(sample.length*0.02)] || 0;
-  const hi = sample[Math.floor(sample.length*0.62)] || 255;
-  const range = Math.max(hi-lo,1);
-  for(let i=0;i<n;i++){
-    r[i]=clamp255((r[i]-lo)/range*255); g[i]=clamp255((g[i]-lo)/range*255); b[i]=clamp255((b[i]-lo)/range*255);
-  }
+      // contrast stretch sampled from the flattened image so background -> white, ink -> black.
+      // hi anchored higher up the distribution (background pixels are the majority of the page).
+      const sample = [];
+      for(let i=0;i<flattened.length;i+=7) sample.push(flattened[i]);
+      sample.sort((a,b)=>a-b);
+      const lo = sample[Math.floor(sample.length*0.02)] || 0;
+      const hi = sample[Math.floor(sample.length*0.75)] || 255;
+      const range = Math.max(hi-lo,1);
 
-  // 6) Unsharp mask for text crispness — weaker on the OCR-facing pass.
-  const sharpAmount = forOcr ? 0.35 : 0.55;
-  const rSoft = boxBlurPlane(r, w, h, 2), gSoft = boxBlurPlane(g, w, h, 2), bSoft = boxBlurPlane(b, w, h, 2);
-  for(let i=0;i<n;i++){
-    r[i]=clamp255(r[i]+sharpAmount*(r[i]-rSoft[i]));
-    g[i]=clamp255(g[i]+sharpAmount*(g[i]-gSoft[i]));
-    b[i]=clamp255(b[i]+sharpAmount*(b[i]-bSoft[i]));
-  }
-
-  const out = new Uint8ClampedArray(n*4);
-  if(mode === 'bw'){
-    // 7) "Clear Black & White": local-adaptive threshold tuned for printed invoices/receipts —
-    //    compares each pixel to its own local neighborhood mean (minus a bias) rather than one
-    //    global cutoff, so it holds up across a page with uneven residual lighting.
-    const finalLum = new Float32Array(n);
-    for(let i=0;i<n;i++) finalLum[i] = 0.299*r[i]+0.587*g[i]+0.114*b[i];
-    const localMean = boxBlurPlane(finalLum, w, h, 12);
-    const bias = 8;
-    for(let i=0;i<n;i++){
-      const v = finalLum[i] > (localMean[i]-bias) ? 255 : 0;
-      out[i*4]=v; out[i*4+1]=v; out[i*4+2]=v; out[i*4+3]=255;
-    }
-  } else {
-    for(let i=0;i<n;i++){
-      out[i*4]=r[i]; out[i*4+1]=g[i]; out[i*4+2]=b[i]; out[i*4+3]=255;
-    }
-  }
-  return out;
-}
-
-let scanWorker = null, scanWorkerBroken = false;
-function getScanWorker(){
-  if(scanWorkerBroken) return null;
-  if(scanWorker) return scanWorker;
-  try{
-    const src = [
-      clamp255, clampGain, softClipHighlight, boxBlurPlane, runScanPipelineCore
-    ].map(fn=>fn.toString()).join('\n') + `
-      self.onmessage = function(e){
-        const { width, height, data, mode, forOcr } = e.data;
-        try{
-          const result = runScanPipelineCore(width, height, data, mode, forOcr);
-          self.postMessage({ ok:true, width, height, data: result }, [result.buffer]);
-        }catch(err){
-          self.postMessage({ ok:false, error: String(err && err.message || err) });
-        }
-      };
-    `;
-    const blob = new Blob([src], { type: 'application/javascript' });
-    scanWorker = new Worker(URL.createObjectURL(blob));
-  }catch(err){
-    console.warn('Scan worker unavailable, will process on main thread', err);
-    scanWorkerBroken = true;
-    scanWorker = null;
-  }
-  return scanWorker;
-}
-
-function runScanPipelineInWorker(width, height, data, mode, forOcr){
-  return new Promise((resolve, reject)=>{
-    const worker = getScanWorker();
-    if(!worker){ reject(new Error('no worker')); return; }
-    const timer = setTimeout(()=>{ reject(new Error('scan worker timeout')); }, 15000);
-    const handleMessage = (e)=>{
-      clearTimeout(timer);
-      worker.removeEventListener('message', handleMessage);
-      if(e.data && e.data.ok) resolve(new Uint8ClampedArray(e.data.data));
-      else reject(new Error((e.data && e.data.error) || 'scan worker failed'));
+      const out = ctx.createImageData(w,h);
+      for(let i=0;i<w*h;i++){
+        let v = (flattened[i]-lo)/range*255;
+        v = v>255?255:(v<0?0:v);
+        out.data[i*4]=v; out.data[i*4+1]=v; out.data[i*4+2]=v; out.data[i*4+3]=255;
+      }
+      ctx.putImageData(out,0,0);
+      resolve(canvas.toDataURL('image/jpeg', 0.9));
     };
-    worker.addEventListener('message', handleMessage);
-    worker.postMessage({ width, height, data, mode, forOcr }, [data.buffer]);
+    img.src = dataUrl;
   });
-}
-
-// Top-level orchestrator: draws the source into a capped-size canvas, runs the pipeline
-// (worker first, main-thread fallback), and returns a data URL. `mode` is 'color' or 'bw';
-// `forOcr` picks the gentler profile used for the AI-extraction-facing copy.
-async function enhanceCapturedImage(source, { mode='color', forOcr=false, maxDim=1600 } = {}){
-  const scale = Math.min(1, maxDim/Math.max(source.width, source.height));
-  const w = Math.max(1, Math.round(source.width*scale)), h = Math.max(1, Math.round(source.height*scale));
-  const canvas = document.createElement('canvas');
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(source, 0, 0, w, h);
-  const imgData = ctx.getImageData(0, 0, w, h);
-
-  let resultData;
-  try{
-    resultData = await runScanPipelineInWorker(w, h, imgData.data, mode, forOcr);
-  }catch(err){
-    resultData = runScanPipelineCore(w, h, imgData.data, mode, forOcr);
-  }
-
-  const outImageData = new ImageData(new Uint8ClampedArray(resultData), w, h);
-  ctx.putImageData(outImageData, 0, 0);
-  return canvas.toDataURL('image/jpeg', forOcr ? 0.9 : 0.85);
-}
-
-/* ---------------- Scan enhancement (flatten lighting, black text / white page) ---------------- */
-// Delegates to the shared pipeline above using whatever filter the user picked in the capture
-// UI (currentScanFilterMode). Kept async under the same name/signature so its existing call
-// sites below (AI-extraction success path, manual-entry save) don't need any changes.
-async function enhanceToScan(dataUrl){
-  const img = await loadImageEl(dataUrl);
-  return enhanceCapturedImage(img, { mode: currentScanFilterMode, forOcr: false, maxDim: 1600 });
 }
 
 /* ---------------- AI extraction (OpenRouter, free tier) ---------------- */
@@ -1479,85 +1235,79 @@ const OPENROUTER_VISION_MODELS = [
   'google/gemma-4-26b-a4b-it:free'
 ];
 
-// Schema shared by both the first-pass extraction and the verification pass, so the
-// verifier can return a drop-in-compatible corrected object.
-const INVOICE_JSON_SCHEMA = `
+const EXTRACTION_INSTRUCTIONS = `
+You are reading a supplier sales invoice / delivery bill photographed at a retail pharmacy branch in Pakistan (ice cream, chips, snacks, FMCG distributors such as Hico/Pakistan Fruit Juice Co, C&B Marketing, Nawaz Brothers/Lays, Z&Z Taqseemkar).
+
+Read the ENTIRE image carefully, including handwritten notes, stamps, and signatures. Extract ONLY what is printed or written on the page. Never invent numbers.
+
+=== KNOWN LAYOUT: Pakistan Fruit Juice Co. (Hico) "Sales Bill" ===
+This is the most common invoice format you will see. It has caused specific field-mapping mistakes before — read this section carefully before extracting.
+
+Header block, right side, has FOUR separate numbers that are easy to mix up:
+  "Order #"     -> put this in order_number
+  "Delivery #"  -> put this in invoice_number  (this is the vendor's actual bill/voucher number, NOT "Order #")
+  "Delivery Date" -> put this in delivery_date
+  There is no separate "order date" printed on this format — leave order_date "" unless one is shown elsewhere.
+Dates on this and similar Pakistani invoices are printed DD/MM/YYYY (day first). E.g. "11/07/2026" means 11 July 2026, NOT November 7. Convert to YYYY-MM-DD using that rule.
+
+The item table has this exact column order (left to right):
+  S/N | BarCode | Product No. | Product Name | Qty | CP Excl.GST Per Unit | GST Per Unit Rs. | CP Inc.GST Per Unit | Total CP Excl.GST | Total GST | Total CP Inc.GST | Total Discount | Total Bill Amount
+Map each item row as:
+  qty          -> the "Qty" column
+  rate         -> the "CP Excl.GST Per Unit" column (a per-unit price, small number)
+  gst          -> the "Total GST" column (the row's total GST amount, NOT "GST Per Unit Rs.")
+  discount     -> the "Total Discount" column (second-to-last column)
+  net_amount   -> the "Total Bill Amount" column (the LAST column — the row's final payable figure). Sanity check: net_amount should equal "Total CP Inc.GST" minus "Total Discount" for that row.
+Five of these columns start with the word "Total" — go by column POSITION (left to right, as listed above), not by skimming for the word "Total". This is exactly where past extractions have put the wrong number in the wrong field.
+
+Below the item table there is a "Totals" row, and then, separately, a boxed summary near the signature/stamp. Do not confuse these — map them as:
+  gross_amount      -> Totals row, "Total CP Excl.GST" column
+  total_gst         -> Totals row, "Total GST" column
+  total_discount    -> Totals row, "Total Discount" column (second-to-last column of the Totals row — NOT the "Total CP Inc.GST" column just to its left; those two are adjacent and easy to swap)
+  advance_tax       -> the boxed summary's "Advance Tax Registered" line
+  total_bill_amount -> the boxed summary's "Total Bill Amount" line specifically (the LAST line in that box) — NOT the "Bill Amount" line just above it, and NOT the Totals row's own "Total Bill Amount" column (those two both equal the pre-tax figure). Sanity check: "Total Bill Amount" (box) should equal "Bill Amount" (box) plus "Advance Tax Registered". If your total_bill_amount doesn't satisfy that, re-check which line you read.
+
+Product names in the "Product Name" column are sometimes cut off by the column width (e.g. printed as "Chocolate Chip BP A01 (70" instead of the full "...(700ML)"). If a nearly-identical item elsewhere on the same invoice shows the full suffix, you may complete it consistently; otherwise transcribe exactly what's visible rather than guessing.
+
+=== General rules (apply to every invoice, this format or otherwise) ===
+- When several column headers share a generic word like "Total", disambiguate by column position and by numeric relationships (e.g. a subtotal plus a tax should equal a grand total), never by matching on the word alone.
+- Handwritten numbers or scribbled adjustment notes near the printed totals (corrections, running-balance notes, etc.) belong in handwritten_notes verbatim. Never let a handwritten number override total_bill_amount — that field is always the vendor's own printed total.
+- If a required number is genuinely illegible or missing, use "" and describe it in issues — do not estimate or round to a "plausible" figure.
+
+Return STRICT JSON only, no markdown, no commentary, matching exactly this schema:
+
 {
   "vendor_name": string,              // company issuing the invoice, e.g. "Pakistan Fruit Juice Co. (Hico)"
   "customer_name": string,            // the branch/customer being billed, e.g. "Fazal Din's Pharma Plus - Bahria Town"
-  "invoice_number": string,           // invoice / voucher / delivery number, exactly as printed
+  "invoice_number": string,           // invoice / voucher / delivery number — see mapping notes above
   "order_number": string,             // order number if present, else ""
-  "order_date": string,               // YYYY-MM-DD if determinable, else raw text
+  "order_date": string,               // YYYY-MM-DD if determinable, else raw text, else ""
   "delivery_date": string,            // YYYY-MM-DD if determinable, else raw text (use this for day-wise grouping)
   "category": string,                 // one of: "Ice Cream", "Chips/Snacks", "Other"
   "items": [
     {
       "product_name": string,
       "qty": string,                  // as printed, keep units like "50" or "2 CS / 0 PC"
-      "rate": string,
-      "gst": string,
-      "discount": string,
-      "net_amount": string,
-      "confidence": string            // "high", "medium", or "low" — how sure you are THIS row is complete/correct
+      "rate": string,                 // per-unit price, not a row total
+      "gst": string,                  // row's total GST amount
+      "discount": string,             // row's total discount amount
+      "net_amount": string            // row's final payable amount (last column)
     }
   ],
   "gross_amount": string,
   "total_gst": string,
   "total_discount": string,
   "advance_tax": string,
-  "total_bill_amount": string,        // the final payable figure
+  "total_bill_amount": string,        // the final payable figure — see mapping notes above
   "handwritten_notes": string,        // any handwritten stamps/signatures/notes, e.g. "Stock Received, signed Faisal 11/07/2026"
-  "field_confidence": {                // "high"/"medium"/"low" per field, independent of the overall "confidence" below
-    "vendor_name": string,
-    "invoice_number": string,
-    "date": string,
-    "totals": string,
-    "gst": string
-  },
-  "confidence": string,               // overall "high", "medium", or "low" based on how legible the image was
+  "confidence": string,               // "high", "medium", or "low" based on how legible the image was
   "issues": string                    // anything unclear, missing, or hard to read — empty string if none
-}`.trim();
-
-const EXTRACTION_INSTRUCTIONS = `
-You are reading a supplier sales invoice / delivery bill photographed at a retail pharmacy branch in Pakistan (ice cream, chips, snacks, FMCG distributors such as Hico/Pakistan Fruit Juice Co, C&B Marketing, Nawaz Brothers/Lays, Z&Z Taqseemkar).
-
-Read the ENTIRE image carefully, top to bottom, including handwritten notes, stamps, and signatures.
-
-CRITICAL — accuracy over assumptions:
-- Extract ONLY what is printed or written on the page. Never invent, round, reformat, or "correct" a number — copy it exactly as printed, including how many decimal places or commas it has.
-- Go through the items table row by row. Every single row must appear in "items" as its own entry — never skip a row because it looks like a duplicate, never merge two rows into one because they look similar, and never merge two rows just to save space. If the table continues on a second section of the page or wraps to a second line per row, treat it as the same number of items the page shows, not fewer.
-- If a value is genuinely illegible or missing, use an empty string "" and mention it in "issues" — do not guess a plausible-looking number instead.
-- Count the rows in the printed table (if a row/item count is stated anywhere on the invoice) and make sure your "items" array has the same number of entries.
-
-Return STRICT JSON only, no markdown, no commentary, matching exactly this schema:
-
-${INVOICE_JSON_SCHEMA}
-
-If a field cannot be determined, use an empty string "" (not null). Amounts should be the plain numbers as printed (you may keep commas).
-`.trim();
-
-// Second pass: re-examine the same image against the first pass's own extraction, specifically
-// looking for arithmetic/consistency mistakes and skipped or merged rows, and correct them.
-function buildVerificationInstructions(firstPassJson){
-  return `
-You already extracted the following JSON from this invoice photo:
-
-${firstPassJson}
-
-Now VERIFY it against the image itself, one more careful pass. Check specifically:
-1. Line items — re-count the rows visible in the table on the photo. If "items" has fewer or more rows than the photo actually shows, or if two printed rows were merged into one entry, fix it so every printed row is its own entry.
-2. Totals — does gross_amount minus total_discount plus total_gst (and minus advance_tax, if the invoice deducts it) actually equal total_bill_amount? If the printed totals don't reconcile, re-check each number against the image rather than forcing them to match arithmetically — the photo is the source of truth, not the arithmetic.
-3. GST — does total_gst look consistent with the sum of each line item's gst (when items list a per-row gst)?
-4. Discounts — same reconciliation check as GST.
-5. Dates and invoice number — confirm they were read correctly and are not transposed or truncated.
-
-Return the corrected STRICT JSON in the exact same schema as before (repeated below for reference), no markdown, no commentary. If nothing needed correcting, return the same values back. Add a short "verification_notes" string field (not in the original schema) summarizing what you checked or fixed, or "No corrections needed" if nothing changed.
-
-${INVOICE_JSON_SCHEMA}
-`.trim();
 }
 
-async function callOpenRouterVision(apiKey, model, base64, mime, instructions){
+If a field cannot be determined, use an empty string "" (not null). Amounts should be the plain numbers as printed (you may keep commas). Do not summarize or omit line items — list every product row.
+`.trim();
+
+async function callOpenRouterVision(apiKey, model, base64, mime){
   const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method:'POST',
     headers:{
@@ -1571,7 +1321,7 @@ async function callOpenRouterVision(apiKey, model, base64, mime, instructions){
       messages:[{
         role:'user',
         content:[
-          { type:'text', text: instructions },
+          { type:'text', text: EXTRACTION_INSTRUCTIONS },
           { type:'image_url', image_url:{ url: `data:${mime};base64,${base64}` } }
         ]
       }],
@@ -1583,191 +1333,6 @@ async function callOpenRouterVision(apiKey, model, base64, mime, instructions){
   const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
   if(!text){ throw new Error(`Empty response from ${model}`); }
   return text;
-}
-
-// ---- Robust JSON recovery ----
-// Vision models occasionally wrap JSON in commentary, leave a trailing comma, use smart
-// quotes, or leave an unescaped newline inside a string. Rather than failing the whole
-// extraction on any one of those, try a sequence of increasingly aggressive repairs and
-// re-parse after each, so a minor formatting slip doesn't force a manual re-entry.
-function repairAndParseJson(rawText){
-  let text = (rawText||'').trim();
-  text = text.replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
-
-  // If the model added any preamble/postamble commentary, slice to the outermost braces.
-  const firstBrace = text.indexOf('{');
-  const lastBrace = text.lastIndexOf('}');
-  if(firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace){
-    text = text.slice(firstBrace, lastBrace+1);
-  }
-
-  const attempts = [
-    (t)=>t,
-    (t)=>t.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"'),
-    (t)=>t.replace(/,(\s*[}\]])/g, '$1'),
-    (t)=>t.replace(/([{,]\s*)([A-Za-z_][A-Za-z0-9_]*)\s*:/g, '$1"$2":'),
-    (t)=>escapeRawNewlinesInStrings(t),
-    (t)=>escapeRawNewlinesInStrings(t.replace(/,(\s*[}\]])/g, '$1').replace(/([{,]\s*)([A-Za-z_][A-Za-z0-9_]*)\s*:/g, '$1"$2":')),
-  ];
-
-  let cumulative = text;
-  let lastErr = null;
-  for(const fix of attempts){
-    try{
-      cumulative = fix(cumulative);
-      return JSON.parse(cumulative);
-    }catch(err){
-      lastErr = err;
-      // keep the cumulative (partially-fixed) text for the next, more aggressive attempt
-    }
-  }
-  throw new Error('Could not parse AI response as JSON: ' + (lastErr ? lastErr.message : 'unknown error'));
-}
-
-// Walks the text tracking whether we're inside a quoted string (respecting \" escapes) and
-// escapes any raw newline/tab found there — a common cause of "Unexpected token" JSON errors
-// when a model includes a literal line break inside a string value.
-function escapeRawNewlinesInStrings(text){
-  let out = '';
-  let inString = false, escaped = false;
-  for(let i=0;i<text.length;i++){
-    const ch = text[i];
-    if(inString){
-      if(escaped){ out += ch; escaped = false; continue; }
-      if(ch === '\\'){ out += ch; escaped = true; continue; }
-      if(ch === '"'){ inString = false; out += ch; continue; }
-      if(ch === '\n'){ out += '\\n'; continue; }
-      if(ch === '\r'){ out += '\\r'; continue; }
-      if(ch === '\t'){ out += '\\t'; continue; }
-      out += ch;
-    } else {
-      if(ch === '"'){ inString = true; }
-      out += ch;
-    }
-  }
-  return out;
-}
-
-// Fills in any fields the model omitted so downstream code can rely on their presence, and
-// coerces items into an array of plain objects even if the model returned something odd.
-function normalizeParsedInvoice(parsed){
-  if(!parsed || typeof parsed !== 'object') parsed = {};
-  const strFields = ['vendor_name','customer_name','invoice_number','order_number','order_date','delivery_date',
-    'category','gross_amount','total_gst','total_discount','advance_tax','total_bill_amount','handwritten_notes',
-    'confidence','issues','verification_notes'];
-  strFields.forEach(f=>{ if(typeof parsed[f] !== 'string') parsed[f] = parsed[f] ? String(parsed[f]) : ''; });
-  if(!Array.isArray(parsed.items)) parsed.items = [];
-  parsed.items = parsed.items.map(it=>{
-    it = it && typeof it === 'object' ? it : {};
-    return {
-      product_name: it.product_name ? String(it.product_name) : '',
-      qty: it.qty!=null ? String(it.qty) : '',
-      rate: it.rate!=null ? String(it.rate) : '',
-      gst: it.gst!=null ? String(it.gst) : '',
-      discount: it.discount!=null ? String(it.discount) : '',
-      net_amount: it.net_amount!=null ? String(it.net_amount) : '',
-      confidence: it.confidence ? String(it.confidence) : ''
-    };
-  });
-  if(!parsed.field_confidence || typeof parsed.field_confidence !== 'object') parsed.field_confidence = {};
-  return parsed;
-}
-
-async function verifyExtractionWithAI(apiKey, model, base64, mime, parsed){
-  const instructions = buildVerificationInstructions(JSON.stringify(parsed));
-  const rawText = await callOpenRouterVision(apiKey, model, base64, mime, instructions);
-  const verified = normalizeParsedInvoice(repairAndParseJson(rawText));
-  return verified;
-}
-
-// ---- Numeric/validation helpers ----
-function parseInvoiceNumber(str){
-  if(!str) return null;
-  const cleaned = String(str).replace(/,/g,'').match(/-?\d+(\.\d+)?/);
-  return cleaned ? parseFloat(cleaned[0]) : null;
-}
-function within(a, b, tolFraction=0.02, tolAbs=2){
-  if(a==null || b==null) return false;
-  const tol = Math.max(tolAbs, Math.abs(b)*tolFraction);
-  return Math.abs(a-b) <= tol;
-}
-
-// Algorithmic cross-checks that don't depend on the AI's own self-reported confidence —
-// arithmetic reconciliation, basic format checks, and duplicate-invoice detection against
-// what's already saved. Returned issues are shown to the user in the review screen banner,
-// they never block saving (the user can always confirm anyway).
-function validateInvoiceData(parsed, existingInvoices){
-  const issues = [];
-  const gross = parseInvoiceNumber(parsed.gross_amount);
-  const gst = parseInvoiceNumber(parsed.total_gst);
-  const discount = parseInvoiceNumber(parsed.total_discount);
-  const advTax = parseInvoiceNumber(parsed.advance_tax);
-  const total = parseInvoiceNumber(parsed.total_bill_amount);
-
-  let totalsOk = null;
-  if(gross!=null && total!=null){
-    const expected = gross + (gst||0) - (discount||0) + (advTax||0);
-    totalsOk = within(expected, total);
-    if(totalsOk === false){
-      issues.push(`Totals don't reconcile: gross (${parsed.gross_amount||'?'}) + GST (${parsed.total_gst||'0'}) - discount (${parsed.total_discount||'0'}) + advance tax (${parsed.advance_tax||'0'}) ≈ ${expected.toFixed(2)}, but the bill total reads ${parsed.total_bill_amount||'?'}.`);
-    }
-  }
-
-  if(parsed.items.length){
-    const itemsSum = parsed.items.reduce((s,it)=>{
-      const n = parseInvoiceNumber(it.net_amount);
-      return n!=null ? s+n : s;
-    }, 0);
-    if(gross!=null && itemsSum>0 && !within(itemsSum, gross, 0.03, 3)){
-      issues.push(`Line items sum to ~${itemsSum.toFixed(2)}, which doesn't closely match the gross amount (${parsed.gross_amount||'?'}) — a row may be missing, merged, or misread.`);
-    }
-  } else {
-    issues.push('No line items were extracted — check the photo, the table may not have been read.');
-  }
-
-  if(!parsed.invoice_number){
-    issues.push('No invoice/voucher number was found.');
-  }
-  if(parsed.delivery_date && !/^\d{4}-\d{2}-\d{2}$/.test(normalizeDayKey(parsed.delivery_date) || '')){
-    issues.push(`Delivery date "${parsed.delivery_date}" could not be confidently parsed as a date.`);
-  }
-
-  // Duplicate detection: same vendor + invoice number (case/space-insensitive), or same
-  // vendor + delivery date + total, already saved previously.
-  const normKey = (s)=> (s||'').toString().trim().toLowerCase().replace(/\s+/g,' ');
-  let duplicateOf = null;
-  if(parsed.vendor_name && (parsed.invoice_number || (parsed.delivery_date && parsed.total_bill_amount))){
-    duplicateOf = (existingInvoices||[]).find(rec=>{
-      const d = rec.data || {};
-      if(normKey(d.vendor_name) !== normKey(parsed.vendor_name)) return false;
-      if(parsed.invoice_number && normKey(d.invoice_number) === normKey(parsed.invoice_number)) return true;
-      if(parsed.delivery_date && d.delivery_date === parsed.delivery_date && normKey(d.total_bill_amount)===normKey(parsed.total_bill_amount) && parsed.total_bill_amount) return true;
-      return false;
-    }) || null;
-  }
-  if(duplicateOf){
-    issues.push(`This looks like it may already be saved as invoice ${duplicateOf.data.invoice_number || duplicateOf.id} from ${duplicateOf.data.delivery_date || duplicateOf.capturedAt.slice(0,10)} — check the invoice list before saving again.`);
-  }
-
-  return { issues, totalsOk, duplicateOf };
-}
-
-// Blends the AI's own self-reported field_confidence with the algorithmic checks above into
-// one final high/medium/low per tracked field, plus a per-line-item level.
-function computeFieldConfidence(parsed, validation){
-  const fc = parsed.field_confidence || {};
-  const downgrade = (lvl)=> lvl==='high' ? 'medium' : 'low';
-
-  const vendor = parsed.vendor_name ? (fc.vendor_name || 'medium') : 'low';
-  const invoiceNumber = parsed.invoice_number ? (fc.invoice_number || 'medium') : 'low';
-  let date = parsed.delivery_date ? (fc.date || 'medium') : 'low';
-  if(date!=='low' && !/^\d{4}-\d{2}-\d{2}$/.test(normalizeDayKey(parsed.delivery_date)||'')) date = downgrade(date);
-  let totals = fc.totals || 'medium';
-  if(validation.totalsOk === false) totals = 'low';
-  else if(validation.totalsOk === true && totals!=='high') totals = 'high';
-  let gst = parsed.total_gst ? (fc.gst || 'medium') : 'medium'; // GST can legitimately be 0/blank
-
-  return { vendor_name: vendor, invoice_number: invoiceNumber, date, totals, gst };
 }
 
 async function submitForExtraction(){
@@ -1788,11 +1353,9 @@ async function submitForExtraction(){
   try{
     let rawText = null;
     let lastErr = null;
-    let usedModel = null;
     for(const model of OPENROUTER_VISION_MODELS){
       try{
-        rawText = await callOpenRouterVision(settings.aiKey, model, base64, mime, EXTRACTION_INSTRUCTIONS);
-        usedModel = model;
+        rawText = await callOpenRouterVision(settings.aiKey, model, base64, mime);
         break;
       }catch(modelErr){
         lastErr = modelErr;
@@ -1801,38 +1364,38 @@ async function submitForExtraction(){
     }
     if(rawText === null) throw lastErr || new Error('All AI models failed');
 
-    let parsed = normalizeParsedInvoice(repairAndParseJson(rawText));
-
-    // Self-verification pass: ask the same model to re-check its own extraction against the
-    // image for arithmetic mistakes and skipped/merged rows. Best-effort — if it fails or
-    // returns something unusable, we keep the first-pass extraction rather than blocking.
-    progressText.textContent = 'Double-checking totals & line items…';
-    try{
-      const verified = await verifyExtractionWithAI(settings.aiKey, usedModel, base64, mime, parsed);
-      if(verified && (verified.vendor_name || verified.items.length || verified.total_bill_amount)){
-        parsed = verified;
-      }
-    }catch(verifyErr){
-      console.warn('AI self-verification pass failed, keeping first-pass extraction', verifyErr);
-    }
-
-    progressText.textContent = 'Checking totals & flagging duplicates…';
-    const validation = validateInvoiceData(parsed, loadInvoices());
-    const confidence = computeFieldConfidence(parsed, validation);
+    let text = rawText.trim();
+    text = text.replace(/^```json/,'').replace(/^```/,'').replace(/```$/,'').trim();
+    const parsed = JSON.parse(text);
 
     progressText.textContent = 'Cleaning up scan for printing…';
     const scanImage = await enhanceToScan(currentImageDataUrl);
 
-    progressCard.style.display='none';
-    openReviewScreen({
-      parsed,
-      confidence,
-      validation,
-      rawImage: currentImageDataUrl,
-      scanImage,
+    const record = {
+      id: 'inv_' + Date.now(),
+      capturedAt: new Date().toISOString(),
+      dayKey: normalizeDayKey(parsed.delivery_date) || new Date().toISOString().slice(0,10),
+      image: currentImageDataUrl,
+      scanImage: scanImage,
+      status: 'extracted', // received -> extracted -> sent -> closed
+      strNumber: '',
       wasBlurryOnCapture: !currentSharp,
-      manualEntry: false
-    });
+      dropboxPath: '',
+      data: parsed
+    };
+
+    saveInvoiceRecord(record);
+
+    // Optional Dropbox upload (best-effort, non-blocking of main flow)
+    if(settings.dropboxKey){
+      progressText.textContent = 'Saving to Dropbox…';
+      try{ await uploadToDropbox(record, settings.dropboxKey); }catch(dbErr){ console.warn('Dropbox upload failed', dbErr); }
+    }
+
+    progressCard.style.display='none';
+    resetCapture();
+    showTab('invoices');
+    openDetail(record.id);
   }catch(err){
     progressCard.style.display='none';
     showManualFallback(err.message);
@@ -2004,189 +1567,6 @@ function saveInvoiceRecord(record){
   saveInvoices(list);
 }
 
-/* ---------------- AI extraction review screen ---------------- */
-// Nothing from the AI extraction pass is saved until the user confirms here — this is the
-// single place where a "data" object becomes a saved invoice record.
-const reviewCard = document.getElementById('reviewCard');
-const reviewBanner = document.getElementById('reviewBanner');
-const reviewItemsWrap = document.getElementById('reviewItems');
-let reviewContext = null; // { rawImage, scanImage, wasBlurryOnCapture, manualEntry }
-
-function confBadge(level){
-  if(!level) return '';
-  const label = level==='high' ? 'high' : (level==='medium' ? 'med' : 'low');
-  return { text: label, cls: level };
-}
-
-function addReviewItemRow(vals={}, confidenceLevel){
-  const row = document.createElement('div');
-  row.className = 'manual-item-row review-item-row' + (confidenceLevel==='low' ? ' low-confidence' : '');
-  const badge = confBadge(confidenceLevel);
-  row.innerHTML = `
-    <div class="review-item-head">
-      <input type="text" placeholder="Product name" class="mi-name" value="${escapeHtml(vals.product_name||'')}" style="flex:1; border:1px solid var(--line); border-radius:6px; padding:7px 8px; font-size:13px;">
-      ${badge ? `<span class="confbadge ${badge.cls}">${badge.text}</span>` : ''}
-    </div>
-    <div class="mi-grid">
-      <input type="text" placeholder="Qty" class="mi-qty" value="${escapeHtml(vals.qty||'')}">
-      <input type="text" placeholder="Rate" class="mi-rate" value="${escapeHtml(vals.rate||'')}">
-      <input type="text" placeholder="GST" class="mi-gst" value="${escapeHtml(vals.gst||'')}">
-      <input type="text" placeholder="Disc" class="mi-disc" value="${escapeHtml(vals.discount||'')}">
-      <input type="text" placeholder="Net" class="mi-net" value="${escapeHtml(vals.net_amount||'')}">
-      <button type="button" class="mi-remove" title="Remove row">×</button>
-    </div>
-  `;
-  row.querySelector('.mi-remove').addEventListener('click', ()=> row.remove());
-  reviewItemsWrap.appendChild(row);
-}
-document.getElementById('addReviewItemBtn').addEventListener('click', ()=> addReviewItemRow());
-
-function setConfBadgeEl(id, level){
-  const el = document.getElementById(id);
-  if(!el) return;
-  const badge = confBadge(level);
-  if(!badge){ el.textContent=''; el.className='confbadge'; return; }
-  el.textContent = badge.text;
-  el.className = 'confbadge ' + badge.cls;
-}
-
-function openReviewScreen(ctx){
-  reviewContext = ctx;
-  const { parsed, confidence, validation } = ctx;
-
-  document.getElementById('captureCard').style.display='none';
-  previewCard.style.display='none';
-  progressCard.style.display='none';
-  manualCard.style.display='none';
-  reviewCard.style.display='block';
-
-  const bannerLines = [];
-  if(validation.duplicateOf) bannerLines.push('⚠ Possible duplicate — ' + validation.issues.find(i=>i.startsWith('This looks like it may already be saved')));
-  validation.issues.filter(i=>!i.startsWith('This looks like it may already be saved')).forEach(i=> bannerLines.push('⚠ ' + i));
-  if(parsed.issues) bannerLines.push('AI noted: ' + parsed.issues);
-  if(bannerLines.length){
-    reviewBanner.innerHTML = bannerLines.map(l=>escapeHtml(l)).join('<br>');
-    reviewBanner.className = 'banner' + (validation.duplicateOf || validation.totalsOk===false ? ' error' : '');
-    reviewBanner.style.display='block';
-  } else {
-    reviewBanner.style.display='none';
-  }
-
-  document.getElementById('rv_vendor').value = parsed.vendor_name||'';
-  document.getElementById('rv_customer').value = parsed.customer_name||"Fazal Din's Pharma Plus · Bahria Town Sector B";
-  document.getElementById('rv_invoice_number').value = parsed.invoice_number||'';
-  document.getElementById('rv_order_number').value = parsed.order_number||'';
-  document.getElementById('rv_order_date').value = normalizeDayKey(parsed.order_date)||'';
-  document.getElementById('rv_delivery_date').value = normalizeDayKey(parsed.delivery_date)|| new Date().toISOString().slice(0,10);
-  document.getElementById('rv_category').value = ['Ice Cream','Chips/Snacks','Other'].includes(parsed.category) ? parsed.category : 'Other';
-  document.getElementById('rv_gross').value = parsed.gross_amount||'';
-  document.getElementById('rv_gst').value = parsed.total_gst||'';
-  document.getElementById('rv_discount').value = parsed.total_discount||'';
-  document.getElementById('rv_advtax').value = parsed.advance_tax||'';
-  document.getElementById('rv_total').value = parsed.total_bill_amount||'';
-  document.getElementById('rv_notes').value = parsed.handwritten_notes||'';
-
-  setConfBadgeEl('conf_vendor_name', confidence.vendor_name);
-  setConfBadgeEl('conf_invoice_number', confidence.invoice_number);
-  setConfBadgeEl('conf_date', confidence.date);
-  setConfBadgeEl('conf_totals', confidence.totals);
-  setConfBadgeEl('conf_gst', confidence.gst);
-
-  ['rv_vendor','rv_invoice_number','rv_delivery_date','rv_total','rv_gst'].forEach(id=>{
-    document.getElementById(id).classList.remove('low-confidence');
-  });
-  if(confidence.vendor_name==='low') document.getElementById('rv_vendor').classList.add('low-confidence');
-  if(confidence.invoice_number==='low') document.getElementById('rv_invoice_number').classList.add('low-confidence');
-  if(confidence.date==='low') document.getElementById('rv_delivery_date').classList.add('low-confidence');
-  if(confidence.totals==='low') document.getElementById('rv_total').classList.add('low-confidence');
-  if(confidence.gst==='low') document.getElementById('rv_gst').classList.add('low-confidence');
-
-  reviewItemsWrap.innerHTML = '';
-  if(parsed.items.length){
-    parsed.items.forEach(it=> addReviewItemRow(it, it.confidence));
-  } else {
-    addReviewItemRow();
-  }
-}
-
-document.getElementById('cancelReviewBtn').addEventListener('click', ()=>{
-  reviewCard.style.display='none';
-  if(currentImageDataUrl){
-    previewCard.style.display='block';
-    renderCaptureActions();
-  } else {
-    document.getElementById('captureCard').style.display='block';
-  }
-});
-
-document.getElementById('confirmReviewBtn').addEventListener('click', async ()=>{
-  const items = Array.from(reviewItemsWrap.querySelectorAll('.review-item-row')).map(row=>({
-    product_name: row.querySelector('.mi-name').value.trim(),
-    qty: row.querySelector('.mi-qty').value.trim(),
-    rate: row.querySelector('.mi-rate').value.trim(),
-    gst: row.querySelector('.mi-gst').value.trim(),
-    discount: row.querySelector('.mi-disc').value.trim(),
-    net_amount: row.querySelector('.mi-net').value.trim(),
-  })).filter(it => it.product_name || it.qty || it.net_amount);
-
-  const parsed = {
-    vendor_name: document.getElementById('rv_vendor').value.trim(),
-    customer_name: document.getElementById('rv_customer').value.trim(),
-    invoice_number: document.getElementById('rv_invoice_number').value.trim(),
-    order_number: document.getElementById('rv_order_number').value.trim(),
-    order_date: document.getElementById('rv_order_date').value.trim(),
-    delivery_date: document.getElementById('rv_delivery_date').value.trim(),
-    category: document.getElementById('rv_category').value,
-    items: items,
-    gross_amount: document.getElementById('rv_gross').value.trim(),
-    total_gst: document.getElementById('rv_gst').value.trim(),
-    total_discount: document.getElementById('rv_discount').value.trim(),
-    advance_tax: document.getElementById('rv_advtax').value.trim(),
-    total_bill_amount: document.getElementById('rv_total').value.trim(),
-    handwritten_notes: document.getElementById('rv_notes').value.trim(),
-    confidence: reviewContext.parsed.confidence || '',
-    issues: reviewContext.parsed.issues || ''
-  };
-
-  if(!parsed.vendor_name && !parsed.invoice_number && !parsed.total_bill_amount){
-    alert('Enter at least a vendor name, invoice number, or total amount before saving.');
-    return;
-  }
-
-  const btn = document.getElementById('confirmReviewBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  const record = {
-    id: 'inv_' + Date.now(),
-    capturedAt: new Date().toISOString(),
-    dayKey: normalizeDayKey(parsed.delivery_date) || new Date().toISOString().slice(0,10),
-    image: reviewContext.rawImage || currentImageDataUrl || '',
-    scanImage: reviewContext.scanImage || '',
-    status: 'extracted', // received -> extracted -> sent -> closed
-    strNumber: '',
-    wasBlurryOnCapture: !!reviewContext.wasBlurryOnCapture,
-    dropboxPath: '',
-    reviewedByUser: true,
-    data: parsed
-  };
-
-  saveInvoiceRecord(record);
-
-  const settings = loadSettings();
-  if(settings.dropboxKey && record.image){
-    try{ await uploadToDropbox(record, settings.dropboxKey); }catch(dbErr){ console.warn('Dropbox upload failed', dbErr); }
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Confirm & save invoice';
-  reviewCard.style.display='none';
-  reviewContext = null;
-  resetCapture();
-  showTab('invoices');
-  openDetail(record.id);
-});
-
 /* ---------------- Dropbox upload ---------------- */
 async function uploadToDropbox(record, token){
   const path = `/Invoices/${record.dayKey}/${record.data.vendor_name||'Invoice'}_${record.data.invoice_number||record.id}.jpg`.replace(/[^a-zA-Z0-9\/_\-\.]/g,'_');
@@ -2266,21 +1646,14 @@ function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({'&':'
 /* ---------------- Detail view ---------------- */
 let currentDetailId = null;
 
-let detailEditMode = false;
-
 function openDetail(id){
   currentDetailId = id;
-  detailEditMode = false;
   const list = loadInvoices();
   const r = list.find(x=>x.id===id);
   if(!r) return;
   document.getElementById('tab-invoices').style.display='none';
   document.getElementById('tab-detail').style.display='block';
-  renderDetailBody(r);
-}
-
-function renderDetailBody(r){
-  document.getElementById('detailBody').innerHTML = detailEditMode ? detailEditHtml(r) : detailHtml(r);
+  document.getElementById('detailBody').innerHTML = detailHtml(r);
   wireDetailActions(r);
 }
 
@@ -2312,10 +1685,6 @@ function detailHtml(r){
     <div class="card">
       ${mainImg ? `<img src="${mainImg}" id="detailMainImg" data-scan="${r.scanImage||''}" data-orig="${r.image}" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">` : ''}
       ${r.scanImage ? '<button class="secondary no-print" id="toggleImgBtn" style="margin-top:0;">View original photo</button>' : ''}
-      <div class="detail-edit-hdr no-print" style="margin-top:10px;">
-        <h2>Invoice details</h2>
-        <button class="secondary" id="editFieldsBtn" style="width:auto;margin:0;padding:6px 14px;">✎ Edit</button>
-      </div>
       <div class="kv" style="margin-top:12px;">
         <b>Vendor</b><span>${escapeHtml(d.vendor_name)}</span>
         <b>Branch</b><span>${escapeHtml(d.customer_name)}</span>
@@ -2353,102 +1722,7 @@ function detailHtml(r){
   `;
 }
 
-function detailEditHtml(r){
-  const d = r.data;
-  const items = d.items || [];
-  const itemRows = items.map((it,i)=>`
-    <tr>
-      <td><input type="text" class="item-edit" data-i="${i}" data-f="product_name" value="${escapeHtml(it.product_name)}"></td>
-      <td><input type="text" class="item-edit num" data-i="${i}" data-f="qty" value="${escapeHtml(it.qty)}"></td>
-      <td><input type="text" class="item-edit num" data-i="${i}" data-f="rate" value="${escapeHtml(it.rate)}"></td>
-      <td><input type="text" class="item-edit num" data-i="${i}" data-f="gst" value="${escapeHtml(it.gst)}"></td>
-      <td><input type="text" class="item-edit num" data-i="${i}" data-f="discount" value="${escapeHtml(it.discount)}"></td>
-      <td><input type="text" class="item-edit num" data-i="${i}" data-f="net_amount" value="${escapeHtml(it.net_amount)}"></td>
-      <td class="rm-cell"><button type="button" class="rm-item-btn" data-remove-item="${i}">✕</button></td>
-    </tr>`).join('');
-  const mainImg = r.scanImage || r.image;
-
-  return `
-    <div class="card">
-      ${mainImg ? `<img src="${mainImg}" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">` : ''}
-      <div class="detail-edit-hdr">
-        <h2>Editing invoice details</h2>
-      </div>
-      <div class="kv" style="margin-top:12px;">
-        <b>Vendor</b><input type="text" class="kv-edit" id="ed_vendor_name" value="${escapeHtml(d.vendor_name)}">
-        <b>Branch</b><input type="text" class="kv-edit" id="ed_customer_name" value="${escapeHtml(d.customer_name)}">
-        <b>Invoice #</b><input type="text" class="kv-edit" id="ed_invoice_number" value="${escapeHtml(d.invoice_number)}">
-        <b>Order #</b><input type="text" class="kv-edit" id="ed_order_number" value="${escapeHtml(d.order_number)}">
-        <b>Order date</b><input type="text" class="kv-edit" id="ed_order_date" value="${escapeHtml(d.order_date)}">
-        <b>Delivery date</b><input type="text" class="kv-edit" id="ed_delivery_date" value="${escapeHtml(d.delivery_date)}">
-        <b>Category</b><input type="text" class="kv-edit" id="ed_category" value="${escapeHtml(d.category)}">
-        <b>Notes</b><input type="text" class="kv-edit" id="ed_handwritten_notes" value="${escapeHtml(d.handwritten_notes)}">
-      </div>
-      <table class="items" id="editItemsTable">
-        <tr><th>Item</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">GST</th><th class="num">Disc</th><th class="num">Net</th><th></th></tr>
-        ${itemRows}
-      </table>
-      <button type="button" class="secondary" id="addItemRowBtn" style="margin-top:0;">+ Add item row</button>
-      <div class="totals" style="margin-top:14px;">
-        <div><span>Gross amount</span><input type="text" class="totals-edit" id="ed_gross_amount" value="${escapeHtml(d.gross_amount)}"></div>
-        <div><span>Total GST</span><input type="text" class="totals-edit" id="ed_total_gst" value="${escapeHtml(d.total_gst)}"></div>
-        <div><span>Total discount</span><input type="text" class="totals-edit" id="ed_total_discount" value="${escapeHtml(d.total_discount)}"></div>
-        <div><span>Advance tax</span><input type="text" class="totals-edit" id="ed_advance_tax" value="${escapeHtml(d.advance_tax)}"></div>
-        <div class="grand"><span>Total bill amount</span><input type="text" class="totals-edit" id="ed_total_bill_amount" value="${escapeHtml(d.total_bill_amount)}"></div>
-      </div>
-    </div>
-    <div class="card">
-      <button class="primary" id="saveEditBtn">Save changes</button>
-      <button class="secondary" id="cancelEditBtn">Cancel</button>
-    </div>
-  `;
-}
-
 function wireDetailActions(r){
-  const editBtn = document.getElementById('editFieldsBtn');
-  if(editBtn){
-    editBtn.addEventListener('click', ()=>{
-      detailEditMode = true;
-      renderDetailBody(r);
-    });
-  }
-  const cancelBtn = document.getElementById('cancelEditBtn');
-  if(cancelBtn){
-    cancelBtn.addEventListener('click', ()=>{
-      detailEditMode = false;
-      renderDetailBody(r);
-    });
-  }
-  const addItemRowBtn = document.getElementById('addItemRowBtn');
-  if(addItemRowBtn){
-    addItemRowBtn.addEventListener('click', ()=>{
-      collectEditedItemsInto(r.data); // preserve in-progress edits to existing rows
-      r.data.items.push({ product_name:'', qty:'', rate:'', gst:'', discount:'', net_amount:'' });
-      renderDetailBody(r);
-    });
-  }
-  document.querySelectorAll('.rm-item-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      collectEditedItemsInto(r.data);
-      const idx = parseInt(btn.dataset.removeItem, 10);
-      r.data.items.splice(idx, 1);
-      renderDetailBody(r);
-    });
-  });
-  const saveEditBtn = document.getElementById('saveEditBtn');
-  if(saveEditBtn){
-    saveEditBtn.addEventListener('click', ()=>{
-      const fields = ['vendor_name','customer_name','invoice_number','order_number','order_date','delivery_date','category','handwritten_notes','gross_amount','total_gst','total_discount','advance_tax','total_bill_amount'];
-      fields.forEach(f=>{
-        const el = document.getElementById('ed_'+f);
-        if(el) r.data[f] = el.value;
-      });
-      collectEditedItemsInto(r.data);
-      updateRecord(r.id, rec=>{ rec.data = r.data; });
-      detailEditMode = false;
-      openDetail(r.id);
-    });
-  }
   const toggleBtn = document.getElementById('toggleImgBtn');
   if(toggleBtn){
     let showingOriginal = false;
@@ -2459,44 +1733,22 @@ function wireDetailActions(r){
       toggleBtn.textContent = showingOriginal ? 'View cleaned-up scan' : 'View original photo';
     });
   }
-  const sendGmailBtn = document.getElementById('sendGmailBtn');
-  if(sendGmailBtn) sendGmailBtn.addEventListener('click', ()=> sendToGmail(r));
-  const printBtn = document.getElementById('printBtn');
-  if(printBtn) printBtn.addEventListener('click', ()=> window.print());
-  const saveStrBtn = document.getElementById('saveStrBtn');
-  if(saveStrBtn){
-    saveStrBtn.addEventListener('click', ()=>{
-      const val = document.getElementById('strInput').value.trim();
-      updateRecord(r.id, rec=>{ rec.strNumber = val; rec.status = val ? 'closed' : rec.status; });
-      openDetail(r.id);
-    });
-  }
-  const deleteBtn = document.getElementById('deleteBtn');
-  if(deleteBtn){
-    deleteBtn.addEventListener('click', ()=>{
-      if(confirm('Delete this invoice record? This cannot be undone.')){
-        const list = loadInvoices().filter(x=>x.id!==r.id);
-        saveInvoices(list);
-        document.getElementById('tab-detail').style.display='none';
-        document.getElementById('tab-invoices').style.display='block';
-        renderInvoiceList();
-      }
-    });
-  }
-}
-
-// Reads current values out of the edit-mode item table inputs and writes them back into data.items
-// (used before add/remove-row re-renders so in-progress edits to other rows aren't lost).
-function collectEditedItemsInto(data){
-  const table = document.getElementById('editItemsTable');
-  if(!table) return;
-  const items = data.items || [];
-  table.querySelectorAll('input.item-edit').forEach(inp=>{
-    const i = parseInt(inp.dataset.i, 10);
-    const f = inp.dataset.f;
-    if(items[i]) items[i][f] = inp.value;
+  document.getElementById('sendGmailBtn').addEventListener('click', ()=> sendToGmail(r));
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('saveStrBtn').addEventListener('click', ()=>{
+    const val = document.getElementById('strInput').value.trim();
+    updateRecord(r.id, rec=>{ rec.strNumber = val; rec.status = val ? 'closed' : rec.status; });
+    openDetail(r.id);
   });
-  data.items = items;
+  document.getElementById('deleteBtn').addEventListener('click', ()=>{
+    if(confirm('Delete this invoice record? This cannot be undone.')){
+      const list = loadInvoices().filter(x=>x.id!==r.id);
+      saveInvoices(list);
+      document.getElementById('tab-detail').style.display='none';
+      document.getElementById('tab-invoices').style.display='block';
+      renderInvoiceList();
+    }
+  });
 }
 
 function updateRecord(id, mutateFn){
@@ -2510,8 +1762,8 @@ async function sendToGmail(r){
   const settings = loadSettings();
   const d = r.data;
   const subject = `BT | ${d.vendor_name||'Invoice'} | ${d.invoice_number||'no-number'} | ${d.delivery_date||d.order_date||''}`;
-  const date = d.delivery_date || d.order_date || '';
-  const body = `Branch: ${d.customer_name}\nInvoice: ${d.vendor_name}\nInvoice Number: ${d.invoice_number}\nInvoice Value: ${d.total_bill_amount}\nDate: ${date}`;
+  const itemLines = (d.items||[]).map(it=>`- ${it.product_name}: qty ${it.qty}, rate ${it.rate}, net ${it.net_amount}`).join('\n');
+  const body = `Branch: ${d.customer_name}\nVendor: ${d.vendor_name}\nInvoice #: ${d.invoice_number}\nDelivery date: ${d.delivery_date}\n\nItems:\n${itemLines}\n\nTotal bill amount: Rs ${d.total_bill_amount}\nAdvance tax: ${d.advance_tax}\n\nNotes: ${d.handwritten_notes||'—'}\n\n(Sent from Branch Invoice Desk)`;
 
   const shareImage = r.scanImage || r.image;
 
