@@ -143,6 +143,7 @@
   .pill.sent{ background:#e3ecdf; color:var(--brand); }
   .pill.closed{ background:#e5e5e5; color:#555; }
   .pill.error{ background:#f3dcd8; color:var(--red); }
+  .pill.manual{ background:#ece3f5; color:#6b3fa0; margin-left:5px; }
 
   /* Detail */
   .kv{ display:grid; grid-template-columns:auto 1fr; gap:5px 12px; font-size:13px; margin-bottom:12px;}
@@ -169,6 +170,15 @@
   .empty{ text-align:center; color:var(--muted); font-size:13px; padding:30px 10px; }
 
   .banner{ background:#fff8e6; border:1px solid #eddca1; color:#8a6a12; font-size:12.5px; padding:10px 12px; border-radius:8px; margin-bottom:12px; }
+
+  /* Manual entry */
+  .manual-item-row{ border:1px solid var(--line); border-radius:8px; padding:8px; margin-bottom:8px; background:#fbfaf6; }
+  .manual-item-row .mi-name{ width:100%; border:1px solid var(--line); border-radius:6px; padding:7px 8px; font-size:13px; margin-bottom:6px; }
+  .manual-item-row .mi-grid{ display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr auto; gap:5px; }
+  .manual-item-row .mi-grid input{ border:1px solid var(--line); border-radius:6px; padding:6px 4px; font-size:11.5px; width:100%; text-align:right; min-width:0;}
+  .manual-item-row .mi-remove{ border:none; background:var(--red); color:#fff; border-radius:6px; font-size:14px; font-weight:700; cursor:pointer; padding:0 8px;}
+  select.field-select{ width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13.5px; background:#fff; font-family:inherit; }
+  .link-btn{ background:none; border:none; color:var(--brand); font-weight:600; font-size:12.5px; padding:8px 0 0; cursor:pointer; text-decoration:underline; }
 
   @media print{
     .ledger-head, nav.tabs, .no-print{ display:none !important; }
@@ -211,6 +221,7 @@
         </button>
       </div>
       <input type="file" id="fileInput" accept="image/*">
+      <button class="link-btn" id="captureCardManualBtn" type="button" style="display:block;margin:10px auto 0;">Or enter an invoice manually — no photo</button>
     </div>
 
     <div class="card" id="liveCard" style="display:none; padding:0; overflow:hidden;">
@@ -236,6 +247,51 @@
 
     <div class="card" id="progressCard" style="display:none;">
       <div class="status-line"><div class="spinner"></div><span id="progressText">Reading invoice…</span></div>
+    </div>
+
+    <div class="card" id="manualCard" style="display:none;">
+      <h2>Enter invoice manually</h2>
+      <div class="banner" id="manualBanner" style="display:none;"></div>
+      <p class="hint">Fill in what you can read. Leave anything unknown blank — you can still print, email, or close this record later.</p>
+
+      <label class="field">Vendor</label>
+      <input type="text" id="m_vendor" placeholder="e.g. Pakistan Fruit Juice Co. (Hico)">
+      <label class="field">Branch / Customer</label>
+      <input type="text" id="m_customer">
+      <label class="field">Invoice #</label>
+      <input type="text" id="m_invoice_number">
+      <label class="field">Order #</label>
+      <input type="text" id="m_order_number">
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1;"><label class="field">Order date</label><input type="date" id="m_order_date"></div>
+        <div style="flex:1;"><label class="field">Delivery date</label><input type="date" id="m_delivery_date"></div>
+      </div>
+      <label class="field">Category</label>
+      <select class="field-select" id="m_category">
+        <option value="Ice Cream">Ice Cream</option>
+        <option value="Chips/Snacks">Chips/Snacks</option>
+        <option value="Other" selected>Other</option>
+      </select>
+
+      <label class="field">Items</label>
+      <div id="manualItems"></div>
+      <button class="secondary" id="addManualItemBtn" type="button">+ Add item row</button>
+
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <div style="flex:1;"><label class="field">Gross amount</label><input type="text" id="m_gross" inputmode="decimal"></div>
+        <div style="flex:1;"><label class="field">Total GST</label><input type="text" id="m_gst" inputmode="decimal"></div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1;"><label class="field">Total discount</label><input type="text" id="m_discount" inputmode="decimal"></div>
+        <div style="flex:1;"><label class="field">Advance tax</label><input type="text" id="m_advtax" inputmode="decimal"></div>
+      </div>
+      <label class="field">Total bill amount</label>
+      <input type="text" id="m_total" inputmode="decimal">
+      <label class="field">Notes</label>
+      <input type="text" id="m_notes" placeholder="Handwritten notes, stamps, signatures">
+
+      <button class="primary" id="saveManualBtn" style="margin-top:14px;">Save invoice</button>
+      <button class="secondary" id="cancelManualBtn">Cancel</button>
     </div>
   </section>
 
@@ -638,6 +694,13 @@ function renderCaptureActions(){
     toggleCropBtn.onclick = toggleCropVersion;
     captureActions.appendChild(toggleCropBtn);
   }
+
+  const manualLink = document.createElement('button');
+  manualLink.className = 'link-btn';
+  manualLink.type = 'button';
+  manualLink.textContent = 'Skip AI — enter details manually';
+  manualLink.onclick = ()=> openManualEntry();
+  captureActions.appendChild(manualLink);
 }
 
 function resetCapture(){
@@ -1059,13 +1122,149 @@ async function submitForExtraction(){
     openDetail(record.id);
   }catch(err){
     progressCard.style.display='none';
-    previewCard.style.display='block';
-    renderCaptureActions();
-    alert('Could not read this invoice: ' + err.message + '\\n\\nYou can retake the photo or try again.');
+    showManualFallback(err.message);
   }
 }
 
 const MONTH_NAMES = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+
+/* ---------------- Manual entry fallback ---------------- */
+const manualCard = document.getElementById('manualCard');
+const manualBanner = document.getElementById('manualBanner');
+const manualItemsWrap = document.getElementById('manualItems');
+
+function addManualItemRow(vals={}){
+  const row = document.createElement('div');
+  row.className = 'manual-item-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Product name" class="mi-name" value="${escapeHtml(vals.product_name||'')}">
+    <div class="mi-grid">
+      <input type="text" placeholder="Qty" class="mi-qty" value="${escapeHtml(vals.qty||'')}">
+      <input type="text" placeholder="Rate" class="mi-rate" value="${escapeHtml(vals.rate||'')}">
+      <input type="text" placeholder="GST" class="mi-gst" value="${escapeHtml(vals.gst||'')}">
+      <input type="text" placeholder="Disc" class="mi-disc" value="${escapeHtml(vals.discount||'')}">
+      <input type="text" placeholder="Net" class="mi-net" value="${escapeHtml(vals.net_amount||'')}">
+      <button type="button" class="mi-remove" title="Remove row">×</button>
+    </div>
+  `;
+  row.querySelector('.mi-remove').addEventListener('click', ()=> row.remove());
+  manualItemsWrap.appendChild(row);
+}
+document.getElementById('addManualItemBtn').addEventListener('click', ()=> addManualItemRow());
+document.getElementById('captureCardManualBtn').addEventListener('click', ()=> openManualEntry());
+
+function resetManualForm(){
+  ['m_vendor','m_invoice_number','m_order_number','m_order_date','m_gross','m_gst','m_discount','m_advtax','m_total','m_notes']
+    .forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('m_category').value = 'Other';
+  manualItemsWrap.innerHTML = '';
+  addManualItemRow();
+  const customerEl = document.getElementById('m_customer');
+  if(!customerEl.value) customerEl.value = "Fazal Din's Pharma Plus · Bahria Town Sector B";
+  const dateEl = document.getElementById('m_delivery_date');
+  if(!dateEl.value) dateEl.value = new Date().toISOString().slice(0,10);
+}
+
+function openManualEntry(){
+  manualBanner.style.display='none';
+  document.getElementById('captureCard').style.display='none';
+  previewCard.style.display='none';
+  progressCard.style.display='none';
+  manualCard.style.display='block';
+  resetManualForm();
+}
+
+function showManualFallback(errMsg){
+  manualBanner.textContent = '⚠ AI could not read this invoice (' + errMsg + '). Enter the details below instead — the photo is still attached.';
+  manualBanner.style.display='block';
+  document.getElementById('captureCard').style.display='none';
+  previewCard.style.display='none';
+  manualCard.style.display='block';
+  resetManualForm();
+}
+
+document.getElementById('cancelManualBtn').addEventListener('click', ()=>{
+  manualCard.style.display='none';
+  if(currentImageDataUrl){
+    previewCard.style.display='block';
+    renderCaptureActions();
+  } else {
+    document.getElementById('captureCard').style.display='block';
+  }
+});
+
+document.getElementById('saveManualBtn').addEventListener('click', async ()=>{
+  const items = Array.from(manualItemsWrap.querySelectorAll('.manual-item-row')).map(row=>({
+    product_name: row.querySelector('.mi-name').value.trim(),
+    qty: row.querySelector('.mi-qty').value.trim(),
+    rate: row.querySelector('.mi-rate').value.trim(),
+    gst: row.querySelector('.mi-gst').value.trim(),
+    discount: row.querySelector('.mi-disc').value.trim(),
+    net_amount: row.querySelector('.mi-net').value.trim(),
+  })).filter(it => it.product_name || it.qty || it.net_amount);
+
+  const parsed = {
+    vendor_name: document.getElementById('m_vendor').value.trim(),
+    customer_name: document.getElementById('m_customer').value.trim(),
+    invoice_number: document.getElementById('m_invoice_number').value.trim(),
+    order_number: document.getElementById('m_order_number').value.trim(),
+    order_date: document.getElementById('m_order_date').value.trim(),
+    delivery_date: document.getElementById('m_delivery_date').value.trim(),
+    category: document.getElementById('m_category').value,
+    items: items,
+    gross_amount: document.getElementById('m_gross').value.trim(),
+    total_gst: document.getElementById('m_gst').value.trim(),
+    total_discount: document.getElementById('m_discount').value.trim(),
+    advance_tax: document.getElementById('m_advtax').value.trim(),
+    total_bill_amount: document.getElementById('m_total').value.trim(),
+    handwritten_notes: document.getElementById('m_notes').value.trim(),
+    confidence: 'manual',
+    issues: 'Entered manually (AI reading was skipped or unavailable).'
+  };
+
+  if(!parsed.vendor_name && !parsed.invoice_number && !parsed.total_bill_amount){
+    alert('Enter at least a vendor name, invoice number, or total amount before saving.');
+    return;
+  }
+
+  const saveBtn = document.getElementById('saveManualBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
+  let scanImage = '';
+  if(currentImageDataUrl){
+    try{ scanImage = await enhanceToScan(currentImageDataUrl); }catch(e){ scanImage=''; }
+  }
+
+  const record = {
+    id: 'inv_' + Date.now(),
+    capturedAt: new Date().toISOString(),
+    dayKey: normalizeDayKey(parsed.delivery_date) || new Date().toISOString().slice(0,10),
+    image: currentImageDataUrl || '',
+    scanImage: scanImage,
+    status: 'extracted',
+    strNumber: '',
+    wasBlurryOnCapture: !currentSharp,
+    dropboxPath: '',
+    manualEntry: true,
+    data: parsed
+  };
+
+  saveInvoiceRecord(record);
+
+  const settings = loadSettings();
+  if(settings.dropboxKey && record.image){
+    try{ await uploadToDropbox(record, settings.dropboxKey); }catch(dbErr){ console.warn('Dropbox upload failed', dbErr); }
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Save invoice';
+  manualCard.style.display='none';
+  resetCapture();
+  showTab('invoices');
+  openDetail(record.id);
+});
+
 
 function normalizeDayKey(raw){
   if(!raw) return null;
@@ -1153,12 +1352,14 @@ function invoiceRowHtml(r){
   const amt = r.data.total_bill_amount || '—';
   const pillMap = { received:'received', extracted:'extracted', sent:'sent', closed:'closed', error:'error' };
   const pillLabel = { received:'Received', extracted:'Ready to send', sent:'Sent · awaiting STR', closed:'Closed', error:'Needs review' };
+  const thumb = r.scanImage || r.image;
+  const img = thumb ? `<img src="${thumb}">` : `<div style="width:46px;height:46px;border-radius:6px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--brand-dim);">✎</div>`;
   return `<div class="inv-row" data-id="${r.id}">
-    <img src="${r.scanImage || r.image}">
+    ${img}
     <div class="inv-main">
       <div class="vend">${escapeHtml(r.data.vendor_name||'Unknown vendor')}</div>
       <div class="meta">${escapeHtml(r.data.invoice_number||'no #')} · ${escapeHtml(r.data.category||'')}</div>
-      <span class="pill ${pillMap[r.status]||'received'}">${pillLabel[r.status]||r.status}</span>
+      <span class="pill ${pillMap[r.status]||'received'}">${pillLabel[r.status]||r.status}</span>${r.manualEntry ? '<span class="pill manual">Manual</span>' : ''}
     </div>
     <div class="inv-amt"><div class="rs">Rs ${amt}</div></div>
   </div>`;
@@ -1198,12 +1399,15 @@ function detailHtml(r){
       <td class="num">${escapeHtml(it.net_amount)}</td>
     </tr>`).join('');
 
-  const issueBanner = d.issues ? `<div class="banner">⚠ ${escapeHtml(d.issues)}</div>` : '';
+  const issueBanner = d.issues
+    ? `<div class="banner"${r.manualEntry ? ' style="background:#eef1fb;border-color:#ccd6f2;color:#3a4a8a;"' : ''}>${r.manualEntry ? '✎' : '⚠'} ${escapeHtml(d.issues)}</div>`
+    : '';
+  const mainImg = r.scanImage || r.image;
 
   return `
     ${issueBanner}
     <div class="card">
-      <img src="${r.scanImage || r.image}" id="detailMainImg" data-scan="${r.scanImage||''}" data-orig="${r.image}" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">
+      ${mainImg ? `<img src="${mainImg}" id="detailMainImg" data-scan="${r.scanImage||''}" data-orig="${r.image}" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">` : ''}
       ${r.scanImage ? '<button class="secondary no-print" id="toggleImgBtn" style="margin-top:0;">View original photo</button>' : ''}
       <div class="kv" style="margin-top:12px;">
         <b>Vendor</b><span>${escapeHtml(d.vendor_name)}</span>
