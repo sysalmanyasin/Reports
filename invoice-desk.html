@@ -324,10 +324,10 @@
   <section id="tab-settings" style="display:none;">
     <div class="card">
       <h2>AI reading engine</h2>
-      <p class="hint">Uses Google Gemini's free tier to read invoice images. Get a free key at aistudio.google.com → Get API key. Stored only on this device.</p>
-      <label class="field">Gemini API key</label>
-      <input type="password" id="geminiKey" placeholder="AIza...">
-    </div>
+      <p class="hint">Uses OpenRouter's free tier (no credit card, no prepay) to read invoice images with a vision-capable AI model. Sign up free at openrouter.ai → Keys → Create Key. Stored only on this device.</p>
+      <label class="field">OpenRouter API key</label>
+      <input type="password" id="aiKey" placeholder="sk-or-v1-...">
+      <p class="hint" style="margin-top:8px;">Free tier: ~50 invoice reads/day, no billing ever required. If reading stops working, free models rotate occasionally — check openrouter.ai/models (filter: free, vision).</p>    </div>
     <div class="card">
       <h2>Dropbox sync (optional)</h2>
       <p class="hint">Paste a Dropbox access token to auto-upload each invoice photo to /Invoices/YYYY-MM-DD/ in your Dropbox. Generate one from the Dropbox App Console (Generated access token). Leave blank to skip.</p>
@@ -378,13 +378,13 @@ function showTab(name){
 /* ---------------- Settings form ---------------- */
 function fillSettingsForm(){
   const s = loadSettings();
-  document.getElementById('geminiKey').value = s.geminiKey || '';
+  document.getElementById('aiKey').value = s.aiKey || s.geminiKey || '';
   document.getElementById('dropboxKey').value = s.dropboxKey || '';
   document.getElementById('gmailTo').value = s.gmailTo || '';
 }
 document.getElementById('saveSettings').addEventListener('click', ()=>{
   saveSettings({
-    geminiKey: document.getElementById('geminiKey').value.trim(),
+    aiKey: document.getElementById('aiKey').value.trim(),
     dropboxKey: document.getElementById('dropboxKey').value.trim(),
     gmailTo: document.getElementById('gmailTo').value.trim()
   });
@@ -1018,7 +1018,16 @@ function enhanceToScan(dataUrl){
   });
 }
 
-/* ---------------- AI extraction (Gemini) ---------------- */
+/* ---------------- AI extraction (OpenRouter, free tier) ---------------- */
+// Free vision-capable models rotate on OpenRouter over time. If extraction stops
+// working, check https://openrouter.ai/models?fmt=cards&supported_parameters=vision
+// filtered to "free" and update this list.
+const OPENROUTER_VISION_MODELS = [
+  'google/gemma-4-31b-it:free',
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+  'google/gemma-4-26b-a4b-it:free'
+];
+
 const EXTRACTION_INSTRUCTIONS = `
 You are reading a supplier sales invoice / delivery bill photographed at a retail pharmacy branch in Pakistan (ice cream, chips, snacks, FMCG distributors such as Hico/Pakistan Fruit Juice Co, C&B Marketing, Nawaz Brothers/Lays, Z&Z Taqseemkar).
 
@@ -1057,10 +1066,38 @@ Return STRICT JSON only, no markdown, no commentary, matching exactly this schem
 If a field cannot be determined, use an empty string "" (not null). Amounts should be the plain numbers as printed (you may keep commas). Do not summarize or omit line items — list every product row.
 `.trim();
 
+async function callOpenRouterVision(apiKey, model, base64, mime){
+  const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://reports.duapharma.com',
+      'X-Title': 'Branch Invoice Desk'
+    },
+    body: JSON.stringify({
+      model: model,
+      messages:[{
+        role:'user',
+        content:[
+          { type:'text', text: EXTRACTION_INSTRUCTIONS },
+          { type:'image_url', image_url:{ url: `data:${mime};base64,${base64}` } }
+        ]
+      }],
+      temperature:0.1
+    })
+  });
+  const data = await resp.json();
+  if(data.error){ throw new Error(data.error.message || `OpenRouter error (${model})`); }
+  const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+  if(!text){ throw new Error(`Empty response from ${model}`); }
+  return text;
+}
+
 async function submitForExtraction(){
   const settings = loadSettings();
-  if(!settings.geminiKey){
-    alert('Add your free Gemini API key in Settings first.');
+  if(!settings.aiKey){
+    alert('Add your free OpenRouter API key in Settings first.');
     showTab('settings');
     return;
   }
@@ -1073,22 +1110,20 @@ async function submitForExtraction(){
   const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
 
   try{
-    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${settings.geminiKey}`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        contents:[{
-          parts:[
-            {text: EXTRACTION_INSTRUCTIONS},
-            {inline_data:{ mime_type: mime, data: base64 }}
-          ]
-        }],
-        generationConfig:{ temperature:0.1 }
-      })
-    });
-    const data = await resp.json();
-    if(data.error){ throw new Error(data.error.message || 'Gemini API error'); }
-    let text = data.candidates[0].content.parts[0].text.trim();
+    let rawText = null;
+    let lastErr = null;
+    for(const model of OPENROUTER_VISION_MODELS){
+      try{
+        rawText = await callOpenRouterVision(settings.aiKey, model, base64, mime);
+        break;
+      }catch(modelErr){
+        lastErr = modelErr;
+        console.warn('OpenRouter model failed, trying next:', model, modelErr.message);
+      }
+    }
+    if(rawText === null) throw lastErr || new Error('All AI models failed');
+
+    let text = rawText.trim();
     text = text.replace(/^```json/,'').replace(/^```/,'').replace(/```$/,'').trim();
     const parsed = JSON.parse(text);
 
