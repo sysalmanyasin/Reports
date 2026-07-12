@@ -1142,16 +1142,31 @@ function applyHomography(m, x, y){
 // True perspective correction: maps the detected (possibly skewed) quadrilateral onto a
 // flat rectangle, sampling each output pixel from the source via the inverse homography
 // with bilinear interpolation — this is what actually "un-tilts" an angled photo.
+// Large phone photos (12-48MP) are far more resolution than we need to fill a ~1600px
+// output. Reading/sampling full-res pixel data was the actual freeze point on picking a
+// photo — this scales the source down to a comfortable working size first (native
+// drawImage resize, which is fast) and scales the corners to match.
+function scaledSourceForWarp(img, corners, workMax){
+  const scale = Math.min(1, workMax / Math.max(img.width, img.height));
+  const sw = Math.max(1, Math.round(img.width * scale));
+  const sh = Math.max(1, Math.round(img.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = sw; canvas.height = sh;
+  canvas.getContext('2d').drawImage(img, 0, 0, sw, sh);
+  const scaledCorners = corners.map(([x,y])=>[x*scale, y*scale]);
+  return { canvas, scaledCorners };
+}
+
 function warpPerspectiveJS(img, corners, outW, outH){
-  const sw = img.width, sh = img.height;
-  const srcCanvas = document.createElement('canvas');
-  srcCanvas.width = sw; srcCanvas.height = sh;
+  // Cap the working resolution well above the ~1600px output so quality is unaffected,
+  // but nowhere near full camera resolution (the source of the freeze).
+  const { canvas: srcCanvas, scaledCorners } = scaledSourceForWarp(img, corners, 2000);
+  const sw = srcCanvas.width, sh = srcCanvas.height;
   const sctx = srcCanvas.getContext('2d');
-  sctx.drawImage(img, 0, 0);
   const srcData = sctx.getImageData(0,0,sw,sh).data;
 
   const dst = [[0,0],[outW,0],[outW,outH],[0,outH]];
-  const Hsrc2dst = computeHomography(corners, dst);
+  const Hsrc2dst = computeHomography(scaledCorners, dst);
   const Hdst2src = invert3x3(Hsrc2dst);
   if(!Hdst2src) throw new Error('degenerate perspective transform');
 
@@ -1190,15 +1205,13 @@ function warpPerspectiveJS(img, corners, outW, outH){
 // Emscripten heap memory that isn't garbage-collected by the JS engine.
 function warpPerspectiveCV(img, corners, outW, outH){
   const cv = window.cv;
-  const srcCanvas = document.createElement('canvas');
-  srcCanvas.width = img.width; srcCanvas.height = img.height;
-  srcCanvas.getContext('2d').drawImage(img, 0, 0);
+  const { canvas: srcCanvas, scaledCorners } = scaledSourceForWarp(img, corners, 2000);
 
   let src=null, dstMat=null, srcTri=null, dstTri=null, M=null;
   try{
     src = cv.imread(srcCanvas);
     const flat = [];
-    corners.forEach(([x,y])=>{ flat.push(x,y); });
+    scaledCorners.forEach(([x,y])=>{ flat.push(x,y); });
     srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, flat);
     dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0,0, outW,0, outW,outH, 0,outH]);
     M = cv.getPerspectiveTransform(srcTri, dstTri);
