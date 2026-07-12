@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Branch Invoice Desk — Fazal Din's Pharma Plus</title>
+<style>
+  :root{
+    --ink:#16241f;
+    --paper:#f6f4ee;
+    --panel:#ffffff;
+    --line:#dcd6c8;
+    --brand:#0f4c3a;
+    --brand-dim:#e8efe9;
+    --brass:#a9782f;
+    --amber:#c98a1c;
+    --red:#a5382c;
+    --blue:#2c5f8a;
+    --muted:#6b7269;
+    --radius:10px;
+    font-family: 'Iowan Old Style','Georgia',serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ledger-head{
+    background:var(--brand);
+    color:#f3f0e6;
+    padding:18px 16px 14px;
+    position:sticky; top:0; z-index:20;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .ledger-head h1{
+    font-family:'Iowan Old Style','Georgia',serif;
+    font-size:20px; margin:0 0 2px; font-weight:700; letter-spacing:.2px;
+  }
+  .ledger-head .sub{font-size:12px; opacity:.8; letter-spacing:.4px;}
+  nav.tabs{
+    display:flex; gap:2px; margin-top:14px;
+    background:rgba(0,0,0,.18); border-radius:999px; padding:3px;
+  }
+  nav.tabs button{
+    flex:1; border:none; background:transparent; color:#dfe8e2;
+    padding:9px 4px; border-radius:999px; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:.15s;
+  }
+  nav.tabs button.active{ background:#f3f0e6; color:var(--brand); }
+
+  main{ max-width:640px; margin:0 auto; padding:16px 14px 100px; }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px;
+  }
+  .card h2{ margin:0 0 4px; font-size:15px; }
+  .hint{ color:var(--muted); font-size:12.5px; line-height:1.5; margin:0 0 12px;}
+
+  /* Capture */
+  .capture-choices{ display:flex; gap:10px; }
+  .choice-btn{
+    flex:1; border:2px dashed var(--line); border-radius:var(--radius); padding:22px 10px;
+    text-align:center; cursor:pointer; background:#fbfaf6; display:flex; flex-direction:column;
+    align-items:center; gap:2px; font-family:inherit;
+  }
+  .choice-btn:active{ background:var(--brand-dim); }
+  .choice-btn .icon{ font-size:30px; margin-bottom:4px; }
+  .choice-btn strong{ font-size:13.5px; color:var(--ink); }
+  .choice-btn .sub{ font-size:11px; color:var(--muted); line-height:1.35; }
+  input[type=file]{ display:none; }
+
+  .thumbwrap{ position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:10px; border:1px solid var(--line);}
+  .thumbwrap img{ width:100%; display:block; max-height:340px; object-fit:contain; background:#111; }
+  .blurflag{
+    position:absolute; top:8px; left:8px; background:var(--red); color:#fff;
+    font-size:11.5px; font-weight:700; padding:4px 9px; border-radius:999px;
+  }
+  .sharpflag{ background:var(--brand); }
+  .cropflag{
+    position:absolute; top:8px; right:8px; background:var(--blue); color:#fff;
+    font-size:11.5px; font-weight:700; padding:4px 9px; border-radius:999px; display:none;
+  }
+
+  /* Live scan */
+  .livewrap{ position:relative; background:#000; line-height:0; }
+  .livewrap video{ width:100%; display:block; max-height:70vh; object-fit:cover; }
+  .livewrap canvas{ position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+  .livestatus{
+    position:absolute; left:0; right:0; bottom:10px; text-align:center;
+    color:#fff; font-size:12.5px; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,.7);
+  }
+  .livestatus.steady{ color:#8ee6ab; }
+  .shutter-row{ display:flex; gap:8px; padding:14px; }
+  .shutter-row button{ margin:0; }
+
+  button.primary{
+    width:100%; background:var(--brand); color:#fff; border:none; border-radius:8px;
+    padding:12px; font-size:14.5px; font-weight:700; cursor:pointer;
+  }
+  button.primary:disabled{ opacity:.45; }
+  button.secondary{
+    width:100%; background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:8px;
+    padding:11px; font-size:13.5px; font-weight:600; cursor:pointer; margin-top:8px;
+  }
+  button.danger-outline{ border-color:var(--red); color:var(--red); }
+  button.retake{ background:var(--amber); color:#fff; border:none; }
+
+  .status-line{
+    display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted);
+    padding:10px 0;
+  }
+  .spinner{
+    width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--brand);
+    border-radius:50%; animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* Day groups / list */
+  .daygroup{ margin-bottom:18px; }
+  .daygroup > .daylabel{
+    font-size:12.5px; font-weight:700; color:var(--brass); text-transform:uppercase;
+    letter-spacing:.6px; margin:0 0 8px 2px; display:flex; justify-content:space-between;
+  }
+  .inv-row{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:12px 12px; margin-bottom:8px; display:flex; gap:10px; align-items:center; cursor:pointer;
+  }
+  .inv-row img{ width:46px; height:46px; object-fit:cover; border-radius:6px; border:1px solid var(--line); flex:none;}
+  .inv-main{ flex:1; min-width:0; }
+  .inv-main .vend{ font-weight:700; font-size:14px; }
+  .inv-main .meta{ font-size:12px; color:var(--muted); margin-top:1px;}
+  .inv-amt{ text-align:right; flex:none; }
+  .inv-amt .rs{ font-weight:700; font-size:14px; }
+  .pill{
+    display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:999px;
+    margin-top:3px;
+  }
+  .pill.received{ background:#f1e6d3; color:var(--brass); }
+  .pill.extracted{ background:#dce8f2; color:var(--blue); }
+  .pill.sent{ background:#e3ecdf; color:var(--brand); }
+  .pill.closed{ background:#e5e5e5; color:#555; }
+  .pill.error{ background:#f3dcd8; color:var(--red); }
+
+  /* Detail */
+  .kv{ display:grid; grid-template-columns:auto 1fr; gap:5px 12px; font-size:13px; margin-bottom:12px;}
+  .kv b{ color:var(--muted); font-weight:600; }
+  table.items{ width:100%; border-collapse:collapse; font-size:12px; margin-bottom:10px;}
+  table.items th{ text-align:left; background:var(--brand-dim); padding:6px 6px; font-size:10.5px; text-transform:uppercase; letter-spacing:.3px; color:var(--brand);}
+  table.items td{ padding:6px 6px; border-bottom:1px solid var(--line); }
+  table.items td.num, table.items th.num{ text-align:right; }
+  .totals{ font-size:13px; }
+  .totals div{ display:flex; justify-content:space-between; padding:3px 0; }
+  .totals .grand{ font-weight:800; font-size:15px; border-top:2px solid var(--ink); margin-top:5px; padding-top:7px;}
+
+  .str-box{ display:flex; gap:8px; margin-top:10px; }
+  .str-box input{ flex:1; border:1px solid var(--line); border-radius:8px; padding:9px 10px; font-size:13px; }
+
+  .backbtn{ background:none; border:none; color:var(--brand); font-weight:700; font-size:13.5px; padding:0 0 10px; cursor:pointer; }
+
+  /* Settings */
+  label.field{ display:block; font-size:12.5px; font-weight:700; color:var(--muted); margin:12px 0 5px; }
+  input[type=text], input[type=password], input[type=date]{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13.5px;
+  }
+  .toggle-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-size:13.5px;}
+  .empty{ text-align:center; color:var(--muted); font-size:13px; padding:30px 10px; }
+
+  .banner{ background:#fff8e6; border:1px solid #eddca1; color:#8a6a12; font-size:12.5px; padding:10px 12px; border-radius:8px; margin-bottom:12px; }
+
+  @media print{
+    .ledger-head, nav.tabs, .no-print{ display:none !important; }
+    body{ background:#fff; }
+    main{ max-width:100%; padding:0; }
+    .card{ border:none; box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ledger-head">
+  <h1>Branch Invoice Desk</h1>
+  <div class="sub">Fazal Din's Pharma Plus · Bahria Town Sector B</div>
+  <nav class="tabs">
+    <button data-tab="capture" class="active">Capture</button>
+    <button data-tab="invoices">Invoices</button>
+    <button data-tab="reports">Reports</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+</div>
+
+<main>
+
+  <!-- CAPTURE TAB -->
+  <section id="tab-capture">
+    <div class="card" id="captureCard">
+      <h2>New invoice photo</h2>
+      <p class="hint">Either scan live or load an existing photo — both are straightened, cropped to the page, and sharpened before being sent to the AI.</p>
+      <div class="capture-choices">
+        <button class="choice-btn" id="captureChoiceBtn" type="button">
+          <span class="icon">📷</span>
+          <strong>Capture</strong>
+          <span class="sub">Live edge-detection guide</span>
+        </button>
+        <button class="choice-btn" id="filesChoiceBtn" type="button">
+          <span class="icon">🗂️</span>
+          <strong>Load from Files</strong>
+          <span class="sub">Pick an existing photo</span>
+        </button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="card" id="liveCard" style="display:none; padding:0; overflow:hidden;">
+      <div class="livewrap">
+        <video id="liveVideo" playsinline autoplay muted></video>
+        <canvas id="liveOverlay"></canvas>
+        <div class="livestatus" id="liveStatus">Looking for the page…</div>
+      </div>
+      <div class="shutter-row">
+        <button class="primary" id="liveCaptureBtn">Capture now</button>
+        <button class="secondary" id="liveCancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="card" id="previewCard" style="display:none;">
+      <div class="thumbwrap">
+        <img id="previewImg" src="">
+        <span class="blurflag" id="blurFlag">Checking sharpness…</span>
+        <span class="cropflag" id="cropFlag"></span>
+      </div>
+      <div id="captureActions"></div>
+    </div>
+
+    <div class="card" id="progressCard" style="display:none;">
+      <div class="status-line"><div class="spinner"></div><span id="progressText">Reading invoice…</span></div>
+    </div>
+  </section>
+
+  <!-- INVOICES TAB -->
+  <section id="tab-invoices" style="display:none;">
+    <div id="invoiceList"></div>
+  </section>
+
+  <!-- DETAIL VIEW (shown over invoices tab) -->
+  <section id="tab-detail" style="display:none;">
+    <button class="backbtn no-print" id="backToList">← Back to invoices</button>
+    <div id="detailBody"></div>
+  </section>
+
+  <!-- REPORTS TAB -->
+  <section id="tab-reports" style="display:none;">
+    <div class="card">
+      <h2>Report range</h2>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1;"><label class="field">From</label><input type="date" id="repFrom"></div>
+        <div style="flex:1;"><label class="field">To</label><input type="date" id="repTo"></div>
+      </div>
+      <button class="secondary no-print" id="runReport" style="margin-top:12px;">Generate report</button>
+      <button class="secondary no-print" id="printReport">Print this report</button>
+    </div>
+    <div class="card" id="reportOutput" style="display:none;"></div>
+  </section>
+
+  <!-- SETTINGS TAB -->
+  <section id="tab-settings" style="display:none;">
+    <div class="card">
+      <h2>AI reading engine</h2>
+      <p class="hint">Uses Google Gemini's free tier to read invoice images. Get a free key at aistudio.google.com → Get API key. Stored only on this device.</p>
+      <label class="field">Gemini API key</label>
+      <input type="password" id="geminiKey" placeholder="AIza...">
+    </div>
+    <div class="card">
+      <h2>Dropbox sync (optional)</h2>
+      <p class="hint">Paste a Dropbox access token to auto-upload each invoice photo to /Invoices/YYYY-MM-DD/ in your Dropbox. Generate one from the Dropbox App Console (Generated access token). Leave blank to skip.</p>
+      <label class="field">Dropbox access token</label>
+      <input type="password" id="dropboxKey" placeholder="sl.xxxxxxxx">
+    </div>
+    <div class="card">
+      <h2>Gmail destination</h2>
+      <label class="field">Send-to address (warehouse)</label>
+      <input type="text" id="gmailTo" placeholder="warehouse@example.com">
+    </div>
+    <button class="primary" id="saveSettings">Save settings</button>
+    <div class="card" style="margin-top:14px;">
+      <h2>Data</h2>
+      <p class="hint">All invoice records and images are stored locally in this browser. Clearing browser data will remove them — export or send to Gmail first.</p>
+      <button class="secondary danger-outline" id="wipeData">Erase all local invoice data</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ---------------- Storage ---------------- */
+const LS_KEY = 'bid_invoices_v1';
+const LS_SETTINGS = 'bid_settings_v1';
+
+function loadInvoices(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || []; }catch(e){ return []; } }
+function saveInvoices(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+function loadSettings(){ try{ return JSON.parse(localStorage.getItem(LS_SETTINGS)) || {}; }catch(e){ return {}; } }
+function saveSettings(s){ localStorage.setItem(LS_SETTINGS, JSON.stringify(s)); }
+
+/* ---------------- Tabs ---------------- */
+const tabs = ['capture','invoices','reports','settings'];
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=> showTab(btn.dataset.tab));
+});
+function showTab(name){
+  tabs.forEach(t=>{
+    document.getElementById('tab-'+t).style.display = (t===name)?'block':'none';
+    document.querySelector(`nav.tabs button[data-tab="${t}"]`)?.classList.toggle('active', t===name);
+  });
+  document.getElementById('tab-detail').style.display='none';
+  if(name!=='capture' && typeof stopLiveCapture==='function') stopLiveCapture();
+  if(name==='invoices') renderInvoiceList();
+  if(name==='settings') fillSettingsForm();
+}
+
+/* ---------------- Settings form ---------------- */
+function fillSettingsForm(){
+  const s = loadSettings();
+  document.getElementById('geminiKey').value = s.geminiKey || '';
+  document.getElementById('dropboxKey').value = s.dropboxKey || '';
+  document.getElementById('gmailTo').value = s.gmailTo || '';
+}
+document.getElementById('saveSettings').addEventListener('click', ()=>{
+  saveSettings({
+    geminiKey: document.getElementById('geminiKey').value.trim(),
+    dropboxKey: document.getElementById('dropboxKey').value.trim(),
+    gmailTo: document.getElementById('gmailTo').value.trim()
+  });
+  alert('Settings saved on this device.');
+});
+document.getElementById('wipeData').addEventListener('click', ()=>{
+  if(confirm('This deletes every stored invoice on this device permanently. Continue?')){
+    localStorage.removeItem(LS_KEY);
+    renderInvoiceList();
+    alert('Local invoice data erased.');
+  }
+});
+
+/* ---------------- Capture flow ---------------- */
+const captureChoiceBtn = document.getElementById('captureChoiceBtn');
+const filesChoiceBtn = document.getElementById('filesChoiceBtn');
+const fileInput = document.getElementById('fileInput');
+const liveCard = document.getElementById('liveCard');
+const liveVideo = document.getElementById('liveVideo');
+const liveOverlay = document.getElementById('liveOverlay');
+const liveStatus = document.getElementById('liveStatus');
+const previewCard = document.getElementById('previewCard');
+const previewImg = document.getElementById('previewImg');
+const blurFlag = document.getElementById('blurFlag');
+const captureActions = document.getElementById('captureActions');
+const progressCard = document.getElementById('progressCard');
+const progressText = document.getElementById('progressText');
+
+let currentImageDataUrl = null;
+let currentSharp = true;
+let rawImageDataUrl = null;      // untouched photo straight from camera/file
+let croppedImageDataUrl = null;  // perspective-corrected + sharpened version
+let usingCropped = true;
+let lastCropApplied = false;
+
+/* ----- entry points ----- */
+captureChoiceBtn.addEventListener('click', ()=> startLiveCapture());
+filesChoiceBtn.addEventListener('click', ()=> fileInput.click());
+
+fileInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=> processCapturedImage(ev.target.result, null);
+  reader.readAsDataURL(file);
+});
+
+/* ----- live camera scan with real-time edge guide ----- */
+let liveStream = null;
+let liveDetectTimer = null;
+let liveStableCount = 0;
+let liveLastQuad = null;
+let liveAutoCaptureArmed = true;
+
+async function startLiveCapture(){
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+  }catch(err){
+    // No camera / permission denied / not on HTTPS — fall back straight to the file picker
+    // (which still opens the phone's native camera app via capture="environment").
+    console.warn('Live camera unavailable, falling back to file picker', err);
+    fileInput.click();
+    return;
+  }
+  liveStream = stream;
+  document.getElementById('captureCard').style.display = 'none';
+  liveCard.style.display = 'block';
+  liveVideo.srcObject = liveStream;
+  try{ await liveVideo.play(); }catch(e){ /* autoplay quirks, ignore */ }
+  liveStableCount = 0;
+  liveLastQuad = null;
+  liveAutoCaptureArmed = true;
+  liveStatus.textContent = 'Looking for the page…';
+  liveStatus.className = 'livestatus';
+  liveDetectTimer = setInterval(detectLiveFrame, 180);
+}
+
+function stopLiveCapture(){
+  if(liveDetectTimer){ clearInterval(liveDetectTimer); liveDetectTimer = null; }
+  if(liveStream){ liveStream.getTracks().forEach(t=>t.stop()); liveStream = null; }
+  liveCard.style.display = 'none';
+}
+
+document.getElementById('liveCancelBtn').addEventListener('click', ()=>{
+  stopLiveCapture();
+  document.getElementById('captureCard').style.display = 'block';
+});
+
+document.getElementById('liveCaptureBtn').addEventListener('click', ()=>{
+  liveAutoCaptureArmed = false;
+  captureFromLiveVideo(liveLastQuad ? liveLastQuad.corners : null, liveLastQuad ? liveLastQuad.workW : 0, liveLastQuad ? liveLastQuad.workH : 0);
+});
+
+function detectLiveFrame(){
+  if(!liveVideo.videoWidth) return;
+  const workW = 240, workH = Math.max(1, Math.round(240 * liveVideo.videoHeight / liveVideo.videoWidth));
+  const wc = document.createElement('canvas');
+  wc.width = workW; wc.height = workH;
+  wc.getContext('2d').drawImage(liveVideo, 0, 0, workW, workH);
+  const quad = detectDocumentCorners(wc);
+
+  const overlayW = liveVideo.clientWidth, overlayH = liveVideo.clientHeight;
+  liveOverlay.width = overlayW; liveOverlay.height = overlayH;
+  const octx = liveOverlay.getContext('2d');
+  octx.clearRect(0,0,overlayW,overlayH);
+
+  if(!quad){
+    liveStableCount = 0;
+    liveLastQuad = null;
+    liveStatus.textContent = 'Looking for the page…';
+    liveStatus.className = 'livestatus';
+    return;
+  }
+
+  const stable = liveLastQuad && quadsClose(quad.corners, liveLastQuad.corners, workW);
+  liveStableCount = stable ? liveStableCount + 1 : 1;
+  liveLastQuad = { corners: quad.corners, workW, workH };
+
+  const scaleX = overlayW/workW, scaleY = overlayH/workH;
+  const pts = quad.corners.map(([x,y])=>[x*scaleX, y*scaleY]);
+  const isSteady = liveStableCount >= 5;
+
+  octx.strokeStyle = isSteady ? '#3fbf6f' : '#e8b93f';
+  octx.lineWidth = 3;
+  octx.beginPath();
+  pts.forEach(([x,y],i)=> i===0 ? octx.moveTo(x,y) : octx.lineTo(x,y));
+  octx.closePath();
+  octx.stroke();
+  pts.forEach(([x,y])=>{
+    octx.fillStyle = isSteady ? '#3fbf6f' : '#e8b93f';
+    octx.beginPath(); octx.arc(x,y,6,0,Math.PI*2); octx.fill();
+  });
+
+  liveStatus.textContent = isSteady ? 'Steady — capturing…' : 'Hold steady over the page…';
+  liveStatus.className = isSteady ? 'livestatus steady' : 'livestatus';
+
+  if(isSteady && liveAutoCaptureArmed){
+    liveAutoCaptureArmed = false;
+    captureFromLiveVideo(quad.corners, workW, workH);
+  }
+}
+
+function quadsClose(a, b, workW){
+  const tol = workW * 0.04;
+  for(let i=0;i<4;i++){
+    const dx = a[i][0]-b[i][0], dy = a[i][1]-b[i][1];
+    if(Math.sqrt(dx*dx+dy*dy) > tol) return false;
+  }
+  return true;
+}
+
+async function captureFromLiveVideo(workCorners, workW, workH){
+  const vw = liveVideo.videoWidth, vh = liveVideo.videoHeight;
+  const fullCanvas = document.createElement('canvas');
+  fullCanvas.width = vw; fullCanvas.height = vh;
+  fullCanvas.getContext('2d').drawImage(liveVideo, 0, 0, vw, vh);
+  const rawDataUrl = fullCanvas.toDataURL('image/jpeg', 0.92);
+
+  stopLiveCapture();
+
+  let fullResCorners = null;
+  if(workCorners && workW && workH){
+    const sx = vw/workW, sy = vh/workH;
+    fullResCorners = workCorners.map(([x,y])=>[x*sx, y*sy]);
+  }
+  await processCapturedImage(rawDataUrl, fullResCorners);
+}
+
+/* ----- shared pipeline: perspective-correct + sharpen, whatever the source ----- */
+async function processCapturedImage(rawDataUrl, knownCorners){
+  rawImageDataUrl = rawDataUrl;
+  document.getElementById('captureCard').style.display = 'none';
+  previewCard.style.display = 'none';
+  progressCard.style.display = 'block';
+  progressText.textContent = 'Straightening page…';
+
+  let processed = rawDataUrl;
+  lastCropApplied = false;
+  try{
+    const img = await loadImageEl(rawDataUrl);
+    let corners = knownCorners;
+    if(!corners){
+      corners = await detectDocumentCornersFromDataUrl(rawDataUrl);
+    }
+    if(corners){
+      const dims = quadDimensions(corners);
+      const outCanvas = warpPerspective(img, corners, dims.w, dims.h);
+      processed = outCanvas.toDataURL('image/jpeg', 0.92);
+      lastCropApplied = true;
+    }
+    progressText.textContent = 'Sharpening scan…';
+    processed = await sharpenImage(processed, 0.6);
+  }catch(err){
+    console.warn('Perspective correction/sharpen failed, using original photo', err);
+    processed = rawDataUrl;
+    lastCropApplied = false;
+  }
+
+  croppedImageDataUrl = processed;
+  usingCropped = true;
+  currentImageDataUrl = processed;
+  previewImg.src = currentImageDataUrl;
+  progressCard.style.display = 'none';
+  previewCard.style.display = 'block';
+  updateCropFlag();
+  checkSharpness(currentImageDataUrl);
+}
+
+function updateCropFlag(){
+  const flag = document.getElementById('cropFlag');
+  if(usingCropped && lastCropApplied){
+    flag.style.display='inline-block';
+    flag.textContent = '⛶ Straightened';
+  } else if(!usingCropped){
+    flag.style.display='inline-block';
+    flag.textContent = 'Full photo';
+  } else {
+    flag.style.display='none';
+  }
+}
+
+function toggleCropVersion(){
+  usingCropped = !usingCropped;
+  currentImageDataUrl = usingCropped ? croppedImageDataUrl : rawImageDataUrl;
+  previewImg.src = currentImageDataUrl;
+  updateCropFlag();
+  checkSharpness(currentImageDataUrl);
+}
+
+// Simple sharpness heuristic: Laplacian variance on a downsized grayscale copy
+function checkSharpness(dataUrl){
+  blurFlag.textContent = 'Checking sharpness…';
+  blurFlag.className = 'blurflag';
+  const img = new Image();
+  img.onload = ()=>{
+    const w = 320, h = Math.round(320 * img.height / img.width);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0,0,w,h).data;
+    const gray = new Float32Array(w*h);
+    for(let i=0;i<w*h;i++){
+      const r=data[i*4], g=data[i*4+1], b=data[i*4+2];
+      gray[i] = 0.299*r + 0.587*g + 0.114*b;
+    }
+    let sum=0, sumSq=0, count=0;
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const idx = y*w+x;
+        const lap = gray[idx-1] + gray[idx+1] + gray[idx-w] + gray[idx+w] - 4*gray[idx];
+        sum += lap; sumSq += lap*lap; count++;
+      }
+    }
+    const mean = sum/count;
+    const variance = (sumSq/count) - (mean*mean);
+    currentSharp = variance > 220; // empirical threshold, tuned against real branch invoice photos
+    if(currentSharp){
+      blurFlag.textContent = '✓ Looks sharp';
+      blurFlag.classList.add('sharpflag');
+    } else {
+      blurFlag.textContent = '⚠ Too blurry — please retake';
+    }
+    renderCaptureActions();
+  };
+  img.src = dataUrl;
+}
+
+function renderCaptureActions(){
+  captureActions.innerHTML = '';
+  if(!currentSharp){
+    const retakeBtn = document.createElement('button');
+    retakeBtn.className = 'primary retake';
+    retakeBtn.textContent = 'Retake photo';
+    retakeBtn.onclick = resetCapture;
+    captureActions.appendChild(retakeBtn);
+
+    const proceedAnyway = document.createElement('button');
+    proceedAnyway.className = 'secondary';
+    proceedAnyway.textContent = 'Use anyway (not recommended)';
+    proceedAnyway.onclick = ()=> submitForExtraction();
+    captureActions.appendChild(proceedAnyway);
+  } else {
+    const okBtn = document.createElement('button');
+    okBtn.className = 'primary';
+    okBtn.textContent = 'Looks good — read invoice';
+    okBtn.onclick = ()=> submitForExtraction();
+    captureActions.appendChild(okBtn);
+
+    const retakeBtn = document.createElement('button');
+    retakeBtn.className = 'secondary';
+    retakeBtn.textContent = 'Retake anyway';
+    retakeBtn.onclick = resetCapture;
+    captureActions.appendChild(retakeBtn);
+  }
+
+  if(rawImageDataUrl){
+    const toggleCropBtn = document.createElement('button');
+    toggleCropBtn.className = 'secondary';
+    toggleCropBtn.textContent = usingCropped
+      ? "Straightened wrong? Use full photo"
+      : 'Use straightened version';
+    toggleCropBtn.onclick = toggleCropVersion;
+    captureActions.appendChild(toggleCropBtn);
+  }
+}
+
+function resetCapture(){
+  currentImageDataUrl = null;
+  rawImageDataUrl = null;
+  croppedImageDataUrl = null;
+  usingCropped = true;
+  lastCropApplied = false;
+  previewCard.style.display='none';
+  document.getElementById('captureCard').style.display='block';
+  fileInput.value='';
+}
+
+/* ---------------- Auto page-edge crop + sharpen ---------------- */
+function loadImageEl(src){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = ()=> resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+// Otsu's method: picks the grayscale cutoff that best separates two populations
+// (here: the bright page vs. whatever cluttered background/counter it's sitting on).
+function otsuThreshold(gray){
+  const hist = new Array(256).fill(0);
+  for(let i=0;i<gray.length;i++) hist[gray[i]|0]++;
+  const total = gray.length;
+  let sumAll = 0;
+  for(let t=0;t<256;t++) sumAll += t*hist[t];
+  let sumB=0, wB=0, maxVar=-1, threshold=127;
+  for(let t=0;t<256;t++){
+    wB += hist[t];
+    if(wB===0) continue;
+    const wF = total - wB;
+    if(wF===0) break;
+    sumB += t*hist[t];
+    const mB = sumB/wB;
+    const mF = (sumAll-sumB)/wF;
+    const between = wB*wF*(mB-mF)*(mB-mF);
+    if(between > maxVar){ maxVar = between; threshold = t; }
+  }
+  return threshold;
+}
+
+// Finds the page's 4 corners by thresholding a downscaled grayscale copy, then taking the
+// extreme points of the bright "paper" mask (min/max of x+y and x-y) within its bounding
+// region. This handles a page held at an angle or slight rotation, not just square-on shots.
+function detectDocumentCorners(canvas){
+  const workW = canvas.width, workH = canvas.height;
+  const data = canvas.getContext('2d').getImageData(0,0,workW,workH).data;
+  const gray = new Float32Array(workW*workH);
+  for(let i=0;i<workW*workH;i++){
+    gray[i] = 0.299*data[i*4] + 0.587*data[i*4+1] + 0.114*data[i*4+2];
+  }
+  const t = otsuThreshold(gray);
+
+  const rowCount = new Array(workH).fill(0);
+  const colCount = new Array(workW).fill(0);
+  for(let y=0;y<workH;y++){
+    for(let x=0;x<workW;x++){
+      if(gray[y*workW+x] > t){ rowCount[y]++; colCount[x]++; }
+    }
+  }
+  const maxRow = Math.max(...rowCount), maxCol = Math.max(...colCount);
+  if(maxRow < workW*0.15 || maxCol < workH*0.15) return null; // nothing bright/big enough to be a page
+
+  const rowThresh = maxRow*0.4, colThresh = maxCol*0.4;
+  let top=0, bottom=workH-1, left=0, right=workW-1;
+  while(top<workH-1 && rowCount[top]<rowThresh) top++;
+  while(bottom>0 && rowCount[bottom]<rowThresh) bottom--;
+  while(left<workW-1 && colCount[left]<colThresh) left++;
+  while(right>0 && colCount[right]<colThresh) right--;
+  if(bottom<=top || right<=left || (bottom-top)<workH*0.3 || (right-left)<workW*0.3) return null;
+
+  let tl=null, tr=null, br=null, bl=null;
+  let tlScore=Infinity, brScore=-Infinity, trScore=-Infinity, blScore=Infinity;
+  for(let y=top;y<=bottom;y++){
+    for(let x=left;x<=right;x++){
+      if(gray[y*workW+x] <= t) continue;
+      const s1 = x+y, s2 = x-y;
+      if(s1 < tlScore){ tlScore = s1; tl = [x,y]; }
+      if(s1 > brScore){ brScore = s1; br = [x,y]; }
+      if(s2 > trScore){ trScore = s2; tr = [x,y]; }
+      if(s2 < blScore){ blScore = s2; bl = [x,y]; }
+    }
+  }
+  if(!tl || !tr || !br || !bl) return null;
+  return { corners:[tl,tr,br,bl] }; // top-left, top-right, bottom-right, bottom-left
+}
+
+async function detectDocumentCornersFromDataUrl(dataUrl){
+  const img = await loadImageEl(dataUrl);
+  const workW = 400, workH = Math.max(1, Math.round(400 * img.height / img.width));
+  const wc = document.createElement('canvas');
+  wc.width = workW; wc.height = workH;
+  wc.getContext('2d').drawImage(img, 0, 0, workW, workH);
+  const result = detectDocumentCorners(wc);
+  if(!result) return null;
+  const scaleX = img.width/workW, scaleY = img.height/workH;
+  return result.corners.map(([x,y])=>[x*scaleX, y*scaleY]);
+}
+
+// Target output size for the straightened page, from the detected corners' own proportions
+// (not forced to A4), capped so the warp stays fast and the file stays a reasonable size.
+function quadDimensions(corners){
+  const [tl,tr,br,bl] = corners;
+  const dist = (a,b)=> Math.hypot(a[0]-b[0], a[1]-b[1]);
+  let w = Math.round(Math.max(dist(tl,tr), dist(bl,br)));
+  let h = Math.round(Math.max(dist(tl,bl), dist(tr,br)));
+  const maxDim = 1600;
+  if(w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; }
+  if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; }
+  return { w: Math.max(w,50), h: Math.max(h,50) };
+}
+
+/* ----- small linear-algebra helpers for the perspective (homography) warp ----- */
+function solveLinearSystem(A, b){
+  const n = A.length;
+  for(let i=0;i<n;i++) A[i] = A[i].concat([b[i]]);
+  for(let col=0; col<n; col++){
+    let pivot = col;
+    for(let r=col+1;r<n;r++){ if(Math.abs(A[r][col]) > Math.abs(A[pivot][col])) pivot = r; }
+    [A[col],A[pivot]] = [A[pivot],A[col]];
+    const pv = A[col][col];
+    if(Math.abs(pv) < 1e-12) continue;
+    for(let c=col;c<=n;c++) A[col][c] /= pv;
+    for(let r=0;r<n;r++){
+      if(r===col) continue;
+      const factor = A[r][col];
+      for(let c=col;c<=n;c++) A[r][c] -= factor*A[col][c];
+    }
+  }
+  return A.map(row=>row[n]);
+}
+
+// Solves the 3x3 projective transform mapping 4 src points to 4 dst points.
+function computeHomography(src, dst){
+  const A = [], b = [];
+  for(let i=0;i<4;i++){
+    const [x,y] = src[i], [u,v] = dst[i];
+    A.push([x,y,1,0,0,0,-u*x,-u*y]); b.push(u);
+    A.push([0,0,0,x,y,1,-v*x,-v*y]); b.push(v);
+  }
+  const m = solveLinearSystem(A, b);
+  return [m[0],m[1],m[2], m[3],m[4],m[5], m[6],m[7],1];
+}
+
+function invert3x3(m){
+  const [a,b,c,d,e,f,g,h,i] = m;
+  const A =  (e*i - f*h), B = -(d*i - f*g), C =  (d*h - e*g);
+  const D = -(b*i - c*h), E =  (a*i - c*g), F = -(a*h - b*g);
+  const G =  (b*f - c*e), H = -(a*f - c*d), I =  (a*e - b*d);
+  const det = a*A + b*B + c*C;
+  if(Math.abs(det) < 1e-12) return null;
+  const inv = 1/det;
+  return [A*inv, D*inv, G*inv, B*inv, E*inv, H*inv, C*inv, F*inv, I*inv];
+}
+
+function applyHomography(m, x, y){
+  const w = m[6]*x + m[7]*y + m[8];
+  return [(m[0]*x+m[1]*y+m[2])/w, (m[3]*x+m[4]*y+m[5])/w];
+}
+
+// True perspective correction: maps the detected (possibly skewed) quadrilateral onto a
+// flat rectangle, sampling each output pixel from the source via the inverse homography
+// with bilinear interpolation — this is what actually "un-tilts" an angled photo.
+function warpPerspective(img, corners, outW, outH){
+  const sw = img.width, sh = img.height;
+  const srcCanvas = document.createElement('canvas');
+  srcCanvas.width = sw; srcCanvas.height = sh;
+  const sctx = srcCanvas.getContext('2d');
+  sctx.drawImage(img, 0, 0);
+  const srcData = sctx.getImageData(0,0,sw,sh).data;
+
+  const dst = [[0,0],[outW,0],[outW,outH],[0,outH]];
+  const Hsrc2dst = computeHomography(corners, dst);
+  const Hdst2src = invert3x3(Hsrc2dst);
+  if(!Hdst2src) throw new Error('degenerate perspective transform');
+
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = outW; outCanvas.height = outH;
+  const octx = outCanvas.getContext('2d');
+  const outImg = octx.createImageData(outW, outH);
+
+  for(let y=0;y<outH;y++){
+    for(let x=0;x<outW;x++){
+      const [sx, sy] = applyHomography(Hdst2src, x, y);
+      const idx = (y*outW+x)*4;
+      if(sx<0 || sy<0 || sx>=sw-1 || sy>=sh-1){
+        outImg.data[idx]=255; outImg.data[idx+1]=255; outImg.data[idx+2]=255; outImg.data[idx+3]=255;
+        continue;
+      }
+      const x0=Math.floor(sx), y0=Math.floor(sy);
+      const fx=sx-x0, fy=sy-y0;
+      const x1=Math.min(x0+1,sw-1), y1=Math.min(y0+1,sh-1);
+      for(let c=0;c<3;c++){
+        const p00=srcData[(y0*sw+x0)*4+c], p10=srcData[(y0*sw+x1)*4+c];
+        const p01=srcData[(y1*sw+x0)*4+c], p11=srcData[(y1*sw+x1)*4+c];
+        const top = p00*(1-fx)+p10*fx, bot = p01*(1-fx)+p11*fx;
+        outImg.data[idx+c] = top*(1-fy)+bot*fy;
+      }
+      outImg.data[idx+3] = 255;
+    }
+  }
+  octx.putImageData(outImg,0,0);
+  return outCanvas;
+}
+
+// Unsharp mask: subtract a soft blur from the original and add the difference back in,
+// which punches up text edges — the thing that most helps both human reading and AI OCR.
+async function sharpenImage(dataUrl, amount=0.6){
+  const img = await loadImageEl(dataUrl);
+  const w = img.width, h = img.height;
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const src = ctx.getImageData(0,0,w,h);
+
+  const smallW = Math.max(1, Math.round(w/10)), smallH = Math.max(1, Math.round(h/10));
+  const smallCanvas = document.createElement('canvas');
+  smallCanvas.width = smallW; smallCanvas.height = smallH;
+  smallCanvas.getContext('2d').drawImage(img, 0, 0, smallW, smallH);
+  const blurCanvas = document.createElement('canvas');
+  blurCanvas.width = w; blurCanvas.height = h;
+  const bctx = blurCanvas.getContext('2d');
+  bctx.imageSmoothingEnabled = true;
+  bctx.drawImage(smallCanvas, 0, 0, w, h);
+  const blurred = bctx.getImageData(0,0,w,h).data;
+
+  const out = ctx.createImageData(w,h);
+  for(let i=0;i<w*h;i++){
+    for(let c=0;c<3;c++){
+      const o = src.data[i*4+c], b = blurred[i*4+c];
+      let v = o + amount*(o-b);
+      out.data[i*4+c] = v>255?255:(v<0?0:v);
+    }
+    out.data[i*4+3] = 255;
+  }
+  ctx.putImageData(out,0,0);
+  return canvas.toDataURL('image/jpeg', 0.92);
+}
+
+/* ---------------- Scan enhancement (flatten lighting, black text / white page) ---------------- */
+function enhanceToScan(dataUrl){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxW = 1600;
+      const scale = Math.min(1, maxW/img.width);
+      const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      const src = ctx.getImageData(0,0,w,h);
+
+      const gray = new Float32Array(w*h);
+      for(let i=0;i<w*h;i++){
+        gray[i] = 0.299*src.data[i*4] + 0.587*src.data[i*4+1] + 0.114*src.data[i*4+2];
+      }
+
+      // background estimate via heavy downscale/upscale (approximates a box blur, cheap in pure canvas)
+      const grayCanvas = document.createElement('canvas');
+      grayCanvas.width=w; grayCanvas.height=h;
+      const gctx = grayCanvas.getContext('2d');
+      const grayImgData = gctx.createImageData(w,h);
+      for(let i=0;i<w*h;i++){
+        grayImgData.data[i*4]=grayImgData.data[i*4+1]=grayImgData.data[i*4+2]=gray[i];
+        grayImgData.data[i*4+3]=255;
+      }
+      gctx.putImageData(grayImgData,0,0);
+
+      const smallW = 40, smallH = Math.max(1, Math.round(40*h/w));
+      const smallCanvas = document.createElement('canvas');
+      smallCanvas.width=smallW; smallCanvas.height=smallH;
+      smallCanvas.getContext('2d').drawImage(grayCanvas,0,0,smallW,smallH);
+
+      const bgCanvas = document.createElement('canvas');
+      bgCanvas.width=w; bgCanvas.height=h;
+      const bctx = bgCanvas.getContext('2d');
+      bctx.imageSmoothingEnabled = true;
+      bctx.drawImage(smallCanvas,0,0,w,h);
+      const bg = bctx.getImageData(0,0,w,h).data;
+
+      // flatten uneven lighting/shadows against the estimated background
+      const flattened = new Float32Array(w*h);
+      for(let i=0;i<w*h;i++){
+        let b = bg[i*4]; if(b<1) b=1;
+        let v = gray[i]/b*230;
+        flattened[i] = v>255?255:(v<0?0:v);
+      }
+
+      // contrast stretch sampled from the flattened image so background -> white, ink -> black
+      const sample = [];
+      for(let i=0;i<flattened.length;i+=7) sample.push(flattened[i]);
+      sample.sort((a,b)=>a-b);
+      const lo = sample[Math.floor(sample.length*0.02)] || 0;
+      const hi = sample[Math.floor(sample.length*0.60)] || 255;
+      const range = Math.max(hi-lo,1);
+
+      const out = ctx.createImageData(w,h);
+      for(let i=0;i<w*h;i++){
+        let v = (flattened[i]-lo)/range*255;
+        v = v>255?255:(v<0?0:v);
+        out.data[i*4]=v; out.data[i*4+1]=v; out.data[i*4+2]=v; out.data[i*4+3]=255;
+      }
+      ctx.putImageData(out,0,0);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = dataUrl;
+  });
+}
+
+/* ---------------- AI extraction (Gemini) ---------------- */
+const EXTRACTION_INSTRUCTIONS = `
+You are reading a supplier sales invoice / delivery bill photographed at a retail pharmacy branch in Pakistan (ice cream, chips, snacks, FMCG distributors such as Hico/Pakistan Fruit Juice Co, C&B Marketing, Nawaz Brothers/Lays, Z&Z Taqseemkar).
+
+Read the ENTIRE image carefully, including handwritten notes, stamps, and signatures. Extract ONLY what is printed or written on the page. Never invent numbers.
+
+Return STRICT JSON only, no markdown, no commentary, matching exactly this schema:
+
+{
+  "vendor_name": string,              // company issuing the invoice, e.g. "Pakistan Fruit Juice Co. (Hico)"
+  "customer_name": string,            // the branch/customer being billed, e.g. "Fazal Din's Pharma Plus - Bahria Town"
+  "invoice_number": string,           // invoice / voucher / delivery number
+  "order_number": string,             // order number if present, else ""
+  "order_date": string,               // YYYY-MM-DD if determinable, else raw text
+  "delivery_date": string,            // YYYY-MM-DD if determinable, else raw text (use this for day-wise grouping)
+  "category": string,                 // one of: "Ice Cream", "Chips/Snacks", "Other"
+  "items": [
+    {
+      "product_name": string,
+      "qty": string,                  // as printed, keep units like "50" or "2 CS / 0 PC"
+      "rate": string,
+      "gst": string,
+      "discount": string,
+      "net_amount": string
+    }
+  ],
+  "gross_amount": string,
+  "total_gst": string,
+  "total_discount": string,
+  "advance_tax": string,
+  "total_bill_amount": string,        // the final payable figure
+  "handwritten_notes": string,        // any handwritten stamps/signatures/notes, e.g. "Stock Received, signed Faisal 11/07/2026"
+  "confidence": string,               // "high", "medium", or "low" based on how legible the image was
+  "issues": string                    // anything unclear, missing, or hard to read — empty string if none
+}
+
+If a field cannot be determined, use an empty string "" (not null). Amounts should be the plain numbers as printed (you may keep commas). Do not summarize or omit line items — list every product row.
+`.trim();
+
+async function submitForExtraction(){
+  const settings = loadSettings();
+  if(!settings.geminiKey){
+    alert('Add your free Gemini API key in Settings first.');
+    showTab('settings');
+    return;
+  }
+  previewCard.style.display='none';
+  progressCard.style.display='block';
+  progressText.textContent = 'Reading invoice with AI…';
+
+  const base64 = currentImageDataUrl.split(',')[1];
+  const mimeMatch = currentImageDataUrl.match(/data:(.*?);base64/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+  try{
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${settings.geminiKey}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents:[{
+          parts:[
+            {text: EXTRACTION_INSTRUCTIONS},
+            {inline_data:{ mime_type: mime, data: base64 }}
+          ]
+        }],
+        generationConfig:{ temperature:0.1 }
+      })
+    });
+    const data = await resp.json();
+    if(data.error){ throw new Error(data.error.message || 'Gemini API error'); }
+    let text = data.candidates[0].content.parts[0].text.trim();
+    text = text.replace(/^```json/,'').replace(/^```/,'').replace(/```$/,'').trim();
+    const parsed = JSON.parse(text);
+
+    progressText.textContent = 'Cleaning up scan for printing…';
+    const scanImage = await enhanceToScan(currentImageDataUrl);
+
+    const record = {
+      id: 'inv_' + Date.now(),
+      capturedAt: new Date().toISOString(),
+      dayKey: normalizeDayKey(parsed.delivery_date) || new Date().toISOString().slice(0,10),
+      image: currentImageDataUrl,
+      scanImage: scanImage,
+      status: 'extracted', // received -> extracted -> sent -> closed
+      strNumber: '',
+      wasBlurryOnCapture: !currentSharp,
+      dropboxPath: '',
+      data: parsed
+    };
+
+    saveInvoiceRecord(record);
+
+    // Optional Dropbox upload (best-effort, non-blocking of main flow)
+    if(settings.dropboxKey){
+      progressText.textContent = 'Saving to Dropbox…';
+      try{ await uploadToDropbox(record, settings.dropboxKey); }catch(dbErr){ console.warn('Dropbox upload failed', dbErr); }
+    }
+
+    progressCard.style.display='none';
+    resetCapture();
+    showTab('invoices');
+    openDetail(record.id);
+  }catch(err){
+    progressCard.style.display='none';
+    previewCard.style.display='block';
+    renderCaptureActions();
+    alert('Could not read this invoice: ' + err.message + '\\n\\nYou can retake the photo or try again.');
+  }
+}
+
+const MONTH_NAMES = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+
+function normalizeDayKey(raw){
+  if(!raw) return null;
+  const iso = raw.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+  // text-month formats like "16-Jun-2026" or "16 June 2026" (seen on Z&Z Taqseemkar vouchers)
+  const textMonth = raw.match(/(\d{1,2})[\s\-]([A-Za-z]{3})[A-Za-z]*[\s\-](\d{4})/);
+  if(textMonth){
+    const mon = MONTH_NAMES[textMonth[2].toLowerCase().slice(0,3)];
+    if(mon) return `${textMonth[3]}-${mon}-${textMonth[1].padStart(2,'0')}`;
+  }
+  const dmy = raw.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  if(dmy){
+    let [_, d, m, y] = dmy;
+    if(y.length===2) y = '20'+y;
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  return null;
+}
+
+function saveInvoiceRecord(record){
+  const list = loadInvoices();
+  list.unshift(record);
+  saveInvoices(list);
+}
+
+/* ---------------- Dropbox upload ---------------- */
+async function uploadToDropbox(record, token){
+  const path = `/Invoices/${record.dayKey}/${record.data.vendor_name||'Invoice'}_${record.data.invoice_number||record.id}.jpg`.replace(/[^a-zA-Z0-9\/_\-\.]/g,'_');
+  const base64 = record.image.split(',')[1];
+  const binary = Uint8Array.from(atob(base64), c=>c.charCodeAt(0));
+  const resp = await fetch('https://content.dropboxapi.com/2/files/upload', {
+    method:'POST',
+    headers:{
+      'Authorization': 'Bearer ' + token,
+      'Dropbox-API-Arg': JSON.stringify({ path, mode:'add', autorename:true, mute:true }),
+      'Content-Type':'application/octet-stream'
+    },
+    body: binary
+  });
+  const result = await resp.json();
+  if(result.path_display){
+    record.dropboxPath = result.path_display;
+    const list = loadInvoices();
+    const idx = list.findIndex(r=>r.id===record.id);
+    if(idx>-1){ list[idx] = record; saveInvoices(list); }
+  }
+}
+
+/* ---------------- Invoice list ---------------- */
+function renderInvoiceList(){
+  const list = loadInvoices();
+  const container = document.getElementById('invoiceList');
+  if(list.length===0){
+    container.innerHTML = '<div class="empty">No invoices captured yet.<br>Go to the Capture tab to add one.</div>';
+    return;
+  }
+  const groups = {};
+  list.forEach(r=>{
+    groups[r.dayKey] = groups[r.dayKey] || [];
+    groups[r.dayKey].push(r);
+  });
+  const days = Object.keys(groups).sort().reverse();
+  container.innerHTML = days.map(day=>{
+    const rows = groups[day].map(r=>invoiceRowHtml(r)).join('');
+    const dayTotal = groups[day].reduce((s,r)=> s + (parseFloat((r.data.total_bill_amount||'0').replace(/,/g,''))||0), 0);
+    return `<div class="daygroup">
+      <div class="daylabel"><span>${formatDay(day)}</span><span>Rs ${dayTotal.toLocaleString()}</span></div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.inv-row').forEach(el=>{
+    el.addEventListener('click', ()=> openDetail(el.dataset.id));
+  });
+}
+
+function formatDay(dayKey){
+  const d = new Date(dayKey+'T00:00:00');
+  if(isNaN(d)) return dayKey;
+  return d.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' });
+}
+
+function invoiceRowHtml(r){
+  const amt = r.data.total_bill_amount || '—';
+  const pillMap = { received:'received', extracted:'extracted', sent:'sent', closed:'closed', error:'error' };
+  const pillLabel = { received:'Received', extracted:'Ready to send', sent:'Sent · awaiting STR', closed:'Closed', error:'Needs review' };
+  return `<div class="inv-row" data-id="${r.id}">
+    <img src="${r.scanImage || r.image}">
+    <div class="inv-main">
+      <div class="vend">${escapeHtml(r.data.vendor_name||'Unknown vendor')}</div>
+      <div class="meta">${escapeHtml(r.data.invoice_number||'no #')} · ${escapeHtml(r.data.category||'')}</div>
+      <span class="pill ${pillMap[r.status]||'received'}">${pillLabel[r.status]||r.status}</span>
+    </div>
+    <div class="inv-amt"><div class="rs">Rs ${amt}</div></div>
+  </div>`;
+}
+
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------------- Detail view ---------------- */
+let currentDetailId = null;
+
+function openDetail(id){
+  currentDetailId = id;
+  const list = loadInvoices();
+  const r = list.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('tab-invoices').style.display='none';
+  document.getElementById('tab-detail').style.display='block';
+  document.getElementById('detailBody').innerHTML = detailHtml(r);
+  wireDetailActions(r);
+}
+
+document.getElementById('backToList').addEventListener('click', ()=>{
+  document.getElementById('tab-detail').style.display='none';
+  document.getElementById('tab-invoices').style.display='block';
+  renderInvoiceList();
+});
+
+function detailHtml(r){
+  const d = r.data;
+  const itemRows = (d.items||[]).map(it=>`
+    <tr>
+      <td>${escapeHtml(it.product_name)}</td>
+      <td class="num">${escapeHtml(it.qty)}</td>
+      <td class="num">${escapeHtml(it.rate)}</td>
+      <td class="num">${escapeHtml(it.gst)}</td>
+      <td class="num">${escapeHtml(it.discount)}</td>
+      <td class="num">${escapeHtml(it.net_amount)}</td>
+    </tr>`).join('');
+
+  const issueBanner = d.issues ? `<div class="banner">⚠ ${escapeHtml(d.issues)}</div>` : '';
+
+  return `
+    ${issueBanner}
+    <div class="card">
+      <img src="${r.scanImage || r.image}" id="detailMainImg" data-scan="${r.scanImage||''}" data-orig="${r.image}" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">
+      ${r.scanImage ? '<button class="secondary no-print" id="toggleImgBtn" style="margin-top:0;">View original photo</button>' : ''}
+      <div class="kv" style="margin-top:12px;">
+        <b>Vendor</b><span>${escapeHtml(d.vendor_name)}</span>
+        <b>Branch</b><span>${escapeHtml(d.customer_name)}</span>
+        <b>Invoice #</b><span>${escapeHtml(d.invoice_number)}</span>
+        <b>Order #</b><span>${escapeHtml(d.order_number)||'—'}</span>
+        <b>Order date</b><span>${escapeHtml(d.order_date)}</span>
+        <b>Delivery date</b><span>${escapeHtml(d.delivery_date)}</span>
+        <b>Category</b><span>${escapeHtml(d.category)}</span>
+        <b>Notes</b><span>${escapeHtml(d.handwritten_notes)||'—'}</span>
+      </div>
+      <table class="items">
+        <tr><th>Item</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">GST</th><th class="num">Disc</th><th class="num">Net</th></tr>
+        ${itemRows}
+      </table>
+      <div class="totals">
+        <div><span>Gross amount</span><span>${escapeHtml(d.gross_amount)}</span></div>
+        <div><span>Total GST</span><span>${escapeHtml(d.total_gst)}</span></div>
+        <div><span>Total discount</span><span>${escapeHtml(d.total_discount)}</span></div>
+        <div><span>Advance tax</span><span>${escapeHtml(d.advance_tax)}</span></div>
+        <div class="grand"><span>Total bill amount</span><span>Rs ${escapeHtml(d.total_bill_amount)}</span></div>
+      </div>
+    </div>
+
+    <div class="card no-print">
+      <h2>Actions</h2>
+      <button class="primary" id="sendGmailBtn">Send to Gmail (warehouse)</button>
+      <button class="secondary" id="printBtn">Print this invoice</button>
+      <div class="str-box">
+        <input type="text" id="strInput" placeholder="Enter STR number to close" value="${escapeHtml(r.strNumber)}">
+        <button class="secondary" id="saveStrBtn" style="width:auto; margin:0; padding:9px 16px;">Save</button>
+      </div>
+      ${r.dropboxPath ? `<p class="hint" style="margin-top:8px;">Synced to Dropbox: ${escapeHtml(r.dropboxPath)}</p>` : ''}
+      <button class="secondary danger-outline" id="deleteBtn" style="margin-top:14px;">Delete this invoice record</button>
+    </div>
+  `;
+}
+
+function wireDetailActions(r){
+  const toggleBtn = document.getElementById('toggleImgBtn');
+  if(toggleBtn){
+    let showingOriginal = false;
+    toggleBtn.addEventListener('click', ()=>{
+      const img = document.getElementById('detailMainImg');
+      showingOriginal = !showingOriginal;
+      img.src = showingOriginal ? img.dataset.orig : img.dataset.scan;
+      toggleBtn.textContent = showingOriginal ? 'View cleaned-up scan' : 'View original photo';
+    });
+  }
+  document.getElementById('sendGmailBtn').addEventListener('click', ()=> sendToGmail(r));
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('saveStrBtn').addEventListener('click', ()=>{
+    const val = document.getElementById('strInput').value.trim();
+    updateRecord(r.id, rec=>{ rec.strNumber = val; rec.status = val ? 'closed' : rec.status; });
+    openDetail(r.id);
+  });
+  document.getElementById('deleteBtn').addEventListener('click', ()=>{
+    if(confirm('Delete this invoice record? This cannot be undone.')){
+      const list = loadInvoices().filter(x=>x.id!==r.id);
+      saveInvoices(list);
+      document.getElementById('tab-detail').style.display='none';
+      document.getElementById('tab-invoices').style.display='block';
+      renderInvoiceList();
+    }
+  });
+}
+
+function updateRecord(id, mutateFn){
+  const list = loadInvoices();
+  const idx = list.findIndex(x=>x.id===id);
+  if(idx>-1){ mutateFn(list[idx]); saveInvoices(list); }
+}
+
+/* ---------------- Gmail send ---------------- */
+async function sendToGmail(r){
+  const settings = loadSettings();
+  const d = r.data;
+  const subject = `BT | ${d.vendor_name||'Invoice'} | ${d.invoice_number||'no-number'} | ${d.delivery_date||d.order_date||''}`;
+  const itemLines = (d.items||[]).map(it=>`- ${it.product_name}: qty ${it.qty}, rate ${it.rate}, net ${it.net_amount}`).join('\n');
+  const body = `Branch: ${d.customer_name}\nVendor: ${d.vendor_name}\nInvoice #: ${d.invoice_number}\nDelivery date: ${d.delivery_date}\n\nItems:\n${itemLines}\n\nTotal bill amount: Rs ${d.total_bill_amount}\nAdvance tax: ${d.advance_tax}\n\nNotes: ${d.handwritten_notes||'—'}\n\n(Sent from Branch Invoice Desk)`;
+
+  const shareImage = r.scanImage || r.image;
+
+  // Try native share sheet first (mobile) — lets Gmail app receive the image as an attachment
+  if(navigator.canShare){
+    try{
+      const blob = await (await fetch(shareImage)).blob();
+      const file = new File([blob], `${(d.invoice_number||'invoice')}.jpg`, { type: blob.type });
+      if(navigator.canShare({ files:[file] })){
+        await navigator.share({
+          files:[file],
+          title: subject,
+          text: body
+        });
+        markSent(r.id);
+        return;
+      }
+    }catch(shareErr){
+      console.warn('Share failed or cancelled', shareErr);
+      // fall through to compose link below
+    }
+  }
+
+  // Fallback: open Gmail compose pre-filled, image must be attached manually
+  const to = settings.gmailTo || '';
+  const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + '\n\n(Attach the invoice photo manually — your browser could not attach it automatically.)')}`;
+  window.open(url, '_blank');
+  markSent(r.id);
+}
+
+function markSent(id){
+  updateRecord(id, rec=>{ if(rec.status!=='closed') rec.status='sent'; });
+  openDetail(id);
+}
+
+/* ---------------- Reports ---------------- */
+document.getElementById('runReport').addEventListener('click', ()=>{
+  const from = document.getElementById('repFrom').value;
+  const to = document.getElementById('repTo').value;
+  const list = loadInvoices().filter(r=>{
+    if(from && r.dayKey < from) return false;
+    if(to && r.dayKey > to) return false;
+    return true;
+  });
+  const out = document.getElementById('reportOutput');
+  out.style.display='block';
+  if(list.length===0){
+    out.innerHTML = '<div class="empty">No invoices in this range.</div>';
+    return;
+  }
+  const byVendor = {};
+  let grandTotal = 0;
+  list.forEach(r=>{
+    const v = r.data.vendor_name || 'Unknown';
+    const amt = parseFloat((r.data.total_bill_amount||'0').replace(/,/g,'')) || 0;
+    byVendor[v] = (byVendor[v]||0) + amt;
+    grandTotal += amt;
+  });
+  const rows = Object.keys(byVendor).sort((a,b)=>byVendor[b]-byVendor[a]).map(v=>
+    `<div><span>${escapeHtml(v)}</span><span>Rs ${byVendor[v].toLocaleString()}</span></div>`
+  ).join('');
+  out.innerHTML = `
+    <h2>Summary: ${from||'earliest'} to ${to||'latest'}</h2>
+    <div class="totals">
+      ${rows}
+      <div class="grand"><span>Grand total (${list.length} invoices)</span><span>Rs ${grandTotal.toLocaleString()}</span></div>
+    </div>
+  `;
+});
+document.getElementById('printReport').addEventListener('click', ()=> window.print());
+
+/* ---------------- init ---------------- */
+renderInvoiceList();
+</script>
+</body>
+</html>
