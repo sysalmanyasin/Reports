@@ -1,0 +1,31 @@
+{
+  "name": "Excess Stock Control",
+  "short_name": "Excess Stock",
+  "description": "Multi-branch excess inventory tracking with automatic Head Office rollup — offline, single-file, no backend required.",
+  "start_url": "./excess-stock-control.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f8fc",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
