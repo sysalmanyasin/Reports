@@ -1007,15 +1007,18 @@ const App = (() => {
     // Modern, email-safe palette. Gmail/Outlook strip most <style> rules and
     // many CSS features, so every visual cue here (borders, fills, bold) is
     // inline and uses only widely-supported table/border properties.
-    const INK = '#1F2420', MUTED = '#5C6961', FAINT = '#8B958E';
-    const LINE = '#CFE0D6';
+    // Muted/faint tones are kept dark enough to stay legible after Gmail's
+    // own color adjustments, and borders are 2px so they survive shrinking.
+    const INK = '#1B211D', MUTED = '#3F4A43', FAINT = '#5C6961';
+    const LINE = '#8FAC9B';
     const DEEP = '#123D25', GREEN = '#2F7A4F', GREEN_TINT = '#EAF4EE';
-    const RED = '#B23A2E', RED_TINT = '#FBEAE7';
-    const AMBER = '#B8770F', AMBER_TINT = '#FBF1DF';
-    const PAPER = '#FFFFFF', ROW_ALT = '#F5F8F6';
+    const RED = '#A93225', RED_TINT = '#FBEAE7';
+    const AMBER = '#96650C', AMBER_TINT = '#FBF1DF';
+    const PAPER = '#FFFFFF', ROW_ALT = '#F1F6F3';
     const SERIF = "Georgia,'Times New Roman',serif";
     const SANS = "Arial,Helvetica,sans-serif";
     const MONO = "'Courier New',Courier,monospace";
+    const BW = '2px'; // standard border width used throughout the report
 
     const branch = $('m_branch').value, prep = $('m_preparedby').value, desig = $('m_designation').value;
     const dateStr = fmtDateNice($('m_date').value), timeStr = fmtTimeNice($('m_time').value);
@@ -1032,7 +1035,7 @@ const App = (() => {
 
     function renderItemsTable(items){
       if(!items.length) return '';
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};border-radius:6px;margin-top:6px;">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};border-radius:6px;margin-top:6px;">`;
       items.forEach((item, i) => {
         const label = item.querySelector('.label').childNodes[0].textContent.trim();
         const input = item.querySelector('input');
@@ -1042,9 +1045,10 @@ const App = (() => {
         else if(toggle){ const a = toggle.querySelector('button.active'); val = a ? a.textContent : ''; }
         const exception = isException(val);
         const rowBg = exception ? RED_TINT : (i % 2 === 1 ? ROW_ALT : PAPER);
+        const borderBottom = i < items.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
         h += `<tr style="background-color:${rowBg};">
-          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:600;color:${MUTED};border-bottom:1px solid ${LINE};width:56%;">${esc(label)}</td>
-          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${exception ? RED : INK};text-align:right;border-bottom:1px solid ${LINE};">${esc(val)}</td>
+          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${MUTED};${borderBottom}width:56%;">${esc(label)}</td>
+          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${exception ? RED : INK};text-align:right;${borderBottom}">${esc(val)}</td>
         </tr>`;
       });
       h += `</table>`;
@@ -1062,7 +1066,7 @@ const App = (() => {
           const label = box.querySelector('label').textContent;
           const input = box.querySelector('input');
           const tone = statTone(box);
-          h += `<td width="${Math.floor(100/group.length)}%" style="background-color:${tone.bg};border:1px solid ${LINE};border-radius:8px;padding:10px 12px;vertical-align:top;">
+          h += `<td width="${Math.floor(100/group.length)}%" style="background-color:${tone.bg};border:${BW} solid ${LINE};border-radius:8px;padding:10px 12px;vertical-align:top;">
             <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:${FAINT};font-family:${SANS};font-weight:700;">${esc(label)}</div>
             <div style="font-size:15px;font-family:${MONO};font-weight:700;color:${tone.color};margin-top:5px;">${esc(input ? input.value : '')}</div>
           </td>`;
@@ -1076,16 +1080,18 @@ const App = (() => {
     function renderSubhead(div){
       const t = div.querySelector('.subhead'), n = div.querySelector('.subhead-note');
       const title = t ? t.textContent : '', note = n ? n.textContent : '';
-      return `<div style="margin-top:14px;padding:6px 2px;font-size:10.5px;font-family:${SANS};font-weight:700;color:${DEEP};text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid ${GREEN};">${esc(title)}${note ? ` <span style="font-weight:normal;text-transform:none;font-style:italic;color:${FAINT};">(${esc(note)})</span>` : ''}</div>`;
+      return `<div style="margin-top:14px;padding:6px 2px;font-size:10.5px;font-family:${SANS};font-weight:700;color:${DEEP};text-transform:uppercase;letter-spacing:.06em;border-bottom:3px solid ${GREEN};">${esc(title)}${note ? ` <span style="font-weight:700;text-transform:none;font-style:italic;color:${FAINT};">(${esc(note)})</span>` : ''}</div>`;
     }
 
     function renderDataTable(table){
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};margin-top:8px;">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};margin-top:8px;">`;
       const headers = [...table.querySelectorAll('thead th')].map(th => th.textContent);
       h += `<tr style="background-color:${DEEP};">` + headers.map(hh => `<th style="text-align:left;font-size:10px;font-family:${SANS};text-transform:uppercase;letter-spacing:.05em;color:#EAF4EE;font-weight:700;padding:8px 10px;">${esc(hh)}</th>`).join('') + `</tr>`;
-      table.querySelectorAll('tbody tr').forEach((tr, i) => {
+      const rows = [...table.querySelectorAll('tbody tr')];
+      rows.forEach((tr, i) => {
         const rowBg = i % 2 === 1 ? ROW_ALT : PAPER;
-        h += `<tr style="background-color:${rowBg};">` + [...tr.querySelectorAll('td input')].map((inp, ci) => `<td style="padding:8px 10px;font-size:12px;font-family:${ci === 0 ? SANS : MONO};font-weight:${ci === 0 ? 700 : 400};color:${INK};border-bottom:1px solid ${LINE};">${esc(inp.value)}</td>`).join('') + `</tr>`;
+        const borderBottom = i < rows.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
+        h += `<tr style="background-color:${rowBg};">` + [...tr.querySelectorAll('td input')].map((inp, ci) => `<td style="padding:8px 10px;font-size:12px;font-family:${ci === 0 ? SANS : MONO};font-weight:700;color:${INK};${borderBottom}">${esc(inp.value)}</td>`).join('') + `</tr>`;
       });
       h += `</table>`;
       return h;
@@ -1093,14 +1099,15 @@ const App = (() => {
 
     function renderSigGrid(grid){
       const items = grid.querySelectorAll('.item');
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};margin-top:6px;">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};margin-top:6px;">`;
       items.forEach((item, i) => {
         const label = item.querySelector('.label').textContent.trim();
         const valEl = item.querySelector('span');
         const val = valEl ? valEl.textContent : '';
+        const borderBottom = i < items.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
         h += `<tr style="background-color:${i % 2 === 1 ? ROW_ALT : PAPER};">
-          <td style="padding:8px 12px;font-size:12.5px;font-family:${SANS};font-weight:600;color:${MUTED};border-bottom:1px solid ${LINE};width:40%;">${esc(label)}</td>
-          <td style="padding:8px 12px;font-size:13px;font-family:${SERIF};font-style:italic;font-weight:700;color:${DEEP};border-bottom:1px solid ${LINE};">${esc(val)}</td>
+          <td style="padding:8px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${MUTED};${borderBottom}width:40%;">${esc(label)}</td>
+          <td style="padding:8px 12px;font-size:13px;font-family:${SERIF};font-style:italic;font-weight:700;color:${DEEP};${borderBottom}">${esc(val)}</td>
         </tr>`;
       });
       h += `</table>`;
@@ -1128,7 +1135,7 @@ const App = (() => {
         } else if(child.tagName === 'TABLE' && child.classList.contains('data-table')){
           out += renderDataTable(child);
         } else if(child.tagName === 'TEXTAREA'){
-          if(child.value.trim()) out += `<div style="padding:10px 12px;font-size:12.5px;font-family:${SERIF};font-style:italic;color:${INK};background-color:${GREEN_TINT};border:1px solid ${LINE};border-radius:8px;margin-top:6px;">${esc(child.value)}</div>`;
+          if(child.value.trim()) out += `<div style="padding:10px 12px;font-size:12.5px;font-family:${SERIF};font-style:italic;font-weight:700;color:${INK};background-color:${GREEN_TINT};border:${BW} solid ${LINE};border-radius:8px;margin-top:6px;">${esc(child.value)}</div>`;
         } else if(child.classList.contains('sig-grid')){
           out += renderSigGrid(child);
         }
@@ -1137,17 +1144,21 @@ const App = (() => {
       return out;
     }
 
-    let html = `<div style="font-family:${SANS};max-width:640px;margin:0 auto;color:${INK};">`;
+    // NOTE: no max-width/margin:auto centering — Gmail's compose box renders
+    // this flush against the left edge, matching how the rest of an email
+    // body normally sits, instead of floating in the middle with dead space
+    // on both sides.
+    let html = `<div style="font-family:${SANS};width:100%;color:${INK};">`;
 
     // Header banner — solid brand color reads instantly even after Gmail
     // strips everything else, and gives the report an identifiable "cover".
     html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px 10px 0 0;">
-      <tr><td style="background-color:${DEEP};padding:20px 24px 18px;text-align:center;border-radius:10px 10px 0 0;">
+      <tr><td style="background-color:${DEEP};padding:20px 24px 18px;text-align:left;border-radius:10px 10px 0 0;">
         <div style="font-family:${SERIF};font-size:21px;font-weight:700;color:#FFFFFF;">Fazal Din's Pharma Plus</div>
-        <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#B9C9BE;margin-top:4px;font-family:${SANS};font-weight:700;">Daily Operations Check List</div>
-        <div style="font-size:12px;color:#DCEBE1;margin-top:12px;font-family:${SANS};">
+        <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#CFE3D6;margin-top:4px;font-family:${SANS};font-weight:700;">Daily Operations Check List</div>
+        <div style="font-size:12px;color:#E6F1EA;margin-top:12px;font-family:${SANS};font-weight:700;">
           <b style="color:#ffffff;">${esc(branch)}</b> &nbsp;&middot;&nbsp; ${esc(dateStr)} &nbsp;&middot;&nbsp; ${esc(timeStr)}<br>
-          <span style="color:#9FC4AA;">Prepared by</span> <b style="color:#ffffff;">${esc(prep)}</b>${desig ? ', ' + esc(desig) : ''}
+          <span style="color:#BFDBC9;">Prepared by</span> <b style="color:#ffffff;">${esc(prep)}</b>${desig ? ', ' + esc(desig) : ''}
         </div>
       </td></tr>
     </table>`;
@@ -1159,10 +1170,10 @@ const App = (() => {
       ['Customers', $('snap_cust').textContent, PAPER, INK],
       ['Flagged Items <7d', $('snap_flag').textContent, RED_TINT, RED]
     ];
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${LINE};border-top:none;background-color:${PAPER};"><tr><td style="padding:8px;">
+    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:${BW} solid ${LINE};border-top:none;background-color:${PAPER};"><tr><td style="padding:8px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="border-collapse:separate;"><tr>`;
     snapItems.forEach(([k, v, bg, color]) => {
-      html += `<td width="25%" style="background-color:${bg};border:1px solid ${LINE};border-radius:8px;padding:10px 10px;text-align:center;vertical-align:top;">
+      html += `<td width="25%" style="background-color:${bg};border:${BW} solid ${LINE};border-radius:8px;padding:10px 10px;text-align:center;vertical-align:top;">
         <div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:${FAINT};font-weight:700;">${esc(k)}</div>
         <div style="font-size:16px;font-family:${MONO};font-weight:700;color:${color};margin-top:6px;">${esc(v)}</div>
       </td>`;
@@ -1177,8 +1188,8 @@ const App = (() => {
       const body = sec.querySelector(':scope > .section-body');
       const bodyHtml = body ? renderSectionBody(body) : '';
       if(!bodyHtml.trim()) return;
-      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};border-radius:10px;margin-top:18px;">
-        <tr><td style="background-color:${GREEN_TINT};padding:10px 14px;border-bottom:2px solid ${GREEN};border-radius:10px 10px 0 0;">
+      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};border-radius:10px;margin-top:18px;">
+        <tr><td style="background-color:${GREEN_TINT};padding:10px 14px;border-bottom:3px solid ${GREEN};border-radius:10px 10px 0 0;">
           <span style="display:inline-block;font-family:${MONO};font-size:11px;font-weight:700;color:#ffffff;background-color:${DEEP};border-radius:4px;padding:2px 7px;margin-right:8px;">${esc(num)}</span>
           <span style="font-family:${SERIF};font-size:14.5px;font-weight:700;color:${DEEP};">${esc(title)}</span>
         </td></tr>
@@ -1186,7 +1197,7 @@ const App = (() => {
       </table>`;
     });
 
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr><td style="border-top:2px solid ${DEEP};padding-top:12px;text-align:center;font-size:10.5px;font-family:${SANS};color:${FAINT};">
+    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr><td style="border-top:3px solid ${DEEP};padding-top:12px;text-align:left;font-size:10.5px;font-family:${SANS};color:${FAINT};font-weight:700;">
       Fazal Din's Pharma Plus &mdash; Daily Check List &middot; ${esc(branch)} &middot; ${esc(dateStr)}
     </td></tr></table>`;
     html += `</div>`;
