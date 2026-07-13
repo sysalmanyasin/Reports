@@ -1003,30 +1003,36 @@ const App = (() => {
 
   function buildHtmlReport(){
     const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    // Restrained palette: ink for text, a soft hairline for structure, and
-    // color reserved for the few things that actually need to stand out.
-    const INK = '#20241F', MUTED = '#84907F', FAINT = '#A9B2A2', HAIRLINE = '#E3E1D6';
-    const DEEP = '#123D25', RED = '#A93A2E', AMBER = '#A6720E';
+
+    // Modern, email-safe palette. Gmail/Outlook strip most <style> rules and
+    // many CSS features, so every visual cue here (borders, fills, bold) is
+    // inline and uses only widely-supported table/border properties.
+    const INK = '#1F2420', MUTED = '#5C6961', FAINT = '#8B958E';
+    const LINE = '#CFE0D6';
+    const DEEP = '#123D25', GREEN = '#2F7A4F', GREEN_TINT = '#EAF4EE';
+    const RED = '#B23A2E', RED_TINT = '#FBEAE7';
+    const AMBER = '#B8770F', AMBER_TINT = '#FBF1DF';
+    const PAPER = '#FFFFFF', ROW_ALT = '#F5F8F6';
     const SERIF = "Georgia,'Times New Roman',serif";
     const SANS = "Arial,Helvetica,sans-serif";
     const MONO = "'Courier New',Courier,monospace";
+
     const branch = $('m_branch').value, prep = $('m_preparedby').value, desig = $('m_designation').value;
     const dateStr = fmtDateNice($('m_date').value), timeStr = fmtTimeNice($('m_time').value);
 
-    // Only "No" answers are flagged red — everything routine stays quiet ink,
-    // so color still means something when it appears.
+    // Only "No" answers get flagged — keeps color meaningful instead of noisy.
     const isException = (val) => /^no$/i.test(String(val).trim());
 
-    const statTone = (box) => {
-      if(box.classList.contains('flag')) return { color: RED, weight: 'bold' };
-      if(box.classList.contains('reference')) return { color: AMBER, weight: 'bold' };
-      if(box.classList.contains('readout')) return { color: DEEP, weight: 'bold' };
-      return { color: INK, weight: 'normal' };
-    };
+    function statTone(box){
+      if(box.classList.contains('flag')) return { bg: RED_TINT, color: RED };
+      if(box.classList.contains('reference')) return { bg: AMBER_TINT, color: AMBER };
+      if(box.classList.contains('readout')) return { bg: GREEN_TINT, color: DEEP };
+      return { bg: PAPER, color: INK };
+    }
 
     function renderItemsTable(items){
       if(!items.length) return '';
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};border-radius:6px;margin-top:6px;">`;
       items.forEach((item, i) => {
         const label = item.querySelector('.label').childNodes[0].textContent.trim();
         const input = item.querySelector('input');
@@ -1035,35 +1041,33 @@ const App = (() => {
         if(input) val = input.value;
         else if(toggle){ const a = toggle.querySelector('button.active'); val = a ? a.textContent : ''; }
         const exception = isException(val);
-        const border = i < items.length - 1 ? `border-bottom:1px solid ${HAIRLINE};` : '';
-        h += `<tr>
-          <td style="padding:7px 4px;font-size:12.5px;font-family:${SANS};color:${MUTED};${border}width:58%;">${esc(label)}</td>
-          <td style="padding:7px 4px;font-size:12.5px;font-family:${SANS};font-weight:${exception ? 'bold' : 'normal'};color:${exception ? RED : INK};text-align:right;${border}">${esc(val)}</td>
+        const rowBg = exception ? RED_TINT : (i % 2 === 1 ? ROW_ALT : PAPER);
+        h += `<tr style="background-color:${rowBg};">
+          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:600;color:${MUTED};border-bottom:1px solid ${LINE};width:56%;">${esc(label)}</td>
+          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${exception ? RED : INK};text-align:right;border-bottom:1px solid ${LINE};">${esc(val)}</td>
         </tr>`;
       });
       h += `</table>`;
       return h;
     }
 
-    // Baseline-rule stat layout — a label, a thin rule, a number underneath —
-    // instead of a colored tile, so the numbers read like a ledger.
     function renderStatBoxes(boxes){
       if(!boxes.length) return '';
       const perRow = 2;
       let h = '';
       for(let i = 0; i < boxes.length; i += perRow){
         const group = boxes.slice(i, i + perRow);
-        h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;"><tr>`;
-        group.forEach((box, gi) => {
+        h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="border-collapse:separate;margin-top:8px;"><tr>`;
+        group.forEach(box => {
           const label = box.querySelector('label').textContent;
           const input = box.querySelector('input');
           const tone = statTone(box);
-          const pad = gi === 0 && group.length > 1 ? 'padding-right:14px;' : gi > 0 ? 'padding-left:14px;' : '';
-          h += `<td width="${Math.floor(100 / group.length)}%" style="${pad}padding-bottom:8px;border-bottom:1px solid ${HAIRLINE};vertical-align:top;">
-            <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:${FAINT};font-family:${SANS};">${esc(label)}</div>
-            <div style="font-size:14px;font-family:${MONO};font-weight:${tone.weight};color:${tone.color};margin-top:5px;">${esc(input ? input.value : '')}</div>
+          h += `<td width="${Math.floor(100/group.length)}%" style="background-color:${tone.bg};border:1px solid ${LINE};border-radius:8px;padding:10px 12px;vertical-align:top;">
+            <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:${FAINT};font-family:${SANS};font-weight:700;">${esc(label)}</div>
+            <div style="font-size:15px;font-family:${MONO};font-weight:700;color:${tone.color};margin-top:5px;">${esc(input ? input.value : '')}</div>
           </td>`;
         });
+        if(group.length < perRow) h += `<td width="${Math.floor(100/perRow)}%"></td>`;
         h += `</tr></table>`;
       }
       return h;
@@ -1072,16 +1076,16 @@ const App = (() => {
     function renderSubhead(div){
       const t = div.querySelector('.subhead'), n = div.querySelector('.subhead-note');
       const title = t ? t.textContent : '', note = n ? n.textContent : '';
-      return `<div style="margin-top:16px;padding:0 0 4px;font-size:10.5px;font-family:${SANS};font-weight:bold;color:${MUTED};text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid ${HAIRLINE};">${esc(title)}${note ? ` <span style="font-weight:normal;text-transform:none;font-style:italic;color:${FAINT};">(${esc(note)})</span>` : ''}</div>`;
+      return `<div style="margin-top:14px;padding:6px 2px;font-size:10.5px;font-family:${SANS};font-weight:700;color:${DEEP};text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid ${GREEN};">${esc(title)}${note ? ` <span style="font-weight:normal;text-transform:none;font-style:italic;color:${FAINT};">(${esc(note)})</span>` : ''}</div>`;
     }
 
     function renderDataTable(table){
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:10px;">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};margin-top:8px;">`;
       const headers = [...table.querySelectorAll('thead th')].map(th => th.textContent);
-      h += `<tr>` + headers.map(hh => `<th style="text-align:left;font-size:9.5px;font-family:${SANS};text-transform:uppercase;letter-spacing:.05em;color:${FAINT};font-weight:normal;padding:0 8px 7px 0;border-bottom:1.5px solid ${HAIRLINE};">${esc(hh)}</th>`).join('') + `</tr>`;
-      table.querySelectorAll('tbody tr').forEach((tr, i, arr) => {
-        const border = i < arr.length - 1 ? `border-bottom:1px solid ${HAIRLINE};` : '';
-        h += `<tr>` + [...tr.querySelectorAll('td input')].map((inp, ci) => `<td style="padding:7px 8px 7px 0;font-size:12px;font-family:${ci === 0 ? SANS : MONO};color:${INK};${border}">${esc(inp.value)}</td>`).join('') + `</tr>`;
+      h += `<tr style="background-color:${DEEP};">` + headers.map(hh => `<th style="text-align:left;font-size:10px;font-family:${SANS};text-transform:uppercase;letter-spacing:.05em;color:#EAF4EE;font-weight:700;padding:8px 10px;">${esc(hh)}</th>`).join('') + `</tr>`;
+      table.querySelectorAll('tbody tr').forEach((tr, i) => {
+        const rowBg = i % 2 === 1 ? ROW_ALT : PAPER;
+        h += `<tr style="background-color:${rowBg};">` + [...tr.querySelectorAll('td input')].map((inp, ci) => `<td style="padding:8px 10px;font-size:12px;font-family:${ci === 0 ? SANS : MONO};font-weight:${ci === 0 ? 700 : 400};color:${INK};border-bottom:1px solid ${LINE};">${esc(inp.value)}</td>`).join('') + `</tr>`;
       });
       h += `</table>`;
       return h;
@@ -1089,23 +1093,22 @@ const App = (() => {
 
     function renderSigGrid(grid){
       const items = grid.querySelectorAll('.item');
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">`;
+      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};margin-top:6px;">`;
       items.forEach((item, i) => {
         const label = item.querySelector('.label').textContent.trim();
         const valEl = item.querySelector('span');
         const val = valEl ? valEl.textContent : '';
-        const border = i < items.length - 1 ? `border-bottom:1px solid ${HAIRLINE};` : '';
-        h += `<tr>
-          <td style="padding:6px 4px;font-size:12.5px;font-family:${SANS};color:${MUTED};${border}width:40%;">${esc(label)}</td>
-          <td style="padding:6px 4px;font-size:12.5px;font-family:${SERIF};font-style:italic;color:${INK};${border}">${esc(val)}</td>
+        h += `<tr style="background-color:${i % 2 === 1 ? ROW_ALT : PAPER};">
+          <td style="padding:8px 12px;font-size:12.5px;font-family:${SANS};font-weight:600;color:${MUTED};border-bottom:1px solid ${LINE};width:40%;">${esc(label)}</td>
+          <td style="padding:8px 12px;font-size:13px;font-family:${SERIF};font-style:italic;font-weight:700;color:${DEEP};border-bottom:1px solid ${LINE};">${esc(val)}</td>
         </tr>`;
       });
       h += `</table>`;
       return h;
     }
 
-    // Walk each section's children in the same order they appear on screen,
-    // so grids, sub-headings and item rows come out in the right sequence.
+    // Walk each section's children in the order they appear on screen, so
+    // grids, sub-headings and item rows come out in the right sequence.
     function renderSectionBody(body){
       let out = '';
       let pending = [];
@@ -1125,7 +1128,7 @@ const App = (() => {
         } else if(child.tagName === 'TABLE' && child.classList.contains('data-table')){
           out += renderDataTable(child);
         } else if(child.tagName === 'TEXTAREA'){
-          if(child.value.trim()) out += `<div style="padding:8px 0;font-size:12.5px;font-family:${SERIF};font-style:italic;color:${INK};">${esc(child.value)}</div>`;
+          if(child.value.trim()) out += `<div style="padding:10px 12px;font-size:12.5px;font-family:${SERIF};font-style:italic;color:${INK};background-color:${GREEN_TINT};border:1px solid ${LINE};border-radius:8px;margin-top:6px;">${esc(child.value)}</div>`;
         } else if(child.classList.contains('sig-grid')){
           out += renderSigGrid(child);
         }
@@ -1136,55 +1139,56 @@ const App = (() => {
 
     let html = `<div style="font-family:${SANS};max-width:640px;margin:0 auto;color:${INK};">`;
 
-    // Header — a quiet letterhead rather than a banner
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-bottom:2px solid ${DEEP};">
-      <tr><td style="padding:4px 2px 16px;text-align:center;">
-        <div style="font-family:${SERIF};font-size:20px;color:${DEEP};">Fazal Din's Pharma Plus</div>
-        <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:${FAINT};margin-top:3px;font-family:${SANS};">Daily Operations Check List</div>
-        <div style="font-size:12px;color:${MUTED};margin-top:12px;font-family:${SANS};">
-          ${esc(branch)} &nbsp;·&nbsp; ${esc(dateStr)} &nbsp;·&nbsp; ${esc(timeStr)}<br>
-          <span style="color:${FAINT};">Prepared by</span> ${esc(prep)}${desig ? ', ' + esc(desig) : ''}
+    // Header banner — solid brand color reads instantly even after Gmail
+    // strips everything else, and gives the report an identifiable "cover".
+    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px 10px 0 0;">
+      <tr><td style="background-color:${DEEP};padding:20px 24px 18px;text-align:center;border-radius:10px 10px 0 0;">
+        <div style="font-family:${SERIF};font-size:21px;font-weight:700;color:#FFFFFF;">Fazal Din's Pharma Plus</div>
+        <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#B9C9BE;margin-top:4px;font-family:${SANS};font-weight:700;">Daily Operations Check List</div>
+        <div style="font-size:12px;color:#DCEBE1;margin-top:12px;font-family:${SANS};">
+          <b style="color:#ffffff;">${esc(branch)}</b> &nbsp;&middot;&nbsp; ${esc(dateStr)} &nbsp;&middot;&nbsp; ${esc(timeStr)}<br>
+          <span style="color:#9FC4AA;">Prepared by</span> <b style="color:#ffffff;">${esc(prep)}</b>${desig ? ', ' + esc(desig) : ''}
         </div>
       </td></tr>
     </table>`;
 
-    // Snapshot — same baseline-rule treatment as the section stat boxes
+    // Snapshot strip — bordered, bold, color-coded tiles for the headline numbers
     const snapItems = [
-      ['Net Sales', $('snap_net').textContent], ['Closing Stock', $('snap_closing').textContent],
-      ['Customers', $('snap_cust').textContent], ['Flagged Items <7d', $('snap_flag').textContent]
+      ['Net Sales', $('snap_net').textContent, GREEN_TINT, DEEP],
+      ['Closing Stock', $('snap_closing').textContent, GREEN_TINT, DEEP],
+      ['Customers', $('snap_cust').textContent, PAPER, INK],
+      ['Flagged Items <7d', $('snap_flag').textContent, RED_TINT, RED]
     ];
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr>`;
-    snapItems.forEach(([k, v], i) => {
-      const pad = i === 0 ? 'padding-right:12px;' : i === snapItems.length - 1 ? 'padding-left:12px;' : 'padding:0 12px;';
-      html += `<td width="25%" style="${pad}padding-bottom:9px;border-bottom:1px solid ${HAIRLINE};vertical-align:top;">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:${FAINT};">${esc(k)}</div>
-        <div style="font-size:15px;font-family:${MONO};font-weight:bold;color:${DEEP};margin-top:5px;">${esc(v)}</div>
+    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${LINE};border-top:none;background-color:${PAPER};"><tr><td style="padding:8px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="border-collapse:separate;"><tr>`;
+    snapItems.forEach(([k, v, bg, color]) => {
+      html += `<td width="25%" style="background-color:${bg};border:1px solid ${LINE};border-radius:8px;padding:10px 10px;text-align:center;vertical-align:top;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:${FAINT};font-weight:700;">${esc(k)}</div>
+        <div style="font-size:16px;font-family:${MONO};font-weight:700;color:${color};margin-top:6px;">${esc(v)}</div>
       </td>`;
     });
-    html += `</tr></table>`;
+    html += `</tr></table></td></tr></table>`;
 
-    // Sections — hairline title rule, no boxed cards; data-heavy sections
-    // (stat grids or tables) get more air above them than routine checklists.
+    // Sections — each is its own bordered card with a bold banded title,
+    // a numbered badge, and a strong green rule under the header.
     document.querySelectorAll('.section').forEach(sec => {
       const num = sec.querySelector('.section-num').textContent;
       const title = sec.dataset.title;
       const body = sec.querySelector(':scope > .section-body');
       const bodyHtml = body ? renderSectionBody(body) : '';
       if(!bodyHtml.trim()) return;
-      const isDataHeavy = !!(body && body.querySelector('.stat-box, table.data-table'));
-      const topGap = isDataHeavy ? 34 : 20;
-      html += `<div style="margin-top:${topGap}px;">
-        <div style="display:block;padding-bottom:6px;border-bottom:1px solid ${HAIRLINE};">
-          <span style="font-family:${MONO};font-size:11px;color:${FAINT};">${esc(num)}</span>
-          <span style="font-family:${SERIF};font-size:14.5px;color:${INK};margin-left:8px;">${esc(title)}</span>
-        </div>
-        <div>${bodyHtml}</div>
-      </div>`;
+      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid ${LINE};border-radius:10px;margin-top:18px;">
+        <tr><td style="background-color:${GREEN_TINT};padding:10px 14px;border-bottom:2px solid ${GREEN};border-radius:10px 10px 0 0;">
+          <span style="display:inline-block;font-family:${MONO};font-size:11px;font-weight:700;color:#ffffff;background-color:${DEEP};border-radius:4px;padding:2px 7px;margin-right:8px;">${esc(num)}</span>
+          <span style="font-family:${SERIF};font-size:14.5px;font-weight:700;color:${DEEP};">${esc(title)}</span>
+        </td></tr>
+        <tr><td style="padding:10px 14px 14px;">${bodyHtml}</td></tr>
+      </table>`;
     });
 
-    html += `<div style="margin-top:28px;padding-top:12px;border-top:2px solid ${DEEP};text-align:center;font-size:10.5px;font-family:${SANS};color:${FAINT};">
-      Fazal Din's Pharma Plus — Daily Check List · ${esc(branch)} · ${esc(dateStr)}
-    </div>`;
+    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr><td style="border-top:2px solid ${DEEP};padding-top:12px;text-align:center;font-size:10.5px;font-family:${SANS};color:${FAINT};">
+      Fazal Din's Pharma Plus &mdash; Daily Check List &middot; ${esc(branch)} &middot; ${esc(dateStr)}
+    </td></tr></table>`;
     html += `</div>`;
     return html;
   }
