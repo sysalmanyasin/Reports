@@ -1,6 +1,6 @@
 // Excess Stock Control — service worker
 // Bump CACHE_NAME whenever excess-stock-control.html changes so clients pick up the update.
-const CACHE_NAME = 'branch-hub-v1';
+const CACHE_NAME = 'branch-hub-v1.1';
 const APP_SHELL = [
   './index.html',
   './excess-stock-control.html',
