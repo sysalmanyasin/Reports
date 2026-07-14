@@ -183,6 +183,12 @@
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   .toast.error{ background:#8a2f1f; }
 
+  .sync-badge{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; padding:6px 12px; border-radius:999px; border:1px solid transparent; }
+  .sync-badge.sync-off{ background:#f0efe9; border-color:var(--line); color:var(--muted); }
+  .sync-badge.sync-ok{ background:#e6f4ea; border-color:#b7dfc3; color:#1a7a3c; }
+  .sync-badge.sync-syncing{ background:#eef1fb; border-color:#ccd6f2; color:#3a4a8a; }
+  .sync-badge.sync-error{ background:#fdeceb; border-color:#f0c4bd; color:#8a2f1f; }
+
   /* AI review: confidence highlighting + validation banners */
   .conf-legend{ display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--muted); margin:0 0 12px; }
   .conf-legend .sw{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:4px; vertical-align:middle; }
@@ -366,11 +372,38 @@
       <p class="hint" style="margin-top:8px;">Free tier: ~50 invoice reads/day, no billing ever required. If reading stops working, free models rotate occasionally — check openrouter.ai/models (filter: free, vision).</p>    </div>
     <div class="card">
       <h2>Dropbox sync (optional)</h2>
-      <p class="hint">Paste a Dropbox access token to auto-upload each invoice photo to /Invoices/YYYY-MM-DD/ in your Dropbox. Generate one from the Dropbox App Console (Generated access token). Leave blank to skip.</p>
+      <p class="hint">Connect Dropbox to back up every invoice (photo + details) and pull them onto other devices/branches — a phone that scans invoices and a desktop that reviews them can share the same list.</p>
       <label class="field">Dropbox access token</label>
       <input type="password" id="dropboxKey" placeholder="sl.xxxxxxxx">
-      <button class="secondary" type="button" id="testDropboxBtn" style="margin-top:8px; width:auto; padding:8px 14px;">Test Dropbox connection</button>
-      <p class="hint" style="margin-top:8px;">Note: a "Generated access token" from the Dropbox App Console usually expires after 4 hours unless the app is configured for tokens with no expiration. If sync that was working suddenly stops, generate a fresh token here and save again.</p>
+      <div id="dropboxStatusBadge" class="sync-badge sync-off" style="margin-top:10px;">○ Not connected</div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+        <button class="secondary" type="button" id="connectDropboxBtn" style="width:auto; padding:8px 14px;">Connect</button>
+        <button class="secondary danger-outline" type="button" id="disconnectDropboxBtn" style="width:auto; padding:8px 14px;">Disconnect</button>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+        <button class="secondary" type="button" id="pushDropboxBtn" style="width:auto; padding:8px 14px;">⬆ Push — sync this device now</button>
+        <button class="secondary" type="button" id="pullDropboxBtn" style="width:auto; padding:8px 14px;">⬇ Pull — restore from Dropbox</button>
+      </div>
+      <p class="hint" style="margin-top:8px;">
+        <b>Push</b> uploads every invoice on this device (details + any photos not yet backed up) to Dropbox.
+        <b>Pull</b> brings in invoices that were pushed from any other device — use this the first time you set up a new phone or browser.
+      </p>
+
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line);">
+        <label class="field">Share this connection with another device</label>
+        <p class="hint">Instead of retyping the token, copy a setup code here and paste it into Settings on the other device.</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="secondary" type="button" id="copySetupCodeBtn" style="width:auto; padding:8px 14px;">Copy setup code</button>
+        </div>
+        <label class="field" style="margin-top:10px;">Paste a setup code from another device</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="setupCodeInput" placeholder="Paste code here" style="flex:1;">
+          <button class="secondary" type="button" id="applySetupCodeBtn" style="width:auto; padding:8px 14px;">Apply</button>
+        </div>
+      </div>
+
+      <p class="hint" style="margin-top:12px;">Note: a "Generated access token" from the Dropbox App Console usually expires after 4 hours unless the app is configured for tokens with no expiration. If sync that was working suddenly stops, generate a fresh token, paste it above, and press Connect again.</p>
     </div>
     <div class="card">
       <h2>Gmail destination</h2>
@@ -1353,6 +1386,7 @@ function fillSettingsForm(){
   document.getElementById('aiKey').value = s.aiKey || s.geminiKey || '';
   document.getElementById('dropboxKey').value = s.dropboxKey || '';
   document.getElementById('gmailTo').value = s.gmailTo || '';
+  renderDropboxBadge();
 }
 document.getElementById('saveSettings').addEventListener('click', ()=>{
   saveSettings({
@@ -2570,10 +2604,19 @@ document.getElementById('saveManualBtn').addEventListener('click', async ()=>{
   if(settings.dropboxKey && (record.image || record.scanImage)){
     try{
       await uploadToDropbox(record, settings.dropboxKey);
+      const meta = loadSyncMeta();
+      meta.lastPushAt = new Date().toISOString();
+      meta.lastError = '';
+      saveSyncMeta(meta);
+      renderDropboxBadge();
       toast('Invoice synced to Dropbox');
     }catch(dbErr){
       console.warn('Dropbox upload failed', dbErr);
       updateRecord(record.id, rec=>{ rec.dropboxError = dbErr.message; });
+      const meta = loadSyncMeta();
+      meta.lastError = dbErr.message;
+      saveSyncMeta(meta);
+      renderDropboxBadge();
       toast('Dropbox sync failed — ' + dbErr.message, 'error');
     }
   }
@@ -2612,7 +2655,102 @@ function saveInvoiceRecord(record){
   saveInvoices(list);
 }
 
-/* ---------------- Dropbox upload ---------------- */
+/* ---------------- Dropbox sync ---------------- */
+const LS_SYNC_META = 'bid_dropbox_meta_v1';
+const DROPBOX_BACKUP_PATH = '/InvoiceDeskBackup/invoices.json';
+
+function loadSyncMeta(){ try{ return JSON.parse(localStorage.getItem(LS_SYNC_META)) || {}; }catch(e){ return {}; } }
+function saveSyncMeta(m){ localStorage.setItem(LS_SYNC_META, JSON.stringify(m)); }
+
+function timeAgo(iso){
+  if(!iso) return '';
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.round(diffMs/60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return mins + 'm ago';
+  const hrs = Math.round(mins/60);
+  if(hrs < 24) return hrs + 'h ago';
+  return Math.round(hrs/24) + 'd ago';
+}
+
+// Persistent, visible status — replaces the old setup where success/failure was never
+// shown anywhere and the Dropbox card gave no indication of whether it was working.
+function renderDropboxBadge(status){
+  const el = document.getElementById('dropboxStatusBadge');
+  if(!el) return;
+  const settings = loadSettings();
+  const meta = loadSyncMeta();
+
+  if(!settings.dropboxKey){
+    el.className = 'sync-badge sync-off';
+    el.textContent = '○ Not connected';
+    return;
+  }
+  if(status==='syncing'){
+    el.className = 'sync-badge sync-syncing';
+    el.textContent = '⏳ Syncing…';
+    return;
+  }
+  if(meta.lastError){
+    el.className = 'sync-badge sync-error';
+    el.textContent = '✕ Sync error — ' + meta.lastError;
+    return;
+  }
+  const when = meta.lastPushAt || meta.lastPullAt;
+  el.className = 'sync-badge sync-ok';
+  el.textContent = '✓ Connected' + (meta.accountName ? ' as ' + meta.accountName : '') + (when ? ' · last synced ' + timeAgo(when) : ' · not synced yet');
+}
+
+async function dropboxAccountCheck(token){
+  const resp = await fetch('https://api.dropboxapi.com/2/users/get_current_account', {
+    method:'POST',
+    headers:{ 'Authorization':'Bearer ' + token }
+  });
+  if(!resp.ok){
+    throw new Error(resp.status===401 ? 'Token invalid or expired.' : `HTTP ${resp.status}`);
+  }
+  const account = await resp.json();
+  return (account.name && account.name.display_name) || account.email || 'your account';
+}
+
+async function connectDropbox(){
+  const token = document.getElementById('dropboxKey').value.trim();
+  if(!token){ toast('Paste a Dropbox access token first', 'error'); return; }
+  const btn = document.getElementById('connectDropboxBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Connecting…';
+  renderDropboxBadge('syncing');
+  try{
+    const name = await dropboxAccountCheck(token);
+    saveSettings(Object.assign(loadSettings(), { dropboxKey: token }));
+    const meta = loadSyncMeta();
+    meta.accountName = name;
+    meta.lastError = '';
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+    toast('Connected to Dropbox as ' + name + '. Use Push or Pull to sync invoices.');
+  }catch(err){
+    const meta = loadSyncMeta();
+    meta.lastError = err.message;
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+    toast('Dropbox connection failed — ' + err.message, 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+function disconnectDropbox(){
+  if(!confirm('Disconnect Dropbox on this device? Your token will be removed. Invoices already backed up to Dropbox are not deleted, and local invoice data is unaffected.')) return;
+  saveSettings(Object.assign(loadSettings(), { dropboxKey: '' }));
+  document.getElementById('dropboxKey').value = '';
+  saveSyncMeta({});
+  renderDropboxBadge();
+  toast('Dropbox disconnected on this device');
+}
+
 // Sanitizes a single path *segment* (vendor name, invoice number) — strips slashes so
 // user-entered text can never inject extra folder levels into the Dropbox path.
 function sanitizeDropboxSegment(s){
@@ -2649,7 +2787,7 @@ async function uploadToDropbox(record, token){
     let detail = '';
     try{ detail = (await resp.text()).slice(0,220); }catch(e){}
     let msg = `Dropbox upload failed (HTTP ${resp.status})`;
-    if(resp.status===401) msg = 'Dropbox token is invalid or expired — generate a new one in Settings.';
+    if(resp.status===401) msg = 'Dropbox token is invalid or expired — reconnect in Settings.';
     else if(detail) msg += `: ${detail}`;
     throw new Error(msg);
   }
@@ -2666,34 +2804,202 @@ async function uploadToDropbox(record, token){
   if(idx>-1){ list[idx] = record; saveInvoices(list); }
 }
 
-// Lets the person verify a token works right from Settings, instead of only finding out
-// it's broken (or expired) the next time they save an invoice.
-async function testDropboxConnection(){
-  const token = document.getElementById('dropboxKey').value.trim();
-  if(!token){ toast('Paste a Dropbox access token first', 'error'); return; }
-  const btn = document.getElementById('testDropboxBtn');
+async function downloadDropboxFile(path, token){
+  const resp = await fetch('https://content.dropboxapi.com/2/files/download', {
+    method:'POST',
+    headers:{
+      'Authorization': 'Bearer ' + token,
+      'Dropbox-API-Arg': JSON.stringify({ path })
+    }
+  });
+  if(resp.status===409) return null; // file doesn't exist yet
+  if(!resp.ok){
+    let detail = '';
+    try{ detail = (await resp.text()).slice(0,220); }catch(e){}
+    throw new Error(`Dropbox download failed (HTTP ${resp.status})${detail ? ': '+detail : ''}`);
+  }
+  return resp;
+}
+
+function blobToDataUrl(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// Fetches a single invoice photo from Dropbox on demand — used when a record was pulled
+// from another device and only has a dropboxPath (no local image data yet).
+async function fetchInvoiceImageFromDropbox(record, token){
+  const resp = await downloadDropboxFile(record.dropboxPath, token);
+  if(!resp) throw new Error('Photo not found on Dropbox');
+  const blob = await resp.blob();
+  return await blobToDataUrl(blob);
+}
+
+// Builds the full-device backup bundle. Photos already individually uploaded (dropboxPath
+// set) are stripped out to keep the bundle small — they're recovered on pull via
+// fetchInvoiceImageFromDropbox(). Anything not yet backed up keeps its image inline so a
+// Push never loses data even if the per-photo upload previously failed.
+function buildInvoiceBundle(){
+  const invoices = loadInvoices().map(r=>{
+    const copy = Object.assign({}, r);
+    if(copy.dropboxPath){ copy.image = ''; copy.scanImage = ''; }
+    return copy;
+  });
+  return { app:'invoice-desk', exportedAt: new Date().toISOString(), invoices };
+}
+
+async function pushToDropbox(){
+  const settings = loadSettings();
+  const token = settings.dropboxKey;
+  if(!token){ toast('Connect Dropbox first', 'error'); return; }
+  const btn = document.getElementById('pushDropboxBtn');
   const originalLabel = btn.textContent;
   btn.disabled = true;
-  btn.textContent = 'Testing…';
+  btn.textContent = 'Pushing…';
+  renderDropboxBadge('syncing');
   try{
-    const resp = await fetch('https://api.dropboxapi.com/2/users/get_current_account', {
+    // 1) Back up any photos that haven't been individually uploaded yet
+    //    (e.g. a previous auto-upload failed, or records arrived via Pull).
+    const list = loadInvoices();
+    let photosSynced = 0, photoErrors = 0;
+    for(const r of list){
+      if(!r.dropboxPath && (r.image || r.scanImage)){
+        try{ await uploadToDropbox(r, token); photosSynced++; }
+        catch(e){ photoErrors++; console.warn('Photo backup failed for', r.id, e); }
+      }
+    }
+
+    // 2) Push the full metadata bundle so other devices can Pull the invoice list.
+    const bundle = buildInvoiceBundle();
+    const resp = await fetch('https://content.dropboxapi.com/2/files/upload', {
       method:'POST',
-      headers:{ 'Authorization':'Bearer ' + token }
+      headers:{
+        'Authorization': 'Bearer ' + token,
+        'Dropbox-API-Arg': JSON.stringify({ path: DROPBOX_BACKUP_PATH, mode:'overwrite', mute:true }),
+        'Content-Type':'application/octet-stream'
+      },
+      body: JSON.stringify(bundle)
     });
     if(!resp.ok){
-      throw new Error(resp.status===401 ? 'Token invalid or expired.' : `HTTP ${resp.status}`);
+      let detail = '';
+      try{ detail = (await resp.text()).slice(0,220); }catch(e){}
+      throw new Error(`Bundle upload failed (HTTP ${resp.status})${detail ? ': '+detail : ''}`);
     }
-    const account = await resp.json();
-    const name = (account.name && account.name.display_name) || account.email || 'your account';
-    toast('Connected to Dropbox as ' + name);
+
+    const meta = loadSyncMeta();
+    meta.lastPushAt = new Date().toISOString();
+    meta.lastError = '';
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+    toast(`Pushed ${list.length} invoice${list.length===1?'':'s'} to Dropbox` + (photoErrors ? ` (${photoErrors} photo${photoErrors===1?'':'s'} failed — will retry next push)` : ''));
+    renderInvoiceList();
   }catch(err){
-    toast('Dropbox connection failed — ' + err.message, 'error');
+    const meta = loadSyncMeta();
+    meta.lastError = err.message;
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+    toast('Push failed — ' + err.message, 'error');
   }finally{
     btn.disabled = false;
     btn.textContent = originalLabel;
   }
 }
-document.getElementById('testDropboxBtn').addEventListener('click', testDropboxConnection);
+
+async function pullFromDropbox(){
+  const settings = loadSettings();
+  const token = settings.dropboxKey;
+  if(!token){ toast('Connect Dropbox first', 'error'); return; }
+  const btn = document.getElementById('pullDropboxBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Pulling…';
+  renderDropboxBadge('syncing');
+  try{
+    const resp = await downloadDropboxFile(DROPBOX_BACKUP_PATH, token);
+    if(!resp){
+      toast('No backup found on Dropbox yet — push from a device that has invoices first', 'error');
+      renderDropboxBadge();
+      return;
+    }
+    const text = await resp.text();
+    let bundle;
+    try{ bundle = JSON.parse(text); }catch(e){ throw new Error('Backup file is not valid JSON'); }
+    if(!bundle || !Array.isArray(bundle.invoices)) throw new Error('Backup file has an unexpected format');
+
+    // Merge by id: never overwrite a record that already exists locally (so in-progress
+    // edits — like an STR number just entered — are never clobbered by a pull), only add
+    // ones this device doesn't have yet.
+    const local = loadInvoices();
+    const localIds = new Set(local.map(r=>r.id));
+    const incoming = bundle.invoices.filter(r=>!localIds.has(r.id));
+
+    if(incoming.length===0){
+      toast('Already up to date — no new invoices on Dropbox');
+    }else{
+      saveInvoices(local.concat(incoming));
+      toast(`Pulled ${incoming.length} new invoice${incoming.length===1?'':'s'} from Dropbox`);
+      renderInvoiceList();
+    }
+
+    const meta = loadSyncMeta();
+    meta.lastPullAt = new Date().toISOString();
+    meta.lastError = '';
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+  }catch(err){
+    const meta = loadSyncMeta();
+    meta.lastError = err.message;
+    saveSyncMeta(meta);
+    renderDropboxBadge();
+    toast('Pull failed — ' + err.message, 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+/* ---------------- Share connection (setup code) ---------------- */
+function copyDropboxSetupCode(){
+  const settings = loadSettings();
+  if(!settings.dropboxKey){ toast('Connect Dropbox first', 'error'); return; }
+  const code = btoa(JSON.stringify({ dropboxKey: settings.dropboxKey, gmailTo: settings.gmailTo || '' }));
+  const finish = ()=> toast('Setup code copied — paste it into Settings on the other device');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(finish).catch(()=>{
+      document.getElementById('setupCodeInput').value = code;
+      toast('Could not auto-copy — code is filled in below, copy it manually', 'error');
+    });
+  }else{
+    document.getElementById('setupCodeInput').value = code;
+    toast('Code is filled in below — copy it manually');
+  }
+}
+
+function applyDropboxSetupCode(){
+  const raw = document.getElementById('setupCodeInput').value.trim();
+  if(!raw){ toast('Paste a setup code first', 'error'); return; }
+  try{
+    const parsed = JSON.parse(atob(raw));
+    if(!parsed.dropboxKey) throw new Error('missing token');
+    saveSettings(Object.assign(loadSettings(), { dropboxKey: parsed.dropboxKey, gmailTo: parsed.gmailTo || loadSettings().gmailTo || '' }));
+    fillSettingsForm();
+    document.getElementById('setupCodeInput').value = '';
+    toast('Setup code applied — press Connect to verify');
+  }catch(e){
+    toast('That doesn\'t look like a valid setup code', 'error');
+  }
+}
+
+document.getElementById('connectDropboxBtn').addEventListener('click', connectDropbox);
+document.getElementById('disconnectDropboxBtn').addEventListener('click', disconnectDropbox);
+document.getElementById('pushDropboxBtn').addEventListener('click', pushToDropbox);
+document.getElementById('pullDropboxBtn').addEventListener('click', pullFromDropbox);
+document.getElementById('copySetupCodeBtn').addEventListener('click', copyDropboxSetupCode);
+document.getElementById('applySetupCodeBtn').addEventListener('click', applyDropboxSetupCode);
 
 /* ---------------- Invoice list ---------------- */
 function renderInvoiceList(){
@@ -2734,7 +3040,8 @@ function invoiceRowHtml(r){
   const pillMap = { received:'received', extracted:'extracted', sent:'sent', closed:'closed', error:'error' };
   const pillLabel = { received:'Received', extracted:'Ready to send', sent:'Sent · awaiting STR', closed:'Closed', error:'Needs review' };
   const thumb = r.scanImage || r.image;
-  const img = thumb ? `<img src="${thumb}">` : `<div style="width:46px;height:46px;border-radius:6px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--brand-dim);">✎</div>`;
+  const placeholderGlyph = (!thumb && r.dropboxPath) ? '☁' : '✎'; // cloud = pulled from another device, photo not downloaded yet
+  const img = thumb ? `<img src="${thumb}">` : `<div style="width:46px;height:46px;border-radius:6px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--brand-dim);">${placeholderGlyph}</div>`;
   return `<div class="inv-row" data-id="${r.id}">
     ${img}
     <div class="inv-main">
@@ -2742,7 +3049,7 @@ function invoiceRowHtml(r){
       <div class="meta">${escapeHtml(r.data.invoice_number||'no #')} · ${escapeHtml(r.data.category||'')}</div>
       <span class="pill ${pillMap[r.status]||'received'}">${pillLabel[r.status]||r.status}</span>${r.manualEntry ? '<span class="pill manual">Manual</span>' : ''}
     </div>
-    <div class="inv-amt"><div class="rs">Rs ${amt}</div></div>
+    <div class="inv-amt"><div class="rs">Rs ${escapeHtml(amt)}</div></div>
   </div>`;
 }
 
@@ -2760,6 +3067,18 @@ function openDetail(id){
   document.getElementById('tab-detail').style.display='block';
   document.getElementById('detailBody').innerHTML = detailHtml(r);
   wireDetailActions(r);
+
+  // Records pulled from another device only carry a dropboxPath, not the image bytes
+  // (kept out of the sync bundle to keep it small). Fetch the photo on first view.
+  if(!r.image && !r.scanImage && r.dropboxPath){
+    const settings = loadSettings();
+    if(settings.dropboxKey){
+      fetchInvoiceImageFromDropbox(r, settings.dropboxKey).then(dataUrl=>{
+        updateRecord(r.id, rec=>{ rec.image = dataUrl; });
+        if(currentDetailId===id) openDetail(id);
+      }).catch(err=> console.warn('Could not load photo from Dropbox', err));
+    }
+  }
 }
 
 document.getElementById('backToList').addEventListener('click', ()=>{
@@ -2873,9 +3192,18 @@ function wireDetailActions(r){
       retryDropboxBtn.textContent = 'Syncing…';
       try{
         await uploadToDropbox(r, settings.dropboxKey);
+        const meta = loadSyncMeta();
+        meta.lastPushAt = new Date().toISOString();
+        meta.lastError = '';
+        saveSyncMeta(meta);
+        renderDropboxBadge();
         toast('Invoice synced to Dropbox');
       }catch(err){
         updateRecord(r.id, rec=>{ rec.dropboxError = err.message; });
+        const meta = loadSyncMeta();
+        meta.lastError = err.message;
+        saveSyncMeta(meta);
+        renderDropboxBadge();
         toast('Dropbox sync failed — ' + err.message, 'error');
       }
       openDetail(r.id);
@@ -2983,6 +3311,7 @@ document.getElementById('printReport').addEventListener('click', ()=> window.pri
 
 /* ---------------- init ---------------- */
 renderInvoiceList();
+renderDropboxBadge();
 </script>
 </body>
 </html>
