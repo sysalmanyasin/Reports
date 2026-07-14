@@ -178,6 +178,11 @@
 
   .banner{ background:#fff8e6; border:1px solid #eddca1; color:#8a6a12; font-size:12.5px; padding:10px 12px; border-radius:8px; margin-bottom:12px; }
 
+  /* Toast notifications (Dropbox sync feedback, etc.) */
+  .toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(12px); background:#1f1f1f; color:#fff; padding:11px 18px; border-radius:9px; font-size:13px; line-height:1.4; box-shadow:0 6px 18px rgba(0,0,0,.25); opacity:0; transition:opacity .18s ease, transform .18s ease; z-index:9999; max-width:88vw; text-align:center; pointer-events:none; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.error{ background:#8a2f1f; }
+
   /* AI review: confidence highlighting + validation banners */
   .conf-legend{ display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--muted); margin:0 0 12px; }
   .conf-legend .sw{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:4px; vertical-align:middle; }
@@ -364,6 +369,8 @@
       <p class="hint">Paste a Dropbox access token to auto-upload each invoice photo to /Invoices/YYYY-MM-DD/ in your Dropbox. Generate one from the Dropbox App Console (Generated access token). Leave blank to skip.</p>
       <label class="field">Dropbox access token</label>
       <input type="password" id="dropboxKey" placeholder="sl.xxxxxxxx">
+      <button class="secondary" type="button" id="testDropboxBtn" style="margin-top:8px; width:auto; padding:8px 14px;">Test Dropbox connection</button>
+      <p class="hint" style="margin-top:8px;">Note: a "Generated access token" from the Dropbox App Console usually expires after 4 hours unless the app is configured for tokens with no expiration. If sync that was working suddenly stops, generate a fresh token here and save again.</p>
     </div>
     <div class="card">
       <h2>Gmail destination</h2>
@@ -1226,6 +1233,21 @@ function loadInvoices(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) ||
 function saveInvoices(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
 function loadSettings(){ try{ return JSON.parse(localStorage.getItem(LS_SETTINGS)) || {}; }catch(e){ return {}; } }
 function saveSettings(s){ localStorage.setItem(LS_SETTINGS, JSON.stringify(s)); }
+
+/* ---------------- Toast notifications ---------------- */
+function toast(msg, kind){
+  let el = document.getElementById('appToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'appToast';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.className = 'toast show' + (kind==='error' ? ' error' : '');
+  clearTimeout(el._hideTimer);
+  el._hideTimer = setTimeout(()=> el.classList.remove('show'), 3400);
+}
 
 /* ---------------- Scan processing engine (Web Worker + main-thread fallback) ----------------
    The heavy pixel work (corner detection on full-res photos, perspective/mesh dewarp,
@@ -2545,8 +2567,15 @@ document.getElementById('saveManualBtn').addEventListener('click', async ()=>{
   saveInvoiceRecord(record);
 
   const settings = loadSettings();
-  if(settings.dropboxKey && record.image){
-    try{ await uploadToDropbox(record, settings.dropboxKey); }catch(dbErr){ console.warn('Dropbox upload failed', dbErr); }
+  if(settings.dropboxKey && (record.image || record.scanImage)){
+    try{
+      await uploadToDropbox(record, settings.dropboxKey);
+      toast('Invoice synced to Dropbox');
+    }catch(dbErr){
+      console.warn('Dropbox upload failed', dbErr);
+      updateRecord(record.id, rec=>{ rec.dropboxError = dbErr.message; });
+      toast('Dropbox sync failed — ' + dbErr.message, 'error');
+    }
   }
 
   saveBtn.disabled = false;
@@ -2584,10 +2613,25 @@ function saveInvoiceRecord(record){
 }
 
 /* ---------------- Dropbox upload ---------------- */
+// Sanitizes a single path *segment* (vendor name, invoice number) — strips slashes so
+// user-entered text can never inject extra folder levels into the Dropbox path.
+function sanitizeDropboxSegment(s){
+  const cleaned = (s||'').toString().replace(/[\/\\]/g,'-').replace(/[^a-zA-Z0-9\-_. ]/g,'_').trim();
+  return cleaned || 'Invoice';
+}
+
 async function uploadToDropbox(record, token){
-  const path = `/Invoices/${record.dayKey}/${record.data.vendor_name||'Invoice'}_${record.data.invoice_number||record.id}.jpg`.replace(/[^a-zA-Z0-9\/_\-\.]/g,'_');
-  const base64 = record.image.split(',')[1];
+  const vendor = sanitizeDropboxSegment(record.data.vendor_name);
+  const invNum = sanitizeDropboxSegment(record.data.invoice_number || record.id);
+  const path = `/Invoices/${record.dayKey}/${vendor}_${invNum}.jpg`;
+
+  // Prefer the cleaned-up scan (what the app treats as "the" image everywhere else);
+  // fall back to the raw capture if no scan was generated.
+  const imageSrc = record.scanImage || record.image;
+  if(!imageSrc) throw new Error('No image to upload');
+  const base64 = imageSrc.split(',')[1];
   const binary = Uint8Array.from(atob(base64), c=>c.charCodeAt(0));
+
   const resp = await fetch('https://content.dropboxapi.com/2/files/upload', {
     method:'POST',
     headers:{
@@ -2597,14 +2641,59 @@ async function uploadToDropbox(record, token){
     },
     body: binary
   });
+
+  // The previous version never checked resp.ok, so an invalid/expired token (401),
+  // a malformed API-Arg (400/409), or a quota error would return a JSON body with no
+  // path_display — the upload would silently do nothing with no error surfaced anywhere.
+  if(!resp.ok){
+    let detail = '';
+    try{ detail = (await resp.text()).slice(0,220); }catch(e){}
+    let msg = `Dropbox upload failed (HTTP ${resp.status})`;
+    if(resp.status===401) msg = 'Dropbox token is invalid or expired — generate a new one in Settings.';
+    else if(detail) msg += `: ${detail}`;
+    throw new Error(msg);
+  }
+
   const result = await resp.json();
-  if(result.path_display){
-    record.dropboxPath = result.path_display;
-    const list = loadInvoices();
-    const idx = list.findIndex(r=>r.id===record.id);
-    if(idx>-1){ list[idx] = record; saveInvoices(list); }
+  if(!result.path_display){
+    throw new Error('Dropbox accepted the request but returned no file path — please retry.');
+  }
+
+  record.dropboxPath = result.path_display;
+  record.dropboxError = '';
+  const list = loadInvoices();
+  const idx = list.findIndex(r=>r.id===record.id);
+  if(idx>-1){ list[idx] = record; saveInvoices(list); }
+}
+
+// Lets the person verify a token works right from Settings, instead of only finding out
+// it's broken (or expired) the next time they save an invoice.
+async function testDropboxConnection(){
+  const token = document.getElementById('dropboxKey').value.trim();
+  if(!token){ toast('Paste a Dropbox access token first', 'error'); return; }
+  const btn = document.getElementById('testDropboxBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Testing…';
+  try{
+    const resp = await fetch('https://api.dropboxapi.com/2/users/get_current_account', {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer ' + token }
+    });
+    if(!resp.ok){
+      throw new Error(resp.status===401 ? 'Token invalid or expired.' : `HTTP ${resp.status}`);
+    }
+    const account = await resp.json();
+    const name = (account.name && account.name.display_name) || account.email || 'your account';
+    toast('Connected to Dropbox as ' + name);
+  }catch(err){
+    toast('Dropbox connection failed — ' + err.message, 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalLabel;
   }
 }
+document.getElementById('testDropboxBtn').addEventListener('click', testDropboxConnection);
 
 /* ---------------- Invoice list ---------------- */
 function renderInvoiceList(){
@@ -2685,6 +2774,19 @@ function confDot(level){
   return '';
 }
 
+function dropboxStatusHtml(r){
+  const settings = loadSettings();
+  if(r.dropboxPath){
+    return `<p class="hint" style="margin-top:8px;">Synced to Dropbox: ${escapeHtml(r.dropboxPath)}</p>`;
+  }
+  if(!settings.dropboxKey || !(r.image || r.scanImage)) return '';
+  const failMsg = r.dropboxError
+    ? `Dropbox sync failed: ${escapeHtml(r.dropboxError)}`
+    : 'Not yet synced to Dropbox.';
+  return `<p class="hint" style="margin-top:8px; color:#8a2f1f;">${failMsg}<br>
+    <button class="secondary no-print" id="retryDropboxBtn" style="margin-top:6px; width:auto; padding:6px 12px;">Retry Dropbox upload</button></p>`;
+}
+
 function detailHtml(r){
   const d = r.data;
   const fc = d.field_confidence || {};
@@ -2743,7 +2845,7 @@ function detailHtml(r){
         <input type="text" id="strInput" placeholder="Enter STR number to close" value="${escapeHtml(r.strNumber)}">
         <button class="secondary" id="saveStrBtn" style="width:auto; margin:0; padding:9px 16px;">Save</button>
       </div>
-      ${r.dropboxPath ? `<p class="hint" style="margin-top:8px;">Synced to Dropbox: ${escapeHtml(r.dropboxPath)}</p>` : ''}
+      ${dropboxStatusHtml(r)}
       <button class="secondary danger-outline" id="deleteBtn" style="margin-top:14px;">Delete this invoice record</button>
     </div>
   `;
@@ -2762,6 +2864,23 @@ function wireDetailActions(r){
   }
   document.getElementById('sendGmailBtn').addEventListener('click', ()=> sendToGmail(r));
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  const retryDropboxBtn = document.getElementById('retryDropboxBtn');
+  if(retryDropboxBtn){
+    retryDropboxBtn.addEventListener('click', async ()=>{
+      const settings = loadSettings();
+      if(!settings.dropboxKey){ toast('Add a Dropbox token in Settings first', 'error'); return; }
+      retryDropboxBtn.disabled = true;
+      retryDropboxBtn.textContent = 'Syncing…';
+      try{
+        await uploadToDropbox(r, settings.dropboxKey);
+        toast('Invoice synced to Dropbox');
+      }catch(err){
+        updateRecord(r.id, rec=>{ rec.dropboxError = err.message; });
+        toast('Dropbox sync failed — ' + err.message, 'error');
+      }
+      openDetail(r.id);
+    });
+  }
   document.getElementById('saveStrBtn').addEventListener('click', ()=>{
     const val = document.getElementById('strInput').value.trim();
     updateRecord(r.id, rec=>{ rec.strNumber = val; rec.status = val ? 'closed' : rec.status; });
