@@ -433,7 +433,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 </div>
 <div class="progress-wrap">
 <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-<div aria-live="polite" class="progress-label" id="progressLabel" role="status">0 of 31 sections complete</div>
+<div aria-live="polite" class="progress-label" id="progressLabel" role="status">0 of 20 sections complete</div>
 </div>
 <div class="metastrip">
 <div class="meta-field"><label>Branch</label><input id="m_branch" type="text" value="Bahria Town"/></div>
@@ -448,235 +448,166 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <div class="rail-title">Jump to</div>
 </nav>
 <main class="main" id="main">
-<!-- 1 -->
-<section class="section" data-title="Branch" id="sec1">
+<section class="section" id="sec1" data-title="Branch" data-chk="1">
 <div class="section-head"><span class="section-num">1</span><h2>Branch</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Branch name</div><input type="text" value="Bahria Town"/></div>
+<div class="item" data-no="1" data-label="Branch:"><div class="label">1 · Branch:</div><input type="text" value="Bahria Town"/></div>
 </div>
 </section>
-<!-- 2 -->
-<section class="section" data-title="Customer Dealing &amp; Checking" id="sec2">
+
+<section class="section" id="sec2" data-title="Customer Dealing &amp; Checking" data-chk="1">
 <div class="section-head"><span class="section-num">2</span><h2>Customer Dealing &amp; Checking</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">a) Customer dealing by officers</div><input type="text" value="Yes, By Co Manager &amp; Pharmacist"/></div>
-<div class="item"><div class="label">b) Checking of medicines by checker before handing over to customer</div><input type="text" value="Yes, SSO is at Packing"/></div>
+<div class="item" data-no="2" data-label="a) Customer Dealing By Officers:"><div class="label">2 · a) Customer Dealing By Officers:</div><input type="text" value="Yes, By Co Manager &amp; Pharmacist"/></div><div class="item" data-no="" data-label="b) Checking of medicines by checker before handing over to customer"><div class="label">b) Checking of medicines by checker before handing over to customer</div><input type="text" value="Yes, SSO is at Packing"/></div>
 </div>
 </section>
-<!-- 3 -->
-<section class="section" data-title="Attendance" id="sec3">
-<div class="section-head"><span class="section-num">3</span><h2>Attendance</h2></div>
+
+<section class="section" id="sec3" data-title="Staff Appearance" data-chk="1" data-group="Staff Appearance" data-groupno="3">
+<div class="section-head"><span class="section-num">3</span><h2>Staff Appearance</h2></div>
 <div class="section-body">
-<div class="item">
-<div class="label">a) Attendance through manual register + biometric<span class="sub">Yes / No</span></div>
-<div class="toggle"><button class="on-yes active">Yes</button><button class="on-no">No</button></div>
-</div>
-<div class="item">
-<div class="label">b) Attendance of security guard<span class="sub">Yes / No</span></div>
-<div class="toggle"><button class="on-yes active">Yes</button><button class="on-no">No</button></div>
-</div>
+<div class="item" data-no="" data-label="a) Staff Shave"><div class="label">a) Staff Shave</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="b) Overalls"><div class="label">b) Overalls</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="c) Name Tags"><div class="label">c) Name Tags</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="d) Staff Search"><div class="label">d) Staff Search</div><input type="text" value="Yes, Ok"/></div><div class="item" data-no="" data-label="e) Dusting of consumer items in customer area"><div class="label">e) Dusting of consumer items in customer area</div><input type="text" value="Yes, Done"/></div>
 </div>
 </section>
-<!-- 4 -->
-<section class="section" data-title="Staff Appearance" id="sec4">
-<div class="section-head"><span class="section-num">4</span><h2>Staff Appearance</h2></div>
+
+<section class="section" id="sec4" data-title="Strengths &amp; Variants" data-chk="1">
+<div class="section-head"><span class="section-num">4</span><h2>Strengths &amp; Variants</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">a) Staff shave</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">b) Overalls</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">c) Name tags</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">d) Staff search</div><input type="text" value="Yes Ok"/></div>
-<div class="item"><div class="label">e) Dusting of consumer items in customer area</div><input type="text" value="Yes Done"/></div>
+<div class="item" data-no="4" data-label="Medicine with different strengths and variants placed separately."><div class="label">4 · Medicine with different strengths and variants placed separately.</div><input type="text" value="Working continue / More Shelves Required"/></div>
 </div>
 </section>
-<!-- 5 -->
-<section class="section" data-title="Staff Training" id="sec5">
-<div class="section-head"><span class="section-num">5</span><h2>Staff Training / SOPs / Pharmacy Manual</h2></div>
+
+<section class="section" id="sec5" data-title="Generics &amp; Alternative Promotion" data-chk="1">
+<div class="section-head"><span class="section-num">5</span><h2>Generics &amp; Alternative Promotion</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Training conducted</div><input type="text" value="Yes / Cleaning and setting of consumer stock"/></div>
+<div class="item" data-no="5" data-label="Generics promotion by pharmacist"><div class="label">5 · Generics promotion by pharmacist</div><input type="text" value="Yes (12/33)"/></div><div class="item" data-no="" data-label="(ALTERNATIVE INVOICE PROMOTION)"><div class="label">(ALTERNATIVE INVOICE PROMOTION)</div><input type="text" value="Yes (03/13)"/></div>
 </div>
 </section>
-<!-- 6 -->
-<section class="section" data-title="Strengths &amp; Variants" id="sec6">
-<div class="section-head"><span class="section-num">6</span><h2>Medicine Strengths &amp; Variants Placed Separately</h2></div>
+
+<section class="section" id="sec6" data-title="Stationery Availability" data-chk="1" data-group="Stationery Availability" data-groupno="6">
+<div class="section-head"><span class="section-num">6</span><h2>Stationery Availability</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Status</div><input type="text" value="Working continue / More shelves required"/></div>
+<div class="item" data-no="" data-label="a) Brown Bags / Non Woven Bags"><div class="label">a) Brown Bags / Non Woven Bags</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="b) Printer Paper"><div class="label">b) Printer Paper</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="c) Tag guns &amp; Rolls"><div class="label">c) Tag guns &amp; Rolls</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="d) N/A Register"><div class="label">d) N/A Register</div><input type="text" value="Yes, Maintained"/></div>
 </div>
 </section>
-<!-- 7 -->
-<section class="section" data-title="Promotion" id="sec7">
-<div class="section-head"><span class="section-num">7</span><h2>Generics &amp; Alternative Promotion</h2></div>
+
+<section class="section" id="sec7" data-title="Daily Operations" data-chk="1">
+<div class="section-head"><span class="section-num">7–15</span><h2>Daily Operations</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Generics promotion by pharmacist<span class="sub">count / total</span></div><input id="generics" type="text" value="12/33"/></div>
-<div class="item"><div class="label">Alternative invoice promotion<span class="sub">count / total</span></div><input id="altpromo" type="text" value="03/16"/></div>
+<div class="item" data-no="7" data-label="Generator Status with Codes/ Working Hours:"><div class="label">7 · Generator Status with Codes/ Working Hours:</div><input type="text" value="Yes, FDPP G 01 12 Hrs"/></div><div class="item" data-no="8" data-label="Returns are being checked / Verified by manager:"><div class="label">8 · Returns are being checked / Verified by manager:</div><input type="text" value="Yes, Entered And Verified"/></div><div class="item" data-no="9" data-label="Home Delivery Service Entered in Google Drive on Daily Basis:"><div class="label">9 · Home Delivery Service Entered in Google Drive on Daily Basis:</div><input type="text" value="Yes"/></div><div class="item" data-no="10" data-label="Stocks are placed as per (First in First Out) FIFO"><div class="label">10 · Stocks are placed as per (First in First Out) FIFO</div><input type="text" value="Yes, Fifo followed"/></div><div class="item" data-no="11" data-label="Stock from Warehouse entered in computer under personal supervision:"><div class="label">11 · Stock from Warehouse entered in computer under personal supervision:</div><input type="text" value="Yes: Stock Entered"/></div><div class="item" data-no="12" data-label="All supply cartons dispatched sealed/signed"><div class="label">12 · All supply cartons dispatched sealed/signed</div><input type="text" value="Yes"/></div><div class="item" data-no="13" data-label="Cash Deposit Slips by Webcam Emailed:"><div class="label">13 · Cash Deposit Slips by Webcam Emailed:</div><input type="text" value="Yes"/></div><div class="item" data-no="14" data-label="Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more"><div class="label">14 · Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more</div><input type="text" value="No Bill"/></div><div class="item" data-no="15" data-label="Any supply issue:"><div class="label">15 · Any supply issue:</div><input type="text" value="No Major Supply Issues"/></div>
 </div>
 </section>
-<!-- 8 -->
-<section class="section" data-title="Stationery" id="sec8">
-<div class="section-head"><span class="section-num">8</span><h2>Stationery Availability</h2></div>
+
+<section class="section" id="sec16" data-title="Repair &amp; Maintenance" data-chk="1" data-group="Repair &amp; Maintenance" data-groupno="16">
+<div class="section-head"><span class="section-num">16</span><h2>Repair &amp; Maintenance</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">a) Brown bags / non-woven bags</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">b) Printer paper</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">c) Tag guns &amp; rolls</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">d) N/A register</div><input type="text" value="Yes, Maintained"/></div>
+<div class="item" data-no="" data-label="a) Lights"><div class="label">a) Lights</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="b) A/C Filter clean"><div class="label">b) A/C Filter clean</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="c) Sign Board"><div class="label">c) Sign Board</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="d) Fire Extinguishers"><div class="label">d) Fire Extinguishers</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="e) Any repair request"><div class="label">e) Any repair request</div><input type="text" value="Ok"/></div>
 </div>
 </section>
-<!-- 9 -->
-<section class="section" data-title="Generator" id="sec9">
-<div class="section-head"><span class="section-num">9</span><h2>Generator Status with Codes / Working Hours</h2></div>
+
+<section class="section" id="sec17" data-title="Price Check" data-chk="1" data-group="Price Check" data-groupno="17">
+<div class="section-head"><span class="section-num">17</span><h2>Price Check</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Generator code</div><input type="text" value="FDPP G 01"/></div>
-<div class="item"><div class="label">Working hours</div><input type="text" value="12 Hrs"/></div>
+<div class="item" data-no="" data-label="a) Computer price verification"><div class="label">a) Computer price verification</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="b) Tags on Consumer Item"><div class="label">b) Tags on Consumer Item</div><input type="text" value="Ok"/></div><div class="item" data-no="" data-label="c) Any price changes in warehouse supply."><div class="label">c) Any price changes in warehouse supply.</div><input type="text" value="Ok"/></div>
 </div>
 </section>
-<!-- 10–17 quick checklist -->
-<section class="section" data-title="Daily Operations Checklist" id="sec10">
-<div class="section-head"><span class="section-num">10–17</span><h2>Daily Operations Checklist</h2></div>
+
+<section class="section" id="sec18" data-title="Narcotics Record" data-chk="1" data-group="Narcotics Record" data-groupno="18">
+<div class="section-head"><span class="section-num">18</span><h2>Narcotics Record</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">10) Returns checked / verified by manager</div><input type="text" value="Yes, Entered And Verified"/></div>
-<div class="item"><div class="label">11) Home delivery entered in Google Drive daily</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">12) Stocks placed as per FIFO</div><input type="text" value="Yes, Guided to sales staff"/></div>
-<div class="item"><div class="label">13) Stock from warehouse entered under personal supervision</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">14) All supply cartons dispatched sealed / signed</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">15) Cash deposit slips by webcam emailed</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">16) Customer ID entered for bills Rs.50,000+</div><input type="text" value="No Bill"/></div>
-<div class="item"><div class="label">17) Any supply issue</div><input type="text" value="No"/></div>
+<div class="item" data-no="" data-label="a) Manual Narcotics register updated."><div class="label">a) Manual Narcotics register updated.</div><input type="text" value="Yes"/></div><div class="item" data-no="" data-label="b) Narcotics updated in the system at the time of sale."><div class="label">b) Narcotics updated in the system at the time of sale.</div><input type="text" value="Yes"/></div><div class="item" data-no="" data-label="c) Manual Schedule-D register updated."><div class="label">c) Manual Schedule-D register updated.</div><input type="text" value="Yes"/></div><div class="item" data-no="" data-label="d) Schedule-D updated in system at the time of sale."><div class="label">d) Schedule-D updated in system at the time of sale.</div><input type="text" value="Yes"/></div><div class="item" data-no="" data-label="e) Scanning of Prescription."><div class="label">e) Scanning of Prescription.</div><input type="text" value="Yes"/></div>
 </div>
 </section>
-<!-- 18 -->
-<section class="section" data-title="Repair &amp; Maintenance" id="sec18">
-<div class="section-head"><span class="section-num">18</span><h2>Repair &amp; Maintenance</h2></div>
+
+<section class="section" id="sec19" data-title="Daily Figures" data-chk="1">
+<div class="section-head"><span class="section-num">19–29</span><h2>Daily Figures</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">a) Lights</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">b) A/C filter clean</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">c) Sign board</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">d) Fire extinguishers</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">e) Any repair request</div><input type="text" value="Ok"/></div>
+<div class="item" data-no="19" data-label="Number of prescriptions entered yesterday?"><div class="label">19 · Number of prescriptions entered yesterday?</div><input type="text" value="22 Prescriptions"/></div><div class="item" data-no="20" data-label="Expiry / Near Expiry"><div class="label">20 · Expiry / Near Expiry</div><input type="text" value="28500"/></div><div class="item" data-no="21" data-label="Marketing:"><div class="label">21 · Marketing:</div><input type="text" value="Dr Saira Taj (Dermatologist)"/></div><div class="item" data-no="22" data-label="Manual cash memo entered in computer or not"><div class="label">22 · Manual cash memo entered in computer or not</div><input type="text" value="Book Pending Value: 890"/></div><div class="item" data-no="23" data-label="Credit sales entered in the computer before handing medicine"><div class="label">23 · Credit sales entered in the computer before handing medicine</div><input type="text" value="Yes: All Bills entered at time of Handling Medicines"/></div><div class="item" data-no="24" data-label="Value of plus items"><div class="label">24 · Value of plus items</div><input type="text" value="-2211"/></div><div class="item" data-no="24 A" data-label="RPOs Status"><div class="label">24 A · RPOs Status</div><input type="text" value="" data-optional="1"/></div><div class="item" data-no="24 B" data-label="RPO Reviewed Carefully"><div class="label">24 B · RPO Reviewed Carefully</div><input type="text" value="Yes/No"/></div><div class="item" data-no="24 C" data-label="Any ammendment in RPOs"><div class="label">24 C · Any ammendment in RPOs</div><input type="text" value="Yes/No"/></div><div class="item" data-no="25" data-label="Short &amp; Excess Values of Randoms"><div class="label">25 · Short &amp; Excess Values of Randoms</div><input type="text" value="-2211"/></div><div class="item" data-no="26" data-label="Number of customers discount given after approval."><div class="label">26 · Number of customers discount given after approval.</div><input type="text" value="18"/></div><div class="item" data-no="27" data-label="Night Video viewing Time"><div class="label">27 · Night Video viewing Time</div><input type="text" value="12:30 PM"/></div><div class="item" data-no="28" data-label="Inspection Register Available at Pharmacy or Not"><div class="label">28 · Inspection Register Available at Pharmacy or Not</div><input type="text" value="No"/></div><div class="item" data-no="29" data-label="Pharma Plus App available on phone or not"><div class="label">29 · Pharma Plus App available on phone or not</div><input type="text" value="YES"/></div>
 </div>
 </section>
-<!-- 19 -->
-<section class="section" data-title="Price Check" id="sec19">
-<div class="section-head"><span class="section-num">19</span><h2>Price Check</h2></div>
-<div class="section-body">
-<div class="item"><div class="label">a) Computer price verification</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">b) Tags on consumer items</div><input type="text" value="Ok"/></div>
-<div class="item"><div class="label">c) Any price changes in warehouse supply</div><input type="text" value="Ok"/></div>
-</div>
-</section>
-<!-- 20 -->
-<section class="section" data-title="Narcotics Record" id="sec20">
-<div class="section-head"><span class="section-num">20</span><h2>Narcotics Record</h2></div>
-<div class="section-body">
-<div class="item"><div class="label">a) Manual narcotics register updated</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">b) Narcotics updated in system at time of sale</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">c) Manual Schedule-D register updated</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">d) Schedule-D updated in system at time of sale</div><input type="text" value="Yes"/></div>
-<div class="item"><div class="label">e) Scanning of prescription</div><input type="text" value="Yes"/></div>
-</div>
-</section>
-<!-- 21-27 -->
-<section class="section" data-title="Daily Figures" id="sec21">
-<div class="section-head"><span class="section-num">21–27</span><h2>Daily Figures</h2></div>
-<div class="section-body">
-<div class="subgrid-3">
-<div class="stat-box"><label>21 · Prescriptions entered yesterday</label><input type="text" value="22"/></div>
-<div class="stat-box"><label>22 · Expiry / Near expiry</label><input type="text" value="29180"/></div>
-<div class="stat-box"><label>24 · Customer discounts after approval</label><input type="text" value="11"/></div>
-<div class="stat-box"><label>25 · Night video viewing time</label><input type="text" value="12:30 PM"/></div>
-<div class="stat-box"><label>25 · Inspection register available</label><input type="text" value="YES"/></div>
-<div class="stat-box"><label>26 · Pharma Plus App on phone</label><input type="text" value="YES"/></div>
-</div>
-<div class="item" style="margin-top:6px;"><div class="label">23) Marketing</div><input placeholder="—" type="text"/></div>
-<div class="item"><div class="label">27) Short &amp; excess values of randoms</div><input placeholder="—" type="text"/></div>
-</div>
-</section>
-<!-- 28 -->
-<section class="section" data-title="Stocks Report" id="sec28">
-<div class="section-head"><span class="section-num">28</span><h2>Stocks Report</h2></div>
+
+<section class="section" id="sec30" data-title="Stocks Report">
+<div class="section-head"><span class="section-num">30</span><h2>Stocks Report</h2></div>
 <div class="section-body">
 <div class="subgrid-2">
-<div class="stat-box"><label>Opening stock (A)</label><input id="s_opening" placeholder="20625116" type="number"/></div>
-<div class="stat-box"><label>Stock receive from warehouse (B)</label><input id="s_receive" placeholder="497425" type="number"/></div>
+<div class="stat-box"><label>Opening stock (A)</label><input id="s_opening" type="number" value="23019725"/></div>
+<div class="stat-box"><label>Stock receive from warehouse (B)</label><input id="s_receive" type="number" value="743408"/></div>
 </div>
 <div class="stat-box readout" style="margin-top:12px;"><label>Total stock in hand (A+B)</label><input id="s_totalhand" readonly="" type="text"/></div>
-<div class="subhead-row">
-<div class="subhead">Daily sales (C)</div>
-<div class="subhead-note">Figures already net of returns</div>
-</div>
+<div class="subhead-row"><div class="subhead">Daily sales (C)</div><div class="subhead-note">Figures already net of returns</div></div>
 <div class="subgrid-2" style="margin-top:8px;">
-<div class="stat-box"><label>Cash sale</label><input id="s_cashsale" placeholder="407246" type="number"/></div>
-<div class="stat-box"><label>Credit sale</label><input id="s_creditsale" placeholder="66635" type="number"/></div>
+<div class="stat-box"><label>Cash sale</label><input id="s_cashsale" type="number" value="592050"/></div>
+<div class="stat-box"><label>Credit sale</label><input id="s_creditsale" type="number" value="95506"/></div>
 </div>
-<div class="subhead-row">
-<div class="subhead">Returns</div>
-<div class="subhead-note">Reference only — already excluded above</div>
-</div>
+<div class="subhead-row"><div class="subhead">Returns</div><div class="subhead-note">Shown as negative in the report</div></div>
 <div class="subgrid-2" style="margin-top:8px;">
-<div class="stat-box reference"><label>Cash sale return</label><input id="s_cashreturn" placeholder="49849" type="number"/></div>
-<div class="stat-box reference"><label>Credit sale return</label><input id="s_creditreturn" placeholder="0" type="number"/></div>
+<div class="stat-box reference"><label>Cash sale return</label><input id="s_cashreturn" type="number" value="38306"/></div>
+<div class="stat-box reference"><label>Credit sale return</label><input id="s_creditreturn" type="number" value="0"/></div>
 </div>
 <div class="subgrid-2" style="margin-top:16px;">
-<div class="stat-box reference"><label>Total returns (reference)</label><input id="s_returntotal" readonly="" type="text"/></div>
-<div class="stat-box readout"><label>Net sales total (C) = Cash + Credit</label><input id="s_nettotal" readonly="" type="text"/></div>
+<div class="stat-box reference"><label>Cash + credit return total</label><input id="s_returntotal" type="text" readonly=""/></div>
+<div class="stat-box readout"><label>Net total (C) = Cash + Credit</label><input id="s_nettotal" type="text" readonly=""/></div>
 </div>
 <div class="subgrid-2" style="margin-top:16px;">
-<div class="stat-box readout"><label>Closing stock position (A+B)−C</label><input id="s_closing" readonly="" type="text"/></div>
-<div class="stat-box"><label>Daily home service</label><input id="s_homeservice" placeholder="54115" type="number"/></div>
+<div class="stat-box readout"><label>Closing stock position (A+B)−C</label><input id="s_closing" type="text" readonly=""/></div>
+<div class="stat-box"><label>Daily home service</label><input id="s_homeservice" type="number" value="54114"/></div>
 </div>
+<div class="subgrid-3" style="margin-top:16px;">
+<div class="stat-box"><label>Home service no. of customers</label><input id="s_homecount" type="number" value="15"/></div>
+<div class="stat-box"><label>Drive thru customers sales</label><input id="s_drivesales" type="number" value="0"/></div>
+<div class="stat-box"><label>No. of drive thru customers</label><input id="s_drivecount" type="number" value="0"/></div>
+</div>
+<div class="subgrid-3" style="margin-top:16px;">
+<div class="stat-box"><label>Cash customers</label><input id="c_cash" type="number" value="546"/></div>
+<div class="stat-box"><label>Panel customers</label><input id="c_panel" type="number" value="6"/></div>
+<div class="stat-box readout"><label>Total number of customers</label><input id="c_total" type="text" readonly=""/></div>
+</div>
+<div class="item" style="margin-top:12px;"><div class="label">Current stocks negative value</div><input id="s_negstock" type="number" value="-6102"/></div>
 </div>
 </section>
-<!-- 29 -->
-<section class="section" data-title="Customer Statistics — Less Than 7 Days Stock" id="sec29">
-<div class="section-head"><span class="section-num">29</span><h2>Customer Statistics — Less Than 7 Days Stock</h2></div>
+
+<section class="section" id="sec31" data-title="Less than 7 Days Stock Report">
+<div class="section-head"><span class="section-num">31</span><h2>Less than 7 Days Stock Report</h2></div>
 <div class="section-body">
-<div class="subgrid-3">
-<div class="stat-box"><label>Cash customers</label><input id="c_cash" type="number" value="515"/></div>
-<div class="stat-box"><label>Panel customers</label><input id="c_panel" type="number" value="9"/></div>
-<div class="stat-box readout"><label>Total customers</label><input id="c_total" readonly="" type="text"/></div>
-</div>
-<div class="subhead-row">
-<div class="subhead">Less than 7 days stock</div>
-</div>
-<div class="item" style="margin-top:8px;"><div class="label">Date</div><input id="lt7_date" type="date"/></div>
+<div class="item"><div class="label">Date</div><input id="lt7_date" type="date" value="2026-10-01"/></div>
 <div class="subgrid-3" style="margin-top:6px;">
-<div class="stat-box"><label>Zero items</label><input id="lt7_zero" type="number" value="26"/></div>
-<div class="stat-box"><label>Less than 7 days</label><input id="lt7_days" type="number" value="22"/></div>
-<div class="stat-box flag"><label>Total items</label><input id="lt7_total" readonly="" type="text"/></div>
+<div class="stat-box"><label>Zero items</label><input id="lt7_zero" type="number" value="19"/></div>
+<div class="stat-box"><label>Less than 7 days</label><input id="lt7_days" type="number" value="17"/></div>
+<div class="stat-box flag"><label>Total items</label><input id="lt7_total" type="text" readonly=""/></div>
 </div>
 </div>
 </section>
-<!-- 30 -->
-<section class="section" data-title="Electricity Meter" id="sec30">
-<div class="section-head"><span class="section-num">30</span><h2>Electricity Meter Reading</h2></div>
+
+<section class="section" id="sec32" data-title="Electricity Meter Reading">
+<div class="section-head"><span class="section-num">32</span><h2>Electricity Meter Reading</h2></div>
 <div class="section-body">
-<div class="item"><div class="label">Meter reference number</div><input type="text" value="BTL-14426"/></div>
-<div class="item"><div class="label">Meter reading</div><input placeholder="—" type="text"/></div>
+<div class="item"><div class="label">Meter reference number</div><input id="meter_ref" type="text" value="BTL -14426"/></div>
+<div class="item"><div class="label">Meter reading</div><input id="meter_reading" placeholder="—" type="text" data-optional="1"/></div>
 </div>
 </section>
-<!-- 31 -->
-<section class="section" data-title="Competitor Sales" id="sec31">
-<div class="section-head"><span class="section-num">31</span><h2>Competitor Sales</h2></div>
+
+<section class="section" id="sec33" data-title="Competitor Sales">
+<div class="section-head"><span class="section-num">33</span><h2>Competitor Sales</h2></div>
 <div class="section-body">
 <table class="data-table" id="compTable">
-<thead><tr><th>Pharmacy / Medical Store</th><th>Stock Value</th><th>Avg / Day</th><th>Total / Month</th></tr></thead>
+<thead><tr><th>Pharmacy or medical store</th><th>Stock value</th><th>Average per day</th><th>Total monthly sales</th></tr></thead>
 <tbody>
-<tr><td><input value="Fazal Din's Pharma Plus"/></td><td><input value="2.1 Crore"/></td><td><input value="500–550K"/></td><td><input value="15 Million+"/></td></tr>
-<tr><td><input value="Green Plus Pharmacy"/></td><td><input value="4.5 to 5 Crore"/></td><td><input value="1200–1400K"/></td><td><input value="40 Million+"/></td></tr>
-<tr><td><input value="Servaid Pharmacy"/></td><td><input value="1 to 1.2 Crore"/></td><td><input value="260–300K"/></td><td><input value="8–9 Million"/></td></tr>
-<tr><td><input value="Ren Pharmacy"/></td><td><input value="70 Lac to 90 Lac"/></td><td><input value="250–260K"/></td><td><input value="7–8 Million"/></td></tr>
-<tr><td><input value="Waseela Pharmacy (Safari Mall)"/></td><td><input value="30–40 Lac"/></td><td><input value="100–120K"/></td><td><input value="3–4 Million"/></td></tr>
+<tr><td><input value="Fazal Din&#x27;s Pharma Plus"/></td><td><input value="2.1 Crore"/></td><td><input value="500-550K"/></td><td><input value="17 Million +"/></td></tr>
+<tr><td><input value="Green Plus Pharmacy"/></td><td><input value="4.5 to 5 Crore"/></td><td><input value="1200-1400K"/></td><td><input value="40 Million +"/></td></tr>
+<tr><td><input value="Servaid Pharmacy"/></td><td><input value="1 to 1.2 Crore"/></td><td><input value="260-300K"/></td><td><input value="8-9 Million"/></td></tr>
+<tr><td><input value="Ren Pharmacy"/></td><td><input value="70 Lac to 90 Lac"/></td><td><input value="250-260K"/></td><td><input value="7-8 Million"/></td></tr>
+<tr><td><input value="Waseela Pharmacy (Safari Mall)"/></td><td><input value="30-40 Lac"/></td><td><input value="100-120K"/></td><td><input value="3-4 Million"/></td></tr>
 </tbody>
 </table>
 <button class="add-row-btn" onclick="App.addCompetitorRow()">+ Add competitor</button>
 </div>
 </section>
-<!-- Notes -->
+
 <section class="section" data-title="Notes" id="secnotes">
 <div class="section-head"><span class="section-num">✎</span><h2>Notes</h2></div>
 <div class="section-body">
 <textarea placeholder="Additional remarks…"></textarea>
 </div>
 </section>
-<!-- Signature -->
 <section class="section" data-title="Sign-off" id="secsig">
 <div class="section-head"><span class="section-num">✓</span><h2>Sign-off</h2></div>
 <div class="section-body">
@@ -878,7 +809,7 @@ const App = (() => {
   // and every toggle group has a selection. Used to drive the progress bar,
   // rail status dots, and the "jump to next incomplete" FAB.
   function sectionProgress(sec){
-    const inputs = [...sec.querySelectorAll('input:not([type=date]):not([type=time]):not([readonly]), textarea')];
+    const inputs = [...sec.querySelectorAll('input:not([type=date]):not([type=time]):not([readonly]):not([data-optional]), textarea')];
     const toggles = [...sec.querySelectorAll('.toggle')];
     const total = inputs.length + toggles.length;
     if(total === 0) return 1;
@@ -962,7 +893,7 @@ const App = (() => {
 
   function save(){
     try{
-      localStorage.setItem('fdpp_daily_report', JSON.stringify(collectState()));
+      localStorage.setItem('fdpp_daily_report_v2', JSON.stringify(collectState()));
       $('saveText').textContent = 'Saved';
       const pill = $('savePill');
       if(pill){ pill.classList.remove('pulse'); void pill.offsetWidth; pill.classList.add('pulse'); }
@@ -973,7 +904,7 @@ const App = (() => {
 
   function load(){
     let state;
-    try{ state = JSON.parse(localStorage.getItem('fdpp_daily_report')); }catch(e){ state = null; }
+    try{ state = JSON.parse(localStorage.getItem('fdpp_daily_report_v2')); }catch(e){ state = null; }
     if(!state) return false;
     document.querySelectorAll('input, textarea').forEach((el, i) => {
       if(!el.id) el.id = 'auto_' + i;
@@ -990,7 +921,7 @@ const App = (() => {
 
   function reset(){
     if(!confirm('Clear all saved entries on this device? This cannot be undone.')) return;
-    localStorage.removeItem('fdpp_daily_report');
+    localStorage.removeItem('fdpp_daily_report_v2');
     location.reload();
   }
 
@@ -1001,229 +932,165 @@ const App = (() => {
     setTimeout(() => t.classList.remove('show'), 2200);
   }
 
-  function buildHtmlReport(){
-    const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-    // Modern, email-safe palette. Gmail/Outlook strip most <style> rules and
-    // many CSS features, so every visual cue here (borders, fills, bold) is
-    // inline and uses only widely-supported table/border properties.
-    // Muted/faint tones are kept dark enough to stay legible after Gmail's
-    // own color adjustments, and borders are 2px so they survive shrinking.
-    const INK = '#1B211D', MUTED = '#3F4A43', FAINT = '#5C6961';
-    const LINE = '#8FAC9B';
-    const DEEP = '#123D25', GREEN = '#2F7A4F', GREEN_TINT = '#EAF4EE';
-    const RED = '#A93225', RED_TINT = '#FBEAE7';
-    const AMBER = '#96650C', AMBER_TINT = '#FBF1DF';
-    const PAPER = '#FFFFFF', ROW_ALT = '#F1F6F3';
-    const SERIF = "Georgia,'Times New Roman',serif";
-    const SANS = "Arial,Helvetica,sans-serif";
-    const MONO = "'Courier New',Courier,monospace";
-    const BW = '2px'; // standard border width used throughout the report
-
-    const branch = $('m_branch').value, prep = $('m_preparedby').value, desig = $('m_designation').value;
-    const dateStr = fmtDateNice($('m_date').value), timeStr = fmtTimeNice($('m_time').value);
-
-    // Only "No" answers get flagged — keeps color meaningful instead of noisy.
-    const isException = (val) => /^no$/i.test(String(val).trim());
-
-    function statTone(box){
-      if(box.classList.contains('flag')) return { bg: RED_TINT, color: RED };
-      if(box.classList.contains('reference')) return { bg: AMBER_TINT, color: AMBER };
-      if(box.classList.contains('readout')) return { bg: GREEN_TINT, color: DEEP };
-      return { bg: PAPER, color: INK };
-    }
-
-    function renderItemsTable(items){
-      if(!items.length) return '';
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};border-radius:6px;margin-top:6px;">`;
-      items.forEach((item, i) => {
-        const label = item.querySelector('.label').childNodes[0].textContent.trim();
-        const input = item.querySelector('input');
-        const toggle = item.querySelector('.toggle');
-        let val = '';
-        if(input) val = input.value;
-        else if(toggle){ const a = toggle.querySelector('button.active'); val = a ? a.textContent : ''; }
-        const exception = isException(val);
-        const rowBg = exception ? RED_TINT : (i % 2 === 1 ? ROW_ALT : PAPER);
-        const borderBottom = i < items.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
-        h += `<tr style="background-color:${rowBg};">
-          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${MUTED};${borderBottom}width:56%;">${esc(label)}</td>
-          <td style="padding:9px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${exception ? RED : INK};text-align:right;${borderBottom}">${esc(val)}</td>
-        </tr>`;
-      });
-      h += `</table>`;
-      return h;
-    }
-
-    function renderStatBoxes(boxes){
-      if(!boxes.length) return '';
-      const perRow = 2;
-      let h = '';
-      for(let i = 0; i < boxes.length; i += perRow){
-        const group = boxes.slice(i, i + perRow);
-        h += `<table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="border-collapse:separate;margin-top:8px;"><tr>`;
-        group.forEach(box => {
-          const label = box.querySelector('label').textContent;
-          const input = box.querySelector('input');
-          const tone = statTone(box);
-          h += `<td width="${Math.floor(100/group.length)}%" style="background-color:${tone.bg};border:${BW} solid ${LINE};border-radius:8px;padding:10px 12px;vertical-align:top;">
-            <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:${FAINT};font-family:${SANS};font-weight:700;">${esc(label)}</div>
-            <div style="font-size:15px;font-family:${MONO};font-weight:700;color:${tone.color};margin-top:5px;">${esc(input ? input.value : '')}</div>
-          </td>`;
-        });
-        if(group.length < perRow) h += `<td width="${Math.floor(100/perRow)}%"></td>`;
-        h += `</tr></table>`;
-      }
-      return h;
-    }
-
-    function renderSubhead(div){
-      const t = div.querySelector('.subhead'), n = div.querySelector('.subhead-note');
-      const title = t ? t.textContent : '', note = n ? n.textContent : '';
-      return `<div style="margin-top:14px;padding:6px 2px;font-size:10.5px;font-family:${SANS};font-weight:700;color:${DEEP};text-transform:uppercase;letter-spacing:.06em;border-bottom:3px solid ${GREEN};">${esc(title)}${note ? ` <span style="font-weight:700;text-transform:none;font-style:italic;color:${FAINT};">(${esc(note)})</span>` : ''}</div>`;
-    }
-
-    function renderDataTable(table){
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};margin-top:8px;">`;
-      const headers = [...table.querySelectorAll('thead th')].map(th => th.textContent);
-      h += `<tr style="background-color:${DEEP};">` + headers.map(hh => `<th style="text-align:left;font-size:10px;font-family:${SANS};text-transform:uppercase;letter-spacing:.05em;color:#EAF4EE;font-weight:700;padding:8px 10px;">${esc(hh)}</th>`).join('') + `</tr>`;
-      const rows = [...table.querySelectorAll('tbody tr')];
-      rows.forEach((tr, i) => {
-        const rowBg = i % 2 === 1 ? ROW_ALT : PAPER;
-        const borderBottom = i < rows.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
-        h += `<tr style="background-color:${rowBg};">` + [...tr.querySelectorAll('td input')].map((inp, ci) => `<td style="padding:8px 10px;font-size:12px;font-family:${ci === 0 ? SANS : MONO};font-weight:700;color:${INK};${borderBottom}">${esc(inp.value)}</td>`).join('') + `</tr>`;
-      });
-      h += `</table>`;
-      return h;
-    }
-
-    function renderSigGrid(grid){
-      const items = grid.querySelectorAll('.item');
-      let h = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};margin-top:6px;">`;
-      items.forEach((item, i) => {
-        const label = item.querySelector('.label').textContent.trim();
-        const valEl = item.querySelector('span');
-        const val = valEl ? valEl.textContent : '';
-        const borderBottom = i < items.length - 1 ? `border-bottom:${BW} solid ${LINE};` : '';
-        h += `<tr style="background-color:${i % 2 === 1 ? ROW_ALT : PAPER};">
-          <td style="padding:8px 12px;font-size:12.5px;font-family:${SANS};font-weight:700;color:${MUTED};${borderBottom}width:40%;">${esc(label)}</td>
-          <td style="padding:8px 12px;font-size:13px;font-family:${SERIF};font-style:italic;font-weight:700;color:${DEEP};${borderBottom}">${esc(val)}</td>
-        </tr>`;
-      });
-      h += `</table>`;
-      return h;
-    }
-
-    // Walk each section's children in the order they appear on screen, so
-    // grids, sub-headings and item rows come out in the right sequence.
-    function renderSectionBody(body){
-      let out = '';
-      let pending = [];
-      const flush = () => { if(pending.length){ out += renderItemsTable(pending); pending = []; } };
-      [...body.children].forEach(child => {
-        if(child.classList.contains('item')){
-          pending.push(child);
-          return;
-        }
-        flush();
-        if(child.classList.contains('subgrid-2') || child.classList.contains('subgrid-3')){
-          out += renderStatBoxes([...child.querySelectorAll('.stat-box')]);
-        } else if(child.classList.contains('stat-box')){
-          out += renderStatBoxes([child]);
-        } else if(child.classList.contains('subhead-row')){
-          out += renderSubhead(child);
-        } else if(child.tagName === 'TABLE' && child.classList.contains('data-table')){
-          out += renderDataTable(child);
-        } else if(child.tagName === 'TEXTAREA'){
-          if(child.value.trim()) out += `<div style="padding:10px 12px;font-size:12.5px;font-family:${SERIF};font-style:italic;font-weight:700;color:${INK};background-color:${GREEN_TINT};border:${BW} solid ${LINE};border-radius:8px;margin-top:6px;">${esc(child.value)}</div>`;
-        } else if(child.classList.contains('sig-grid')){
-          out += renderSigGrid(child);
-        }
-      });
-      flush();
-      return out;
-    }
-
-    // NOTE: no max-width/margin:auto centering — Gmail's compose box renders
-    // this flush against the left edge, matching how the rest of an email
-    // body normally sits, instead of floating in the middle with dead space
-    // on both sides.
-    let html = `<div style="font-family:${SANS};width:100%;color:${INK};">`;
-
-    // Header banner — solid brand color reads instantly even after Gmail
-    // strips everything else, and gives the report an identifiable "cover".
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px 10px 0 0;">
-      <tr><td style="background-color:${DEEP};padding:20px 24px 18px;text-align:left;border-radius:10px 10px 0 0;">
-        <div style="font-family:${SERIF};font-size:21px;font-weight:700;color:#FFFFFF;">Fazal Din's Pharma Plus</div>
-        <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#CFE3D6;margin-top:4px;font-family:${SANS};font-weight:700;">Daily Operations Check List</div>
-        <div style="font-size:12px;color:#E6F1EA;margin-top:12px;font-family:${SANS};font-weight:700;">
-          <b style="color:#ffffff;">${esc(branch)}</b> &nbsp;&middot;&nbsp; ${esc(dateStr)} &nbsp;&middot;&nbsp; ${esc(timeStr)}<br>
-          <span style="color:#BFDBC9;">Prepared by</span> <b style="color:#ffffff;">${esc(prep)}</b>${desig ? ', ' + esc(desig) : ''}
-        </div>
-      </td></tr>
-    </table>`;
-
-    // Snapshot strip — bordered, bold, color-coded tiles for the headline numbers
-    const snapItems = [
-      ['Net Sales', $('snap_net').textContent, GREEN_TINT, DEEP],
-      ['Closing Stock', $('snap_closing').textContent, GREEN_TINT, DEEP],
-      ['Customers', $('snap_cust').textContent, PAPER, INK],
-      ['Flagged Items <7d', $('snap_flag').textContent, RED_TINT, RED]
-    ];
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:${BW} solid ${LINE};border-top:none;background-color:${PAPER};"><tr><td style="padding:8px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="8" style="border-collapse:separate;"><tr>`;
-    snapItems.forEach(([k, v, bg, color]) => {
-      html += `<td width="25%" style="background-color:${bg};border:${BW} solid ${LINE};border-radius:8px;padding:10px 10px;text-align:center;vertical-align:top;">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:${FAINT};font-weight:700;">${esc(k)}</div>
-        <div style="font-size:16px;font-family:${MONO};font-weight:700;color:${color};margin-top:6px;">${esc(v)}</div>
-      </td>`;
-    });
-    html += `</tr></table></td></tr></table>`;
-
-    // Sections — each is its own bordered card with a bold banded title,
-    // a numbered badge, and a strong green rule under the header.
-    document.querySelectorAll('.section').forEach(sec => {
-      const num = sec.querySelector('.section-num').textContent;
-      const title = sec.dataset.title;
-      const body = sec.querySelector(':scope > .section-body');
-      const bodyHtml = body ? renderSectionBody(body) : '';
-      if(!bodyHtml.trim()) return;
-      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:${BW} solid ${LINE};border-radius:10px;margin-top:18px;">
-        <tr><td style="background-color:${GREEN_TINT};padding:10px 14px;border-bottom:3px solid ${GREEN};border-radius:10px 10px 0 0;">
-          <span style="display:inline-block;font-family:${MONO};font-size:11px;font-weight:700;color:#ffffff;background-color:${DEEP};border-radius:4px;padding:2px 7px;margin-right:8px;">${esc(num)}</span>
-          <span style="font-family:${SERIF};font-size:14.5px;font-weight:700;color:${DEEP};">${esc(title)}</span>
-        </td></tr>
-        <tr><td style="padding:10px 14px 14px;">${bodyHtml}</td></tr>
-      </table>`;
-    });
-
-    html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr><td style="border-top:3px solid ${DEEP};padding-top:12px;text-align:left;font-size:10.5px;font-family:${SANS};color:${FAINT};font-weight:700;">
-      Fazal Din's Pharma Plus &mdash; Daily Check List &middot; ${esc(branch)} &middot; ${esc(dateStr)}
-    </td></tr></table>`;
-    html += `</div>`;
-    return html;
+  // ===== Report model: reads the form into the same layout as the Gmail checklist =====
+  function fmtDateShort(iso){
+    if(!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    if(isNaN(d)) return iso;
+    const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    return String(d.getDate()).padStart(2,'0') + '-' + mon + '-' + String(d.getFullYear()).slice(2);
   }
 
-  function buildPlainText(){
-    let out = `FAZAL DIN'S PHARMA PLUS — DAILY CHECK LIST\n`;
-    out += `Branch: ${$('m_branch').value} | Prepared By: ${$('m_preparedby').value} (${$('m_designation').value})\n`;
-    out += `Date: ${$('m_date').value} | Time: ${$('m_time').value}\n\n`;
-    document.querySelectorAll('.section').forEach(sec => {
-      out += `${sec.querySelector('.section-num').textContent}. ${sec.dataset.title}\n`;
+  function collectModel(){
+    const v = (id) => ($(id) ? $(id).value : '');
+    const model = { branch: v('m_branch'), rows: [], stock: [], lt7: [], meter: [], comp: [], notes: '' };
+
+    // Items 1–29 (and their group header rows)
+    document.querySelectorAll('.section[data-chk]').forEach(sec => {
+      if(sec.dataset.group) model.rows.push({ type:'group', no: sec.dataset.groupno, title: sec.dataset.group });
       sec.querySelectorAll('.item').forEach(item => {
-        const label = item.querySelector('.label').childNodes[0].textContent.trim();
         const input = item.querySelector('input');
-        const toggle = item.querySelector('.toggle');
-        let val = '';
-        if(input) val = input.value;
-        else if(toggle){ const a = toggle.querySelector('button.active'); val = a ? a.textContent : ''; }
-        out += `  ${label}: ${val}\n`;
+        model.rows.push({ type:'item', no: item.dataset.no || '', label: item.dataset.label || '', val: input ? input.value : '' });
       });
-      out += `\n`;
     });
-    out += `Net Sales: ${$('snap_net').textContent} | Closing Stock: ${$('snap_closing').textContent} | Total Customers: ${$('snap_cust').textContent}\n`;
-    out += `\nPrepared by: ${$('m_preparedby').value}, ${$('m_designation').value}, ${$('m_branch').value}, ${$('m_contact').value}`;
+
+    // 30 Stocks report — plain numbers, returns shown negative (as in the email)
+    const negify = (n) => { const x = Math.abs(n); return x ? '-' + x : '0'; };
+    const opening = num('s_opening'), receive = num('s_receive');
+    const net = num('s_cashsale') + num('s_creditsale');
+    const retTotal = Math.abs(num('s_cashreturn')) + Math.abs(num('s_creditreturn'));
+    const S = (label, val, bold, underline) => model.stock.push({ label, val: String(val), bold: !!bold, underline: !!underline });
+    S('Opening Stock Position: (A)', opening, true);
+    S('Stock Receive from Warehouse: (B)', receive, true);
+    S('Total Stock in Hand: (A+B)', opening + receive, true);
+    model.stock.push({ type:'group', title:'Daily Sales (C)' });
+    S('Cash Sale:', num('s_cashsale'));
+    S('Cash Sale Return:', negify(num('s_cashreturn')));
+    S('Credit Sale:', num('s_creditsale'));
+    S('Credit Sale Return:', negify(num('s_creditreturn')));
+    S('Cash + Credit Return Total:', negify(retTotal));
+    S('Net Total:', net, true, true);
+    S('Closing Stock position: (A+B) -(C)', opening + receive - net, true);
+    S('Daily Home Service', num('s_homeservice'));
+    S('Home Service No of Customers', num('s_homecount'));
+    S('Drive thru customers sales', num('s_drivesales'));
+    S('No. of drive thru customers', num('s_drivecount'));
+    S('Cash Customers', num('c_cash'));
+    S('Panel Customers', num('c_panel'));
+    S('Total Number of Customers', num('c_cash') + num('c_panel'));
+    model.negStock = v('s_negstock');
+
+    // 31 Less than 7 days
+    model.lt7 = [
+      ['Date', fmtDateShort(v('lt7_date'))],
+      ['Zero items', num('lt7_zero')],
+      ['Less than 7 Days', num('lt7_days')],
+      ['Total items', num('lt7_zero') + num('lt7_days')]
+    ];
+    // 32 Electricity
+    model.meter = [['Meter Reference Number', v('meter_ref')], ['Meter Reading', v('meter_reading')]];
+    // 33 Competitors
+    document.querySelectorAll('#compTable tbody tr').forEach(tr => {
+      const cells = [...tr.querySelectorAll('input')].map(i => i.value);
+      if(cells.some(c => c.trim())) model.comp.push(cells);
+    });
+    const notes = document.querySelector('#secnotes textarea');
+    model.notes = notes ? notes.value.trim() : '';
+    model.sig = { name: v('m_preparedby'), desig: v('m_designation'), branch: v('m_branch'), contact: v('m_contact') };
+    return model;
+  }
+
+  // ===== Gmail-style HTML (matches the original email: plain bordered tables, green header) =====
+  function buildHtmlReport(){
+    const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const m = collectModel();
+    const FONT = "font-family:Arial,Helvetica,sans-serif;";
+    const GREEN = '#2e7d65', TINT = '#e3eee8', CELL = '#f4f8f6';
+    const cell = `${FONT}font-size:11px;border:1px solid #000000;padding:3px 4px;vertical-align:middle;`;
+    const head = (t, extra) => `<td style="${cell}background-color:${GREEN};color:#ffffff;font-weight:bold;${extra || ''}">${esc(t)}</td>`;
+    const tbl = (w, inner) => `<table cellpadding="0" cellspacing="0" border="1" width="${w}" style="border-collapse:collapse;border:1px solid #000000;width:${w}px;${FONT}font-size:11px;">${inner}</table>`;
+    const h1 = (t) => `<div style="${FONT}font-size:24px;font-weight:bold;color:#000000;margin:0 0 8px 0;">${esc(t)}</div>`;
+    const h3 = (t) => `<div style="${FONT}font-size:15px;font-weight:bold;color:#000000;margin:18px 0 4px 0;">${esc(t)}</div>`;
+
+    let out = `<div style="${FONT}color:#000000;">`;
+    out += h1(m.branch) + h1('Checklist');
+
+    // Items 1–29
+    let t = `<tr>${head('No.', 'width:32%;text-align:center;')}${head('Checklist item', 'width:42%;')}${head('Remarks', 'width:26%;')}</tr>`;
+    m.rows.forEach(r => {
+      if(r.type === 'group'){
+        t += `<tr><td colspan="3" style="${cell}background-color:${TINT};">${esc(r.no)}&nbsp;&nbsp;${esc(r.title)}</td></tr>`;
+      } else {
+        t += `<tr><td style="${cell}text-align:center;">${esc(r.no)}</td>`
+           + `<td style="${cell}background-color:${CELL};">${esc(r.label)}</td>`
+           + `<td style="${cell}background-color:${CELL};text-align:center;font-weight:bold;">${esc(r.val)}</td></tr>`;
+      }
+    });
+    out += tbl(610, t);
+
+    // 30 Stocks report
+    let s = `<tr>${head('Particulars', 'width:43%;')}${head('Response or value', 'width:57%;')}</tr>`;
+    m.stock.forEach(r => {
+      if(r.type === 'group'){
+        s += `<tr><td colspan="2" style="${cell}background-color:${TINT};font-weight:bold;">${esc(r.title)}</td></tr>`;
+      } else {
+        const deco = r.underline ? 'text-decoration:underline;font-size:13px;' : '';
+        s += `<tr><td style="${cell}background-color:${CELL};">${esc(r.label)}</td>`
+           + `<td style="${cell}text-align:center;${r.bold ? 'font-weight:bold;' : ''}${deco}">${esc(r.val)}</td></tr>`;
+      }
+    });
+    out += h3('30 Stocks Report') + tbl(453, s);
+    out += `<div style="${FONT}font-size:11px;font-weight:bold;margin-top:6px;">Current Stocks negative value</div>`
+         + `<div style="${FONT}font-size:11px;font-weight:bold;margin:6px 0 0 70px;">${esc(m.negStock)}</div>`;
+
+    // 31 Less than 7 days
+    const kv = (title, pairs) => {
+      let k = `<tr>${head('Particulars', 'width:45%;')}${head('Response or value', 'width:55%;')}</tr>`;
+      pairs.forEach(([a, b]) => { k += `<tr><td style="${cell}background-color:${CELL};">${esc(a)}</td><td style="${cell}text-align:center;">${esc(b)}</td></tr>`; });
+      return h3(title) + tbl(453, k);
+    };
+    out += kv('31 Less than 7 Days Stock Report', m.lt7);
+    out += kv('32 Electricity Meter Reading', m.meter);
+
+    // 33 Competitors
+    let c = `<tr>${head('Pharmacy or medical store')}${head('Stock value')}${head('Average per day')}${head('Total monthly sales')}</tr>`;
+    m.comp.forEach(r => {
+      c += `<tr><td style="${cell}">${esc(r[0])}</td>` + [1,2,3].map(i => `<td style="${cell}text-align:center;">${esc(r[i] || '')}</td>`).join('') + `</tr>`;
+    });
+    out += h3('33 Competitor Sales') + tbl(610, c);
+
+    if(m.notes) out += h3('Notes') + `<div style="${FONT}font-size:11px;white-space:pre-wrap;">${esc(m.notes)}</div>`;
+
+    // Signature
+    const sg = m.sig;
+    out += `<div style="${FONT}font-size:10px;margin-top:28px;">--<br>`
+         + `<b style="font-size:11px;">${esc(sg.name)}</b><br><b style="font-size:11px;">${esc(sg.desig)}</b><br>`
+         + `${esc(sg.branch)}<br>Fazal Din's Pharma Plus<br>${esc(sg.contact)}</div>`;
+    out += `</div>`;
     return out;
+  }
+
+  // ===== Plain text (used by the Email button / clipboard fallback) — same layout as the pasted checklist =====
+  function buildPlainText(){
+    const m = collectModel();
+    let o = `Branch Checklist\n\nNo.\tChecklist item\tRemarks\n`;
+    m.rows.forEach(r => {
+      if(r.type === 'group') o += `${r.no}  ${r.title}\n`;
+      else o += `${r.no}\t${r.label}\t${r.val}\n`;
+    });
+    o += `\n30 Stocks Report\nParticulars\tResponse or value\n`;
+    m.stock.forEach(r => { o += r.type === 'group' ? `${r.title}\n` : `${r.label}\t${r.val}\n`; });
+    o += `Current Stocks negative value\t${m.negStock}\n`;
+    o += `\n31 Less than 7 Days Stock Report\nParticulars\tResponse or value\n`;
+    m.lt7.forEach(([a, b]) => { o += `${a}\t${b}\n`; });
+    o += `\n32 Electricity Meter Reading\nParticulars\tResponse or value\n`;
+    m.meter.forEach(([a, b]) => { o += `${a}\t${b}\n`; });
+    o += `\n33 Competitor Sales\nPharmacy or medical store\tStock value\tAverage per day\tTotal monthly sales\n`;
+    m.comp.forEach(r => { o += r.join('\t') + '\n'; });
+    if(m.notes) o += `\nNotes: ${m.notes}\n`;
+    const sg = m.sig;
+    o += `\n--\n${sg.name}\n${sg.desig}\n${sg.branch}\nFazal Din's Pharma Plus\n${sg.contact}`;
+    return o;
   }
 
   async function copyReport(){
@@ -1385,7 +1252,7 @@ const App = (() => {
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { reset, copyReport, emailReport, addCompetitorRow, toggleTheme, jumpToNextIncomplete, installApp };
+  return { buildHtmlReport, buildPlainText, reset, copyReport, emailReport, addCompetitorRow, toggleTheme, jumpToNextIncomplete, installApp };
 })();
 </script>
 </body>
