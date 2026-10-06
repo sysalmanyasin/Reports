@@ -394,6 +394,17 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
   .print-header .ph-meta b{color:#fff; font-weight:600;}
   .print-header .ph-meta .dot{color:#5C8A6E;}
 }
+/* ===== v2 refinements ===== */
+.section-head{background:linear-gradient(180deg,var(--green-tint),transparent 140%);}
+.section-num{width:auto; min-width:30px; padding:0 9px; white-space:nowrap;}
+.rail a .n{width:38px; white-space:nowrap;}
+.item{grid-template-columns:minmax(260px,1.35fr) minmax(200px,1fr); margin:0 -10px; padding:10px 10px; border-radius:8px; transition:background var(--dur-fast) var(--ease);}
+.item:hover{background:rgba(47,122,79,0.06);}
+.item:last-child{padding-bottom:10px;}
+.item .label .no{display:inline-block; min-width:28px; margin-right:9px; padding:1px 6px; border-radius:5px; background:var(--green-tint); color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; text-align:center; vertical-align:1px;}
+.item input[type=text], .item input[type=number]{font-weight:500;}
+@media (max-width:640px){ .item{grid-template-columns:1fr; gap:6px; margin:0; padding:10px 0;} .item:hover{background:none;} }
+
 </style>
 </head>
 <body>
@@ -451,14 +462,14 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <section class="section" id="sec1" data-title="Branch" data-chk="1">
 <div class="section-head"><span class="section-num">1</span><h2>Branch</h2></div>
 <div class="section-body">
-<div class="item" data-no="1" data-label="Branch:"><div class="label">1 · Branch:</div><input type="text" value="Bahria Town"/></div>
+<div class="item" data-no="1" data-label="Branch:"><div class="label"><span class="no">1</span>Branch:</div><input type="text" value="Bahria Town"/></div>
 </div>
 </section>
 
 <section class="section" id="sec2" data-title="Customer Dealing &amp; Checking" data-chk="1">
 <div class="section-head"><span class="section-num">2</span><h2>Customer Dealing &amp; Checking</h2></div>
 <div class="section-body">
-<div class="item" data-no="2" data-label="a) Customer Dealing By Officers:"><div class="label">2 · a) Customer Dealing By Officers:</div><input type="text" value="Yes, By Co Manager &amp; Pharmacist"/></div><div class="item" data-no="" data-label="b) Checking of medicines by checker before handing over to customer"><div class="label">b) Checking of medicines by checker before handing over to customer</div><input type="text" value="Yes, SSO is at Packing"/></div>
+<div class="item" data-no="2" data-label="a) Customer Dealing By Officers:"><div class="label"><span class="no">2</span>a) Customer Dealing By Officers:</div><input type="text" value="Yes, By Co Manager &amp; Pharmacist"/></div><div class="item" data-no="" data-label="b) Checking of medicines by checker before handing over to customer"><div class="label">b) Checking of medicines by checker before handing over to customer</div><input type="text" value="Yes, SSO is at Packing"/></div>
 </div>
 </section>
 
@@ -472,14 +483,14 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <section class="section" id="sec4" data-title="Strengths &amp; Variants" data-chk="1">
 <div class="section-head"><span class="section-num">4</span><h2>Strengths &amp; Variants</h2></div>
 <div class="section-body">
-<div class="item" data-no="4" data-label="Medicine with different strengths and variants placed separately."><div class="label">4 · Medicine with different strengths and variants placed separately.</div><input type="text" value="Working continue / More Shelves Required"/></div>
+<div class="item" data-no="4" data-label="Medicine with different strengths and variants placed separately."><div class="label"><span class="no">4</span>Medicine with different strengths and variants placed separately.</div><input type="text" value="Working continue / More Shelves Required"/></div>
 </div>
 </section>
 
 <section class="section" id="sec5" data-title="Generics &amp; Alternative Promotion" data-chk="1">
 <div class="section-head"><span class="section-num">5</span><h2>Generics &amp; Alternative Promotion</h2></div>
 <div class="section-body">
-<div class="item" data-no="5" data-label="Generics promotion by pharmacist"><div class="label">5 · Generics promotion by pharmacist</div><input type="text" value="Yes (12/33)"/></div><div class="item" data-no="" data-label="(ALTERNATIVE INVOICE PROMOTION)"><div class="label">(ALTERNATIVE INVOICE PROMOTION)</div><input type="text" value="Yes (03/13)"/></div>
+<div class="item" data-no="5" data-label="Generics promotion by pharmacist"><div class="label"><span class="no">5</span>Generics promotion by pharmacist</div><input type="text" value="Yes (12/33)"/></div><div class="item" data-no="" data-label="(ALTERNATIVE INVOICE PROMOTION)"><div class="label">(ALTERNATIVE INVOICE PROMOTION)</div><input type="text" value="Yes (03/13)"/></div>
 </div>
 </section>
 
@@ -493,7 +504,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <section class="section" id="sec7" data-title="Daily Operations" data-chk="1">
 <div class="section-head"><span class="section-num">7–15</span><h2>Daily Operations</h2></div>
 <div class="section-body">
-<div class="item" data-no="7" data-label="Generator Status with Codes/ Working Hours:"><div class="label">7 · Generator Status with Codes/ Working Hours:</div><input type="text" value="Yes, FDPP G 01 12 Hrs"/></div><div class="item" data-no="8" data-label="Returns are being checked / Verified by manager:"><div class="label">8 · Returns are being checked / Verified by manager:</div><input type="text" value="Yes, Entered And Verified"/></div><div class="item" data-no="9" data-label="Home Delivery Service Entered in Google Drive on Daily Basis:"><div class="label">9 · Home Delivery Service Entered in Google Drive on Daily Basis:</div><input type="text" value="Yes"/></div><div class="item" data-no="10" data-label="Stocks are placed as per (First in First Out) FIFO"><div class="label">10 · Stocks are placed as per (First in First Out) FIFO</div><input type="text" value="Yes, Fifo followed"/></div><div class="item" data-no="11" data-label="Stock from Warehouse entered in computer under personal supervision:"><div class="label">11 · Stock from Warehouse entered in computer under personal supervision:</div><input type="text" value="Yes: Stock Entered"/></div><div class="item" data-no="12" data-label="All supply cartons dispatched sealed/signed"><div class="label">12 · All supply cartons dispatched sealed/signed</div><input type="text" value="Yes"/></div><div class="item" data-no="13" data-label="Cash Deposit Slips by Webcam Emailed:"><div class="label">13 · Cash Deposit Slips by Webcam Emailed:</div><input type="text" value="Yes"/></div><div class="item" data-no="14" data-label="Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more"><div class="label">14 · Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more</div><input type="text" value="No Bill"/></div><div class="item" data-no="15" data-label="Any supply issue:"><div class="label">15 · Any supply issue:</div><input type="text" value="No Major Supply Issues"/></div>
+<div class="item" data-no="7" data-label="Generator Status with Codes/ Working Hours:"><div class="label"><span class="no">7</span>Generator Status with Codes/ Working Hours:</div><input type="text" value="Yes, FDPP G 01 12 Hrs"/></div><div class="item" data-no="8" data-label="Returns are being checked / Verified by manager:"><div class="label"><span class="no">8</span>Returns are being checked / Verified by manager:</div><input type="text" value="Yes, Entered And Verified"/></div><div class="item" data-no="9" data-label="Home Delivery Service Entered in Google Drive on Daily Basis:"><div class="label"><span class="no">9</span>Home Delivery Service Entered in Google Drive on Daily Basis:</div><input type="text" value="Yes"/></div><div class="item" data-no="10" data-label="Stocks are placed as per (First in First Out) FIFO"><div class="label"><span class="no">10</span>Stocks are placed as per (First in First Out) FIFO</div><input type="text" value="Yes, Fifo followed"/></div><div class="item" data-no="11" data-label="Stock from Warehouse entered in computer under personal supervision:"><div class="label"><span class="no">11</span>Stock from Warehouse entered in computer under personal supervision:</div><input type="text" value="Yes: Stock Entered"/></div><div class="item" data-no="12" data-label="All supply cartons dispatched sealed/signed"><div class="label"><span class="no">12</span>All supply cartons dispatched sealed/signed</div><input type="text" value="Yes"/></div><div class="item" data-no="13" data-label="Cash Deposit Slips by Webcam Emailed:"><div class="label"><span class="no">13</span>Cash Deposit Slips by Webcam Emailed:</div><input type="text" value="Yes"/></div><div class="item" data-no="14" data-label="Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more"><div class="label"><span class="no">14</span>Customer&#x27;s ID card numbers Entered for Bills of Rs.50,000 or more</div><input type="text" value="No Bill"/></div><div class="item" data-no="15" data-label="Any supply issue:"><div class="label"><span class="no">15</span>Any supply issue:</div><input type="text" value="No Major Supply Issues"/></div>
 </div>
 </section>
 
@@ -521,7 +532,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <section class="section" id="sec19" data-title="Daily Figures" data-chk="1">
 <div class="section-head"><span class="section-num">19–29</span><h2>Daily Figures</h2></div>
 <div class="section-body">
-<div class="item" data-no="19" data-label="Number of prescriptions entered yesterday?"><div class="label">19 · Number of prescriptions entered yesterday?</div><input type="text" value="22 Prescriptions"/></div><div class="item" data-no="20" data-label="Expiry / Near Expiry"><div class="label">20 · Expiry / Near Expiry</div><input type="text" value="28500"/></div><div class="item" data-no="21" data-label="Marketing:"><div class="label">21 · Marketing:</div><input type="text" value="Dr Saira Taj (Dermatologist)"/></div><div class="item" data-no="22" data-label="Manual cash memo entered in computer or not"><div class="label">22 · Manual cash memo entered in computer or not</div><input type="text" value="Book Pending Value: 890"/></div><div class="item" data-no="23" data-label="Credit sales entered in the computer before handing medicine"><div class="label">23 · Credit sales entered in the computer before handing medicine</div><input type="text" value="Yes: All Bills entered at time of Handling Medicines"/></div><div class="item" data-no="24" data-label="Value of plus items"><div class="label">24 · Value of plus items</div><input type="text" value="-2211"/></div><div class="item" data-no="24 A" data-label="RPOs Status"><div class="label">24 A · RPOs Status</div><input type="text" value="" data-optional="1"/></div><div class="item" data-no="24 B" data-label="RPO Reviewed Carefully"><div class="label">24 B · RPO Reviewed Carefully</div><input type="text" value="Yes/No"/></div><div class="item" data-no="24 C" data-label="Any ammendment in RPOs"><div class="label">24 C · Any ammendment in RPOs</div><input type="text" value="Yes/No"/></div><div class="item" data-no="25" data-label="Short &amp; Excess Values of Randoms"><div class="label">25 · Short &amp; Excess Values of Randoms</div><input type="text" value="-2211"/></div><div class="item" data-no="26" data-label="Number of customers discount given after approval."><div class="label">26 · Number of customers discount given after approval.</div><input type="text" value="18"/></div><div class="item" data-no="27" data-label="Night Video viewing Time"><div class="label">27 · Night Video viewing Time</div><input type="text" value="12:30 PM"/></div><div class="item" data-no="28" data-label="Inspection Register Available at Pharmacy or Not"><div class="label">28 · Inspection Register Available at Pharmacy or Not</div><input type="text" value="No"/></div><div class="item" data-no="29" data-label="Pharma Plus App available on phone or not"><div class="label">29 · Pharma Plus App available on phone or not</div><input type="text" value="YES"/></div>
+<div class="item" data-no="19" data-label="Number of prescriptions entered yesterday?"><div class="label"><span class="no">19</span>Number of prescriptions entered yesterday?</div><input type="text" value="22 Prescriptions"/></div><div class="item" data-no="20" data-label="Expiry / Near Expiry"><div class="label"><span class="no">20</span>Expiry / Near Expiry</div><input type="text" value="28500"/></div><div class="item" data-no="21" data-label="Marketing:"><div class="label"><span class="no">21</span>Marketing:</div><input type="text" value="Dr Saira Taj (Dermatologist)"/></div><div class="item" data-no="22" data-label="Manual cash memo entered in computer or not"><div class="label"><span class="no">22</span>Manual cash memo entered in computer or not</div><input type="text" value="Book Pending Value: 890"/></div><div class="item" data-no="23" data-label="Credit sales entered in the computer before handing medicine"><div class="label"><span class="no">23</span>Credit sales entered in the computer before handing medicine</div><input type="text" value="Yes: All Bills entered at time of Handling Medicines"/></div><div class="item" data-no="24" data-label="Value of plus items"><div class="label"><span class="no">24</span>Value of plus items</div><input type="text" value="-2211"/></div><div class="item" data-no="24 A" data-label="RPOs Status"><div class="label"><span class="no">24 A</span>RPOs Status</div><input type="text" value="" data-optional="1"/></div><div class="item" data-no="24 B" data-label="RPO Reviewed Carefully"><div class="label"><span class="no">24 B</span>RPO Reviewed Carefully</div><input type="text" value="Yes/No"/></div><div class="item" data-no="24 C" data-label="Any amendment in RPOs"><div class="label"><span class="no">24 C</span>Any amendment in RPOs</div><input type="text" value="Yes/No"/></div><div class="item" data-no="25" data-label="Short &amp; Excess Values of Randoms"><div class="label"><span class="no">25</span>Short &amp; Excess Values of Randoms</div><input type="text" value="-2211"/></div><div class="item" data-no="26" data-label="Number of customers discount given after approval."><div class="label"><span class="no">26</span>Number of customers discount given after approval.</div><input type="text" value="18"/></div><div class="item" data-no="27" data-label="Night Video viewing Time"><div class="label"><span class="no">27</span>Night Video viewing Time</div><input type="text" value="12:30 PM"/></div><div class="item" data-no="28" data-label="Inspection Register Available at Pharmacy or Not"><div class="label"><span class="no">28</span>Inspection Register Available at Pharmacy or Not</div><input type="text" value="No"/></div><div class="item" data-no="29" data-label="Pharma Plus App available on phone or not"><div class="label"><span class="no">29</span>Pharma Plus App available on phone or not</div><input type="text" value="YES"/></div>
 </div>
 </section>
 
@@ -605,7 +616,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 <section class="section" data-title="Notes" id="secnotes">
 <div class="section-head"><span class="section-num">✎</span><h2>Notes</h2></div>
 <div class="section-body">
-<textarea placeholder="Additional remarks…"></textarea>
+<textarea data-optional="1" placeholder="Additional remarks…"></textarea>
 </div>
 </section>
 <section class="section" data-title="Sign-off" id="secsig">
@@ -716,7 +727,7 @@ const App = (() => {
     document.querySelectorAll('.item').forEach(item => {
       const labelEl = item.querySelector('.label');
       if(!labelEl) return;
-      const text = labelEl.childNodes[0] ? labelEl.childNodes[0].textContent.trim() : labelEl.textContent.trim();
+      const text = item.dataset.label || (labelEl.childNodes[0] ? labelEl.childNodes[0].textContent.trim() : labelEl.textContent.trim());
       const input = item.querySelector('input:not([type=date])');
       if(input && !input.hasAttribute('aria-label')) input.setAttribute('aria-label', text);
       const toggle = item.querySelector('.toggle');
@@ -809,7 +820,7 @@ const App = (() => {
   // and every toggle group has a selection. Used to drive the progress bar,
   // rail status dots, and the "jump to next incomplete" FAB.
   function sectionProgress(sec){
-    const inputs = [...sec.querySelectorAll('input:not([type=date]):not([type=time]):not([readonly]):not([data-optional]), textarea')];
+    const inputs = [...sec.querySelectorAll('input:not([type=date]):not([type=time]):not([readonly]):not([data-optional]), textarea:not([data-optional])')];
     const toggles = [...sec.querySelectorAll('.toggle')];
     const total = inputs.length + toggles.length;
     if(total === 0) return 1;
@@ -1000,71 +1011,78 @@ const App = (() => {
     return model;
   }
 
-  // ===== Gmail-style HTML (matches the original email: plain bordered tables, green header) =====
+  // ===== Gmail-style HTML (same look as the original email: bordered tables, green header) =====
   function buildHtmlReport(){
     const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const m = collectModel();
     const FONT = "font-family:Arial,Helvetica,sans-serif;";
-    const GREEN = '#2e7d65', TINT = '#e3eee8', CELL = '#f4f8f6';
-    const cell = `${FONT}font-size:11px;border:1px solid #000000;padding:3px 4px;vertical-align:middle;`;
-    const head = (t, extra) => `<td style="${cell}background-color:${GREEN};color:#ffffff;font-weight:bold;${extra || ''}">${esc(t)}</td>`;
-    const tbl = (w, inner) => `<table cellpadding="0" cellspacing="0" border="1" width="${w}" style="border-collapse:collapse;border:1px solid #000000;width:${w}px;${FONT}font-size:11px;">${inner}</table>`;
-    const h1 = (t) => `<div style="${FONT}font-size:24px;font-weight:bold;color:#000000;margin:0 0 8px 0;">${esc(t)}</div>`;
-    const h3 = (t) => `<div style="${FONT}font-size:15px;font-weight:bold;color:#000000;margin:18px 0 4px 0;">${esc(t)}</div>`;
+    const GREEN = '#2e7d65', DEEP = '#1d5a47', TINT = '#d9eae1', CELL = '#f4f8f6', LINE = '#1b1b1b';
+    const W = 680;
+    const cell = `${FONT}font-size:12px;line-height:16px;border:1px solid ${LINE};padding:5px 8px;vertical-align:middle;`;
+    const head = (t, w, extra) => `<td width="${w}" style="${cell}width:${w}px;background-color:${GREEN};color:#ffffff;font-weight:bold;padding:7px 8px;${extra || ''}">${esc(t)}</td>`;
+    const tbl = (w, inner) => `<table cellpadding="0" cellspacing="0" border="1" width="${w}" style="border-collapse:collapse;border:1px solid ${LINE};width:${w}px;table-layout:fixed;${FONT}font-size:12px;">${inner}</table>`;
+    const h1 = (t, mt) => `<div style="${FONT}font-size:24px;line-height:30px;font-weight:bold;color:#000000;margin:${mt || 0}px 0 2px 0;">${esc(t)}</div>`;
+    const h3 = (t) => `<div style="${FONT}font-size:15px;line-height:20px;font-weight:bold;color:${DEEP};margin:22px 0 6px 0;padding-left:9px;border-left:5px solid ${GREEN};">${esc(t)}</div>`;
+    const dateStr = fmtDateNice($('m_date').value), timeStr = fmtTimeNice($('m_time').value);
 
     let out = `<div style="${FONT}color:#000000;">`;
     out += h1(m.branch) + h1('Checklist');
+    out += `<div style="${FONT}font-size:12px;color:#555555;margin:2px 0 10px 0;">${esc(dateStr)} &middot; ${esc(timeStr)} &middot; Prepared by ${esc(m.sig.name)}${m.sig.desig ? ', ' + esc(m.sig.desig) : ''}</div>`;
 
-    // Items 1–29
-    let t = `<tr>${head('No.', 'width:32%;text-align:center;')}${head('Checklist item', 'width:42%;')}${head('Remarks', 'width:26%;')}</tr>`;
+    // Items 1–29: narrow No. column, wide item + remarks columns
+    let t = `<tr>${head('No.', 50, 'text-align:center;')}${head('Checklist item', 370)}${head('Remarks', 260)}</tr>`;
+    let n = 0;
     m.rows.forEach(r => {
       if(r.type === 'group'){
-        t += `<tr><td colspan="3" style="${cell}background-color:${TINT};">${esc(r.no)}&nbsp;&nbsp;${esc(r.title)}</td></tr>`;
+        t += `<tr><td colspan="3" style="${cell}background-color:${TINT};font-weight:bold;color:${DEEP};">${esc(r.no)}&nbsp;&nbsp;${esc(r.title)}</td></tr>`;
+        n = 0;
       } else {
-        t += `<tr><td style="${cell}text-align:center;">${esc(r.no)}</td>`
-           + `<td style="${cell}background-color:${CELL};">${esc(r.label)}</td>`
-           + `<td style="${cell}background-color:${CELL};text-align:center;font-weight:bold;">${esc(r.val)}</td></tr>`;
+        const bg = (n++ % 2) ? '#ffffff' : CELL;
+        t += `<tr><td style="${cell}text-align:center;font-weight:bold;color:${DEEP};">${esc(r.no)}</td>`
+           + `<td style="${cell}background-color:${bg};">${esc(r.label)}</td>`
+           + `<td style="${cell}background-color:${bg};text-align:center;font-weight:bold;">${esc(r.val)}</td></tr>`;
       }
     });
-    out += tbl(610, t);
+    out += tbl(W, t);
 
     // 30 Stocks report
-    let s = `<tr>${head('Particulars', 'width:43%;')}${head('Response or value', 'width:57%;')}</tr>`;
+    const SW = 520;
+    let s = `<tr>${head('Particulars', 300)}${head('Response or value', 220, 'text-align:center;')}</tr>`;
     m.stock.forEach(r => {
       if(r.type === 'group'){
-        s += `<tr><td colspan="2" style="${cell}background-color:${TINT};font-weight:bold;">${esc(r.title)}</td></tr>`;
+        s += `<tr><td colspan="2" style="${cell}background-color:${TINT};font-weight:bold;color:${DEEP};">${esc(r.title)}</td></tr>`;
       } else {
-        const deco = r.underline ? 'text-decoration:underline;font-size:13px;' : '';
-        s += `<tr><td style="${cell}background-color:${CELL};">${esc(r.label)}</td>`
-           + `<td style="${cell}text-align:center;${r.bold ? 'font-weight:bold;' : ''}${deco}">${esc(r.val)}</td></tr>`;
+        const hl = r.underline ? `background-color:${TINT};` : '';
+        const deco = r.underline ? 'text-decoration:underline;font-size:14px;' : '';
+        s += `<tr><td style="${cell}background-color:${r.underline ? TINT : CELL};${r.bold ? 'font-weight:bold;' : ''}">${esc(r.label)}</td>`
+           + `<td style="${cell}${hl}text-align:center;${r.bold ? 'font-weight:bold;' : ''}${deco}">${esc(r.val)}</td></tr>`;
       }
     });
-    out += h3('30 Stocks Report') + tbl(453, s);
-    out += `<div style="${FONT}font-size:11px;font-weight:bold;margin-top:6px;">Current Stocks negative value</div>`
-         + `<div style="${FONT}font-size:11px;font-weight:bold;margin:6px 0 0 70px;">${esc(m.negStock)}</div>`;
+    out += h3('30 Stocks Report') + tbl(SW, s);
+    out += `<div style="${FONT}font-size:12px;font-weight:bold;margin-top:10px;">Current Stocks negative value: <span style="color:#a93225;">${esc(m.negStock)}</span></div>`;
 
-    // 31 Less than 7 days
+    // 31 / 32 key-value tables
     const kv = (title, pairs) => {
-      let k = `<tr>${head('Particulars', 'width:45%;')}${head('Response or value', 'width:55%;')}</tr>`;
-      pairs.forEach(([a, b]) => { k += `<tr><td style="${cell}background-color:${CELL};">${esc(a)}</td><td style="${cell}text-align:center;">${esc(b)}</td></tr>`; });
-      return h3(title) + tbl(453, k);
+      let k = `<tr>${head('Particulars', 300)}${head('Response or value', 220, 'text-align:center;')}</tr>`;
+      pairs.forEach(([a, b]) => { k += `<tr><td style="${cell}background-color:${CELL};">${esc(a)}</td><td style="${cell}text-align:center;font-weight:bold;">${esc(b)}</td></tr>`; });
+      return h3(title) + tbl(SW, k);
     };
     out += kv('31 Less than 7 Days Stock Report', m.lt7);
     out += kv('32 Electricity Meter Reading', m.meter);
 
     // 33 Competitors
-    let c = `<tr>${head('Pharmacy or medical store')}${head('Stock value')}${head('Average per day')}${head('Total monthly sales')}</tr>`;
-    m.comp.forEach(r => {
-      c += `<tr><td style="${cell}">${esc(r[0])}</td>` + [1,2,3].map(i => `<td style="${cell}text-align:center;">${esc(r[i] || '')}</td>`).join('') + `</tr>`;
+    let c = `<tr>${head('Pharmacy or medical store', 220)}${head('Stock value', 150, 'text-align:center;')}${head('Average per day', 150, 'text-align:center;')}${head('Total monthly sales', 160, 'text-align:center;')}</tr>`;
+    m.comp.forEach((r, i) => {
+      const bg = i % 2 ? '#ffffff' : CELL;
+      c += `<tr><td style="${cell}background-color:${bg};font-weight:bold;">${esc(r[0])}</td>` + [1,2,3].map(j => `<td style="${cell}background-color:${bg};text-align:center;">${esc(r[j] || '')}</td>`).join('') + `</tr>`;
     });
-    out += h3('33 Competitor Sales') + tbl(610, c);
+    out += h3('33 Competitor Sales') + tbl(W - 0 > 680 ? 680 : 680, c);
 
-    if(m.notes) out += h3('Notes') + `<div style="${FONT}font-size:11px;white-space:pre-wrap;">${esc(m.notes)}</div>`;
+    if(m.notes) out += h3('Notes') + `<div style="${FONT}font-size:12px;white-space:pre-wrap;">${esc(m.notes)}</div>`;
 
-    // Signature
     const sg = m.sig;
-    out += `<div style="${FONT}font-size:10px;margin-top:28px;">--<br>`
-         + `<b style="font-size:11px;">${esc(sg.name)}</b><br><b style="font-size:11px;">${esc(sg.desig)}</b><br>`
+    out += `<div style="${FONT}font-size:11px;line-height:15px;margin-top:30px;color:#333333;">--<br>`
+         + `<b style="font-size:12px;color:#000000;">${esc(sg.name)}</b><br><b style="font-size:12px;color:#000000;">${esc(sg.desig)}</b><br>`
          + `${esc(sg.branch)}<br>Fazal Din's Pharma Plus<br>${esc(sg.contact)}</div>`;
     out += `</div>`;
     return out;
