@@ -1027,7 +1027,7 @@ const App = (() => {
 
     let out = `<div style="${FONT}color:#000000;">`;
     out += h1(m.branch) + h1('Checklist');
-    out += `<div style="${FONT}font-size:12px;color:#555555;margin:2px 0 10px 0;">${esc(dateStr)} &middot; ${esc(timeStr)} &middot; Prepared by ${esc(m.sig.name)}${m.sig.desig ? ', ' + esc(m.sig.desig) : ''}</div>`;
+    out += `<div style="height:10px;"></div>`;
 
     // Items 1–29: narrow No. column, wide item + remarks columns
     let t = `<tr>${head('No.', 50, 'text-align:center;')}${head('Checklist item', 370)}${head('Remarks', 260)}</tr>`;
@@ -1080,10 +1080,6 @@ const App = (() => {
 
     if(m.notes) out += h3('Notes') + `<div style="${FONT}font-size:12px;white-space:pre-wrap;">${esc(m.notes)}</div>`;
 
-    const sg = m.sig;
-    out += `<div style="${FONT}font-size:11px;line-height:15px;margin-top:30px;color:#333333;">--<br>`
-         + `<b style="font-size:12px;color:#000000;">${esc(sg.name)}</b><br><b style="font-size:12px;color:#000000;">${esc(sg.desig)}</b><br>`
-         + `${esc(sg.branch)}<br>Fazal Din's Pharma Plus<br>${esc(sg.contact)}</div>`;
     out += `</div>`;
     return out;
   }
@@ -1106,8 +1102,6 @@ const App = (() => {
     o += `\n33 Competitor Sales\nPharmacy or medical store\tStock value\tAverage per day\tTotal monthly sales\n`;
     m.comp.forEach(r => { o += r.join('\t') + '\n'; });
     if(m.notes) o += `\nNotes: ${m.notes}\n`;
-    const sg = m.sig;
-    o += `\n--\n${sg.name}\n${sg.desig}\n${sg.branch}\nFazal Din's Pharma Plus\n${sg.contact}`;
     return o;
   }
 
