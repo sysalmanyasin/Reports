@@ -530,54 +530,78 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 </section>
 
 <section class="section" id="sec19" data-title="Daily Figures" data-chk="1">
-<div class="section-head"><span class="section-num">19–29</span><h2>Daily Figures</h2></div>
+<div class="section-head"><span class="section-num">19–22</span><h2>Daily Figures</h2></div>
 <div class="section-body">
-<div class="item" data-no="19" data-label="Number of prescriptions entered yesterday?"><div class="label"><span class="no">19</span>Number of prescriptions entered yesterday?</div><input type="text" value="22 Prescriptions"/></div><div class="item" data-no="20" data-label="Expiry / Near Expiry"><div class="label"><span class="no">20</span>Expiry / Near Expiry</div><input type="text" value="28500"/></div><div class="item" data-no="21" data-label="Marketing:"><div class="label"><span class="no">21</span>Marketing:</div><input type="text" value="Dr Saira Taj (Dermatologist)"/></div><div class="item" data-no="22" data-label="Manual cash memo entered in computer or not"><div class="label"><span class="no">22</span>Manual cash memo entered in computer or not</div><input type="text" value="Book Pending Value: 890"/></div><div class="item" data-no="23" data-label="Credit sales entered in the computer before handing medicine"><div class="label"><span class="no">23</span>Credit sales entered in the computer before handing medicine</div><input type="text" value="Yes: All Bills entered at time of Handling Medicines"/></div><div class="item" data-no="24" data-label="Value of plus items"><div class="label"><span class="no">24</span>Value of plus items</div><input type="text" value="-2211"/></div><div class="item" data-no="24 A" data-label="RPOs Status"><div class="label"><span class="no">24 A</span>RPOs Status</div><input type="text" value="" data-optional="1"/></div><div class="item" data-no="24 B" data-label="RPO Reviewed Carefully"><div class="label"><span class="no">24 B</span>RPO Reviewed Carefully</div><input type="text" value="Yes/No"/></div><div class="item" data-no="24 C" data-label="Any amendment in RPOs"><div class="label"><span class="no">24 C</span>Any amendment in RPOs</div><input type="text" value="Yes/No"/></div><div class="item" data-no="25" data-label="Short &amp; Excess Values of Randoms"><div class="label"><span class="no">25</span>Short &amp; Excess Values of Randoms</div><input type="text" value="-2211"/></div><div class="item" data-no="26" data-label="Number of customers discount given after approval."><div class="label"><span class="no">26</span>Number of customers discount given after approval.</div><input type="text" value="18"/></div><div class="item" data-no="27" data-label="Night Video viewing Time"><div class="label"><span class="no">27</span>Night Video viewing Time</div><input type="text" value="12:30 PM"/></div><div class="item" data-no="28" data-label="Inspection Register Available at Pharmacy or Not"><div class="label"><span class="no">28</span>Inspection Register Available at Pharmacy or Not</div><input type="text" value="No"/></div><div class="item" data-no="29" data-label="Pharma Plus App available on phone or not"><div class="label"><span class="no">29</span>Pharma Plus App available on phone or not</div><input type="text" value="YES"/></div>
+<div class="item" data-no="19" data-label="Number of prescriptions entered yesterday?"><div class="label"><span class="no">19</span>Number of prescriptions entered yesterday?</div><input type="text" value="22 Prescriptions"/></div>
+<div class="item" data-no="20" data-label="Expiry / Near Expiry"><div class="label"><span class="no">20</span>Expiry / Near Expiry</div><input type="text" value="28500"/></div>
+<div class="item" data-no="21" data-label="Night Video viewing Time"><div class="label"><span class="no">21</span>Night Video viewing Time</div><input type="text" value="12:30 PM"/></div>
+<div class="item" data-no="22" data-label="Inspection Register Available at Pharmacy or Not"><div class="label"><span class="no">22</span>Inspection Register Available at Pharmacy or Not</div><input type="text" value="No"/></div>
 </div>
 </section>
 
 <section class="section" id="sec30" data-title="Stocks Report">
-<div class="section-head"><span class="section-num">30</span><h2>Stocks Report</h2></div>
+<div class="section-head"><span class="section-num">24</span><h2>Stocks Report</h2></div>
 <div class="section-body">
 <div class="subgrid-2">
-<div class="stat-box"><label>Opening stock (A)</label><input id="s_opening" type="number" value="23019725"/></div>
-<div class="stat-box"><label>Stock receive from warehouse (B)</label><input id="s_receive" type="number" value="743408"/></div>
+<div class="stat-box readout"><label>Opening stock (A) — auto</label><input id="s_opening" type="text" readonly=""/></div>
+<div class="stat-box"><label>Stock receive from warehouse (B)</label><input id="s_receive" type="number"/></div>
 </div>
 <div class="stat-box readout" style="margin-top:12px;"><label>Total stock in hand (A+B)</label><input id="s_totalhand" readonly="" type="text"/></div>
 <div class="subhead-row"><div class="subhead">Daily sales (C)</div><div class="subhead-note">Figures already net of returns</div></div>
 <div class="subgrid-2" style="margin-top:8px;">
-<div class="stat-box"><label>Cash sale</label><input id="s_cashsale" type="number" value="592050"/></div>
-<div class="stat-box"><label>Credit sale</label><input id="s_creditsale" type="number" value="95506"/></div>
+<div class="stat-box"><label>Cash sale</label><input id="s_cashsale" type="number"/></div>
+<div class="stat-box"><label>Credit sale</label><input id="s_creditsale" type="number"/></div>
 </div>
 <div class="subhead-row"><div class="subhead">Returns</div><div class="subhead-note">Shown as negative in the report</div></div>
 <div class="subgrid-2" style="margin-top:8px;">
-<div class="stat-box reference"><label>Cash sale return</label><input id="s_cashreturn" type="number" value="38306"/></div>
-<div class="stat-box reference"><label>Credit sale return</label><input id="s_creditreturn" type="number" value="0"/></div>
+<div class="stat-box reference"><label>Cash sale return</label><input id="s_cashreturn" type="number"/></div>
+<div class="stat-box reference"><label>Credit sale return</label><input id="s_creditreturn" type="number"/></div>
 </div>
 <div class="subgrid-2" style="margin-top:16px;">
 <div class="stat-box reference"><label>Cash + credit return total</label><input id="s_returntotal" type="text" readonly=""/></div>
 <div class="stat-box readout"><label>Net total (C) = Cash + Credit</label><input id="s_nettotal" type="text" readonly=""/></div>
 </div>
 <div class="subgrid-2" style="margin-top:16px;">
-<div class="stat-box readout"><label>Closing stock position (A+B)−C</label><input id="s_closing" type="text" readonly=""/></div>
-<div class="stat-box"><label>Daily home service</label><input id="s_homeservice" type="number" value="54114"/></div>
+<div class="stat-box"><label>Closing stock position (enter)</label><input id="s_closing" type="number"/></div>
+<div class="stat-box"><label>Daily home service</label><input id="s_homeservice" type="number"/></div>
 </div>
 <div class="subgrid-3" style="margin-top:16px;">
-<div class="stat-box"><label>Home service no. of customers</label><input id="s_homecount" type="number" value="15"/></div>
-<div class="stat-box"><label>Drive thru customers sales</label><input id="s_drivesales" type="number" value="0"/></div>
-<div class="stat-box"><label>No. of drive thru customers</label><input id="s_drivecount" type="number" value="0"/></div>
+<div class="stat-box"><label>Home service no. of customers</label><input id="s_homecount" type="number"/></div>
+<div class="stat-box"><label>Drive thru customers sales</label><input id="s_drivesales" type="number"/></div>
+<div class="stat-box"><label>No. of drive thru customers</label><input id="s_drivecount" type="number"/></div>
 </div>
 <div class="subgrid-3" style="margin-top:16px;">
-<div class="stat-box"><label>Cash customers</label><input id="c_cash" type="number" value="546"/></div>
-<div class="stat-box"><label>Panel customers</label><input id="c_panel" type="number" value="6"/></div>
+<div class="stat-box"><label>Cash customers</label><input id="c_cash" type="number"/></div>
+<div class="stat-box"><label>Panel customers</label><input id="c_panel" type="number"/></div>
 <div class="stat-box readout"><label>Total number of customers</label><input id="c_total" type="text" readonly=""/></div>
 </div>
-<div class="item" style="margin-top:12px;"><div class="label">Current stocks negative value</div><input id="s_negstock" type="number" value="-6102"/></div>
+<div class="item" style="margin-top:12px;"><div class="label">Current stocks negative value</div><input id="s_negstock" type="number"/></div>
+</div>
+</section>
+
+<section class="section" id="secmc" data-title="Manual Cash Bill &amp; Credit Sales" data-tbl="mc" data-tbltitle="Manual cash bill and Credit sales">
+<div class="section-head"><span class="section-num">25–27</span><h2>Manual cash bill and Credit sales</h2></div>
+<div class="section-body">
+<div class="item" data-no="25" data-label="Marketing:"><div class="label"><span class="no">25</span>Marketing:</div><input type="text" value="Dr Saira Taj (Dermatologist)"/></div>
+<div class="item" data-no="26" data-label="Manual cash memo entered in computer or not"><div class="label"><span class="no">26</span>Manual cash memo entered in computer or not</div><input type="text" value="Book Pending Value: 890"/></div>
+<div class="item" data-no="27" data-label="Credit sales entered in the computer before handing medicine"><div class="label"><span class="no">27</span>Credit sales entered in the computer before handing medicine</div><input type="text" value="Yes: All Bills entered at time of Handling Medicines"/></div>
+</div>
+</section>
+
+<section class="section" id="secrpo" data-title="RPO &amp; Short Excess Status" data-tbl="rpo" data-tbltitle="RPO and Short excess status">
+<div class="section-head"><span class="section-num">28–31</span><h2>RPO and Short excess status</h2></div>
+<div class="section-body">
+<div class="item" data-no="28" data-label="Value of plus items"><div class="label"><span class="no">28</span>Value of plus items</div><input type="text" value="-2211"/></div>
+<div class="item" data-no="28 A" data-label="RPOs Status"><div class="label"><span class="no">28 A</span>RPOs Status</div><input type="text" value="" data-optional="1"/></div>
+<div class="item" data-no="28 B" data-label="RPO Reviewed Carefully"><div class="label"><span class="no">28 B</span>RPO Reviewed Carefully</div><input type="text" value="Yes/No"/></div>
+<div class="item" data-no="29 C" data-label="Any amendment in RPOs"><div class="label"><span class="no">29 C</span>Any amendment in RPOs</div><input type="text" value="Yes/No"/></div>
+<div class="item" data-no="30" data-label="Short &amp; Excess Values of Randoms"><div class="label"><span class="no">30</span>Short &amp; Excess Values of Randoms</div><input type="text" value="-2211"/></div>
+<div class="item" data-no="31" data-label="Number of customers discount given after approval."><div class="label"><span class="no">31</span>Number of customers discount given after approval.</div><input type="text" value="18"/></div>
 </div>
 </section>
 
 <section class="section" id="sec31" data-title="Less than 7 Days Stock Report">
-<div class="section-head"><span class="section-num">31</span><h2>Less than 7 Days Stock Report</h2></div>
+<div class="section-head"><span class="section-num">32</span><h2>Less than 7 Days Stock Report</h2></div>
 <div class="section-body">
 <div class="item"><div class="label">Date</div><input id="lt7_date" type="date" value="2026-10-01"/></div>
 <div class="subgrid-3" style="margin-top:6px;">
@@ -589,7 +613,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 </section>
 
 <section class="section" id="sec32" data-title="Electricity Meter Reading">
-<div class="section-head"><span class="section-num">32</span><h2>Electricity Meter Reading</h2></div>
+<div class="section-head"><span class="section-num">33</span><h2>Electricity Meter Reading</h2></div>
 <div class="section-body">
 <div class="item"><div class="label">Meter reference number</div><input id="meter_ref" type="text" value="BTL -14426"/></div>
 <div class="item"><div class="label">Meter reading</div><input id="meter_reading" placeholder="—" type="text" data-optional="1"/></div>
@@ -597,7 +621,7 @@ textarea{min-height:90px; resize:vertical; font-family:'Inter',sans-serif; line-
 </section>
 
 <section class="section" id="sec33" data-title="Competitor Sales">
-<div class="section-head"><span class="section-num">33</span><h2>Competitor Sales</h2></div>
+<div class="section-head"><span class="section-num">34</span><h2>Competitor Sales</h2></div>
 <div class="section-body">
 <table class="data-table" id="compTable">
 <thead><tr><th>Pharmacy or medical store</th><th>Stock value</th><th>Average per day</th><th>Total monthly sales</th></tr></thead>
@@ -655,29 +679,30 @@ const App = (() => {
   const fmt = (n) => n.toLocaleString('en-US');
 
   function calcStock(){
-    const opening = num('s_opening');
+    const r2 = (x) => Math.round(x * 100) / 100;
+    const closingRaw = $('s_closing').value.trim();
+    const hasClosing = closingRaw !== '' && !isNaN(parseFloat(closingRaw));
+    const closing = hasClosing ? parseFloat(closingRaw) : 0;
     const receive = num('s_receive');
-    const totalHand = opening + receive;
-    $('s_totalhand').value = fmt(totalHand);
-
     const cashSale = num('s_cashsale');
-    const cashReturn = num('s_cashreturn');
     const creditSale = num('s_creditsale');
-    const creditReturn = num('s_creditreturn');
     // Cash/credit sale figures are entered net of returns already,
     // so returns are shown for reference only and are NOT subtracted again.
-    const returnTotal = cashReturn + creditReturn;
+    const returnTotal = num('s_cashreturn') + num('s_creditreturn');
     const netTotal = cashSale + creditSale;
 
     $('s_returntotal').value = fmt(returnTotal);
     $('s_nettotal').value = fmt(netTotal);
 
-    const closing = totalHand - netTotal;
-    $('s_closing').value = fmt(closing);
+    // Closing = (A+B) - C   =>   A+B = Closing + C   and   A = Closing + C - B
+    const totalHand = r2(closing + netTotal);
+    const opening = r2(totalHand - receive);
+    $('s_totalhand').value = hasClosing ? fmt(totalHand) : '';
+    $('s_opening').value = hasClosing ? fmt(opening) : '';
 
     $('snap_net').textContent = fmt(netTotal);
     $('snap_net').classList.toggle('neg', netTotal < 0);
-    $('snap_closing').textContent = fmt(closing);
+    $('snap_closing').textContent = hasClosing ? fmt(closing) : '—';
   }
 
   function calcCustomers(){
@@ -699,7 +724,7 @@ const App = (() => {
   }
 
   function attachCalcListeners(){
-    ['s_opening','s_receive','s_cashsale','s_cashreturn','s_creditsale','s_creditreturn']
+    ['s_closing','s_receive','s_cashsale','s_cashreturn','s_creditsale','s_creditreturn']
       .forEach(id => $(id).addEventListener('input', () => { calcStock(); queueSave(); }));
     ['c_cash','c_panel'].forEach(id => $(id).addEventListener('input', () => { calcCustomers(); queueSave(); }));
     ['lt7_zero','lt7_days'].forEach(id => $(id).addEventListener('input', () => { calcLt7(); queueSave(); }));
@@ -904,7 +929,7 @@ const App = (() => {
 
   function save(){
     try{
-      localStorage.setItem('fdpp_daily_report_v2', JSON.stringify(collectState()));
+      localStorage.setItem('fdpp_daily_report_v3', JSON.stringify(collectState()));
       $('saveText').textContent = 'Saved';
       const pill = $('savePill');
       if(pill){ pill.classList.remove('pulse'); void pill.offsetWidth; pill.classList.add('pulse'); }
@@ -915,7 +940,7 @@ const App = (() => {
 
   function load(){
     let state;
-    try{ state = JSON.parse(localStorage.getItem('fdpp_daily_report_v2')); }catch(e){ state = null; }
+    try{ state = JSON.parse(localStorage.getItem('fdpp_daily_report_v3')); }catch(e){ state = null; }
     if(!state) return false;
     document.querySelectorAll('input, textarea').forEach((el, i) => {
       if(!el.id) el.id = 'auto_' + i;
@@ -932,7 +957,7 @@ const App = (() => {
 
   function reset(){
     if(!confirm('Clear all saved entries on this device? This cannot be undone.')) return;
-    localStorage.removeItem('fdpp_daily_report_v2');
+    localStorage.removeItem('fdpp_daily_report_v3');
     location.reload();
   }
 
@@ -954,7 +979,7 @@ const App = (() => {
 
   function collectModel(){
     const v = (id) => ($(id) ? $(id).value : '');
-    const model = { branch: v('m_branch'), rows: [], stock: [], lt7: [], meter: [], comp: [], notes: '' };
+    const model = { branch: v('m_branch'), rows: [], extra: [], stock: [], lt7: [], meter: [], comp: [], notes: '' };
 
     // Items 1–29 (and their group header rows)
     document.querySelectorAll('.section[data-chk]').forEach(sec => {
@@ -965,42 +990,59 @@ const App = (() => {
       });
     });
 
-    // 30 Stocks report — plain numbers, returns shown negative (as in the email)
+    // Manual cash bill (25–27) and RPO / Short-excess (28–31) tables
+    document.querySelectorAll('.section[data-tbl]').forEach(sec => {
+      const rows = [];
+      sec.querySelectorAll('.item').forEach(item => {
+        const input = item.querySelector('input');
+        rows.push({ no: item.dataset.no || '', label: item.dataset.label || '', val: input ? input.value : '' });
+      });
+      model.extra.push({ title: sec.dataset.tbltitle, rows });
+    });
+
+    // 24 Stocks report — plain numbers, returns shown negative (as in the email)
     const negify = (n) => { const x = Math.abs(n); return x ? '-' + x : '0'; };
-    const opening = num('s_opening'), receive = num('s_receive');
+    const has = (id) => $(id) && $(id).value.trim() !== '' && !isNaN(parseFloat($(id).value));
+    const val = (id) => has(id) ? String(parseFloat($(id).value)) : '';
+    const negv = (id) => has(id) ? negify(num(id)) : '';
+    const r2 = (x) => Math.round(x * 100) / 100;
+    const hasClosing = has('s_closing');
     const net = num('s_cashsale') + num('s_creditsale');
+    const hasNet = has('s_cashsale') || has('s_creditsale');
+    const hasRet = has('s_cashreturn') || has('s_creditreturn');
     const retTotal = Math.abs(num('s_cashreturn')) + Math.abs(num('s_creditreturn'));
-    const S = (label, val, bold, underline) => model.stock.push({ label, val: String(val), bold: !!bold, underline: !!underline });
-    S('Opening Stock Position: (A)', opening, true);
-    S('Stock Receive from Warehouse: (B)', receive, true);
-    S('Total Stock in Hand: (A+B)', opening + receive, true);
+    const totalHand = r2(num('s_closing') + net);
+    const S = (label, v, bold, underline) => model.stock.push({ label, val: String(v), bold: !!bold, underline: !!underline });
+    S('Opening Stock Position: (A)', hasClosing ? r2(totalHand - num('s_receive')) : '', true);
+    S('Stock Receive from Warehouse: (B)', val('s_receive'), true);
+    S('Total Stock in Hand: (A+B)', hasClosing ? totalHand : '', true);
     model.stock.push({ type:'group', title:'Daily Sales (C)' });
-    S('Cash Sale:', num('s_cashsale'));
-    S('Cash Sale Return:', negify(num('s_cashreturn')));
-    S('Credit Sale:', num('s_creditsale'));
-    S('Credit Sale Return:', negify(num('s_creditreturn')));
-    S('Cash + Credit Return Total:', negify(retTotal));
-    S('Net Total:', net, true, true);
-    S('Closing Stock position: (A+B) -(C)', opening + receive - net, true);
-    S('Daily Home Service', num('s_homeservice'));
-    S('Home Service No of Customers', num('s_homecount'));
-    S('Drive thru customers sales', num('s_drivesales'));
-    S('No. of drive thru customers', num('s_drivecount'));
-    S('Cash Customers', num('c_cash'));
-    S('Panel Customers', num('c_panel'));
-    S('Total Number of Customers', num('c_cash') + num('c_panel'));
+    S('Cash Sale:', val('s_cashsale'));
+    S('Cash Sale Return:', negv('s_cashreturn'));
+    S('Credit Sale:', val('s_creditsale'));
+    S('Credit Sale Return:', negv('s_creditreturn'));
+    S('Cash + Credit Return Total:', hasRet ? negify(retTotal) : '');
+    S('Net Total:', hasNet ? net : '', true, true);
+    S('Closing Stock position: (A+B) -(C)', val('s_closing'), true);
+    S('Daily Home Service', val('s_homeservice'));
+    S('Home Service No of Customers', val('s_homecount'));
+    S('Drive thru customers sales', val('s_drivesales'));
+    S('No. of drive thru customers', val('s_drivecount'));
+    S('Cash Customers', val('c_cash'));
+    S('Panel Customers', val('c_panel'));
+    S('Total Number of Customers', (has('c_cash') || has('c_panel')) ? num('c_cash') + num('c_panel') : '');
     model.negStock = v('s_negstock');
 
-    // 31 Less than 7 days
+    // 32 Less than 7 days
     model.lt7 = [
       ['Date', fmtDateShort(v('lt7_date'))],
       ['Zero items', num('lt7_zero')],
       ['Less than 7 Days', num('lt7_days')],
       ['Total items', num('lt7_zero') + num('lt7_days')]
     ];
-    // 32 Electricity
+    // 33 Electricity
     model.meter = [['Meter Reference Number', v('meter_ref')], ['Meter Reading', v('meter_reading')]];
-    // 33 Competitors
+    // 34 Competitors
     document.querySelectorAll('#compTable tbody tr').forEach(tr => {
       const cells = [...tr.querySelectorAll('input')].map(i => i.value);
       if(cells.some(c => c.trim())) model.comp.push(cells);
@@ -1016,13 +1058,13 @@ const App = (() => {
     const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const m = collectModel();
     const FONT = "font-family:Arial,Helvetica,sans-serif;";
-    const GREEN = '#2e7d65', DEEP = '#1d5a47', TINT = '#d9eae1', CELL = '#f4f8f6', LINE = '#1b1b1b';
+    const GREEN = '#2e7d65', DEEP = '#000000', TINT = '#e3eee8', CELL = '#f4f8f6', LIGHT = '#a8d08d', LINE = '#1b1b1b';
     const W = 680;
     const cell = `${FONT}font-size:12px;line-height:16px;border:1px solid ${LINE};padding:5px 8px;vertical-align:middle;`;
     const head = (t, w, extra) => `<td width="${w}" style="${cell}width:${w}px;background-color:${GREEN};color:#ffffff;font-weight:bold;padding:7px 8px;${extra || ''}">${esc(t)}</td>`;
     const tbl = (w, inner) => `<table cellpadding="0" cellspacing="0" border="1" width="${w}" style="border-collapse:collapse;border:1px solid ${LINE};width:${w}px;table-layout:fixed;${FONT}font-size:12px;">${inner}</table>`;
-    const h1 = (t, mt) => `<div style="${FONT}font-size:24px;line-height:30px;font-weight:bold;color:#000000;margin:${mt || 0}px 0 2px 0;">${esc(t)}</div>`;
-    const h3 = (t) => `<div style="${FONT}font-size:15px;line-height:20px;font-weight:bold;color:${DEEP};margin:22px 0 6px 0;padding-left:9px;border-left:5px solid ${GREEN};">${esc(t)}</div>`;
+    const h1 = (t, mt) => `<div style="${FONT}font-size:14px;line-height:20px;font-weight:bold;color:#000000;margin:${mt || 0}px 0 6px 0;">${esc(t)}</div>`;
+    const h3 = (t) => `<div style="${FONT}font-size:13px;line-height:18px;font-weight:bold;color:#000000;margin:22px 0 6px 0;">${esc(t)}</div>`;
     const dateStr = fmtDateNice($('m_date').value), timeStr = fmtTimeNice($('m_time').value);
 
     let out = `<div style="${FONT}color:#000000;">`;
@@ -1034,11 +1076,11 @@ const App = (() => {
     let n = 0;
     m.rows.forEach(r => {
       if(r.type === 'group'){
-        t += `<tr><td colspan="3" style="${cell}background-color:${TINT};font-weight:bold;color:${DEEP};">${esc(r.no)}&nbsp;&nbsp;${esc(r.title)}</td></tr>`;
+        t += `<tr><td colspan="3" style="${cell}background-color:${TINT};color:#000000;">${esc(r.no)}&nbsp;&nbsp;${esc(r.title)}</td></tr>`;
         n = 0;
       } else {
         const bg = (n++ % 2) ? '#ffffff' : CELL;
-        t += `<tr><td style="${cell}text-align:center;font-weight:bold;color:${DEEP};">${esc(r.no)}</td>`
+        t += `<tr><td style="${cell}text-align:left;">${esc(r.no)}</td>`
            + `<td style="${cell}background-color:${bg};">${esc(r.label)}</td>`
            + `<td style="${cell}background-color:${bg};text-align:center;font-weight:bold;">${esc(r.val)}</td></tr>`;
       }
@@ -1050,7 +1092,7 @@ const App = (() => {
     let s = `<tr>${head('Particulars', 300)}${head('Response or value', 220, 'text-align:center;')}</tr>`;
     m.stock.forEach(r => {
       if(r.type === 'group'){
-        s += `<tr><td colspan="2" style="${cell}background-color:${TINT};font-weight:bold;color:${DEEP};">${esc(r.title)}</td></tr>`;
+        s += `<tr><td colspan="2" style="${cell}background-color:${TINT};font-weight:bold;">${esc(r.title)}</td></tr>`;
       } else {
         const hl = r.underline ? `background-color:${TINT};` : '';
         const deco = r.underline ? 'text-decoration:underline;font-size:14px;' : '';
@@ -1058,8 +1100,18 @@ const App = (() => {
            + `<td style="${cell}${hl}text-align:center;${r.bold ? 'font-weight:bold;' : ''}${deco}">${esc(r.val)}</td></tr>`;
       }
     });
-    out += h3('30 Stocks Report') + tbl(SW, s);
-    out += `<div style="${FONT}font-size:12px;font-weight:bold;margin-top:10px;">Current Stocks negative value: <span style="color:#a93225;">${esc(m.negStock)}</span></div>`;
+    out += h3('24 Stocks Report') + tbl(SW, s);
+    out += `<div style="${FONT}font-size:13px;font-weight:bold;margin-top:18px;">Current Stocks negative value</div><div style="${FONT}font-size:13px;font-weight:bold;margin-top:6px;">${esc(m.negStock)}</div>`;
+
+    // 25–27 Manual cash bill / 28–31 RPO — light-green header tables (as in the document)
+    m.extra.forEach(x => {
+      let e = `<tr>${head('No.', 50, 'text-align:center;background-color:' + LIGHT + ';color:#000000;')}${head('Checklist item', 370, 'background-color:' + LIGHT + ';color:#000000;')}${head('Remarks', 260, 'background-color:' + LIGHT + ';color:#000000;')}</tr>`;
+      x.rows.forEach((r, i) => {
+        const bg = (i % 2) ? '#ffffff' : CELL;
+        e += `<tr><td style="${cell}text-align:center;">${esc(r.no)}</td><td style="${cell}background-color:${bg};">${esc(r.label)}</td><td style="${cell}background-color:${bg};text-align:center;font-weight:bold;">${esc(r.val)}</td></tr>`;
+      });
+      out += h3(x.title) + tbl(W, e);
+    });
 
     // 31 / 32 key-value tables
     const kv = (title, pairs) => {
@@ -1067,8 +1119,8 @@ const App = (() => {
       pairs.forEach(([a, b]) => { k += `<tr><td style="${cell}background-color:${CELL};">${esc(a)}</td><td style="${cell}text-align:center;font-weight:bold;">${esc(b)}</td></tr>`; });
       return h3(title) + tbl(SW, k);
     };
-    out += kv('31 Less than 7 Days Stock Report', m.lt7);
-    out += kv('32 Electricity Meter Reading', m.meter);
+    out += kv('32 Less than 7 Days Stock Report', m.lt7);
+    out += kv('33 Electricity Meter Reading', m.meter);
 
     // 33 Competitors
     let c = `<tr>${head('Pharmacy or medical store', 220)}${head('Stock value', 150, 'text-align:center;')}${head('Average per day', 150, 'text-align:center;')}${head('Total monthly sales', 160, 'text-align:center;')}</tr>`;
@@ -1076,7 +1128,7 @@ const App = (() => {
       const bg = i % 2 ? '#ffffff' : CELL;
       c += `<tr><td style="${cell}background-color:${bg};font-weight:bold;">${esc(r[0])}</td>` + [1,2,3].map(j => `<td style="${cell}background-color:${bg};text-align:center;">${esc(r[j] || '')}</td>`).join('') + `</tr>`;
     });
-    out += h3('33 Competitor Sales') + tbl(W - 0 > 680 ? 680 : 680, c);
+    out += h3('34 Competitor Sales') + tbl(W - 0 > 680 ? 680 : 680, c);
 
     if(m.notes) out += h3('Notes') + `<div style="${FONT}font-size:12px;white-space:pre-wrap;">${esc(m.notes)}</div>`;
 
@@ -1087,19 +1139,23 @@ const App = (() => {
   // ===== Plain text (used by the Email button / clipboard fallback) — same layout as the pasted checklist =====
   function buildPlainText(){
     const m = collectModel();
-    let o = `Branch Checklist\n\nNo.\tChecklist item\tRemarks\n`;
+    let o = `${m.branch}\nChecklist\n\nNo.\tChecklist item\tRemarks\n`;
     m.rows.forEach(r => {
       if(r.type === 'group') o += `${r.no}  ${r.title}\n`;
       else o += `${r.no}\t${r.label}\t${r.val}\n`;
     });
-    o += `\n30 Stocks Report\nParticulars\tResponse or value\n`;
+    o += `\n24 Stocks Report\nParticulars\tResponse or value\n`;
     m.stock.forEach(r => { o += r.type === 'group' ? `${r.title}\n` : `${r.label}\t${r.val}\n`; });
-    o += `Current Stocks negative value\t${m.negStock}\n`;
-    o += `\n31 Less than 7 Days Stock Report\nParticulars\tResponse or value\n`;
+    o += `\nCurrent Stocks negative value\n${m.negStock}\n`;
+    m.extra.forEach(x => {
+      o += `\n${x.title}\nNo.\tChecklist item\tRemarks\n`;
+      x.rows.forEach(r => { o += `${r.no}\t${r.label}\t${r.val}\n`; });
+    });
+    o += `\n32 Less than 7 Days Stock Report\nParticulars\tResponse or value\n`;
     m.lt7.forEach(([a, b]) => { o += `${a}\t${b}\n`; });
-    o += `\n32 Electricity Meter Reading\nParticulars\tResponse or value\n`;
+    o += `\n33 Electricity Meter Reading\nParticulars\tResponse or value\n`;
     m.meter.forEach(([a, b]) => { o += `${a}\t${b}\n`; });
-    o += `\n33 Competitor Sales\nPharmacy or medical store\tStock value\tAverage per day\tTotal monthly sales\n`;
+    o += `\n34 Competitor Sales\nPharmacy or medical store\tStock value\tAverage per day\tTotal monthly sales\n`;
     m.comp.forEach(r => { o += r.join('\t') + '\n'; });
     if(m.notes) o += `\nNotes: ${m.notes}\n`;
     return o;
